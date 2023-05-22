@@ -1,0 +1,1010 @@
+<!-- toaster -->
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<!-- End Toaster -->
+
+<div class="dashboard">
+    <div class="manage-groups">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-12 p-mb-4">
+                <form [formGroup]="ledgerForm">
+                    <div class="p-grid p-nogutter">
+                        <div lang="p-col-12 p-md-5">
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-2"><label for="first">Date</label></div>
+                                <div class="p-col-12 p-md-5">
+                                    <p-calendar [(ngModel)]="formDate" (onSelect)="onSelectMethod($event,'fromD')" [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}" placeholder="Select Date" dateFormat="dd-mm-yy"></p-calendar>
+                                </div>
+                                <div class="p-col-12 p-md-5 p-pl-1">
+                                    <p-calendar placeholder="Select Date" [(ngModel)]="toDate" (onSelect)="onSelectMethod($event,'toDt')" [showIcon]="true" inputId="toDt" [ngModelOptions]="{standalone: true}" dateFormat="dd-mm-yy">
+                                    </p-calendar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-pl-2 voucher-type">
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label for="last">Voucher Type</label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <p-dropdown [options]="voucherType" placeholder="Select type" optionLabel="codeName" [(ngModel)]="nVoucherType" [showClear]="true" [ngModelOptions]="{standalone: true}"></p-dropdown>
+                                </div>
+                                <!-- <div class="p-col-12 p-md-8">
+                                    <div style="display: inline-block;">
+                                        <input formControlName="nDocType" (change)="cashF()" style="width: 20px; height: 20px;" type="radio" class="ml-2" value="1" name="nDocType">
+                                        <label for="">Cash</label>
+                                    </div>
+                                    <div style="display: inline-block;">
+                                        <input formControlName="nDocType" (change)="transactionF()" style="width: 20px; height: 20px;" type="radio" class="ml-2" value="2" name="nDocType">
+                                        <label for="">Transfer</label>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2">
+                            <button type="button" label="View" (click)="searcVoucherF()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-col-12">
+                <p-table #voucher [value]="voucherEntryData" [globalFilterFields]="['nVrno','branch','ledgerNm','cNarration','nDrAmt','nCrAmt','refAcNm','optNm']" [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+                    [scrollable]="true" scrollHeight="250px">
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-jc-end">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" (input)="voucher.filterGlobal($event.target.value,'contains')" type="text" pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th [ngStyle]="{'width':'10px'}">SNo</th>
+                            <th [ngStyle]="{'width':'20px'}" pSortableColumn="nVrno">Vr No<p-sortIcon field="nVrno"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'30px'}" pSortableColumn="dVrDate">Date<p-sortIcon field="dVrDate"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'30px'}" pSortableColumn="branch">Branch<p-sortIcon field="branch"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'50px'}" pSortableColumn="ledgerNm">Ledger<p-sortIcon field="ledgerNm"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'80px'}" pSortableColumn="cNarration">Particulars<p-sortIcon field="cNarration"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'20px'}" pSortableColumn="nDrAmt">Debit<p-sortIcon field="nDrAmt"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'20px'}" pSortableColumn="nCrAmt">Credit<p-sortIcon field="nCrAmt"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'30px'}" pSortableColumn="refAcNm">Entered By<p-sortIcon field="refAcNm"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'30px'}" pSortableColumn="optNm">Verified By<p-sortIcon field="optNm"></p-sortIcon></th>
+                            <th [ngStyle]="{'width':'20px'}">Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-voucherData let-i=rowIndex>
+                        <tr>
+                            <td [ngStyle]="{'width':'10px'}">{{i+1}}</td>
+                            <td [ngStyle]="{'width':'20px'}">{{voucherData.nVrno}}</td>
+                            <td [ngStyle]="{'width':'30px'}" >{{voucherData.dVrDate | dateFormat}}</td>
+                            <td [ngStyle]="{'width':'30px'}">{{voucherData.branch}}</td>
+                            <td [ngStyle]="{'width':'50px'}">{{voucherData.ledgerNm}}</td>
+                            <td [ngStyle]="{'width':'80px'}">{{voucherData.cNarration}}</td>
+                            <td [ngStyle]="{'width':'20px'}">{{voucherData.nDrAmt}}</td>
+                            <td [ngStyle]="{'width':'20px'}">{{voucherData.nCrAmt}}</td>
+                            <td [ngStyle]="{'width':'30px'}">{{voucherData.refAcNm}}</td>
+                            <td [ngStyle]="{'width':'30px'}">{{voucherData.optNm}}</td>
+                            <td [ngStyle]="{'width':'20px'}">
+                                <!-- <p-button icon="pi pi-pencil" class="p-button-raised"></p-button> -->
+                                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2" (click)="deleteVoucherDataF(voucherData.cBatchNo, voucherData.nOptid)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+            </div>
+            <div class="p-col-12">
+               
+                <button type="button" label="Receipts" class="p-mr-2" (click)="showPopup()" pButton></button>
+                <button type="button" label="Payments" class="p-mr-2" (click)="showPopupPayments()" pButton></button>
+                <button type="button" label="Contra" class="p-mr-2" (click)="showPopupContra()" pButton></button>
+                <!-- <button type="button" label="Refunds" (click)="showRefund()" class="p-mr-2" pButton></button> -->
+                <button type="button" label="Journal" (click)="showPopupJournal()" pButton></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<p-dialog header="{{transactionTitle}}" [(visible)]="displayPosition" [position]="position" 
+[modal]="true" [style]="{width: '45vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false" 
+(onHide)="onHideModal()">
+    <p-toast [baseZIndex]="100000"></p-toast>
+    <p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+    <p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+    <form [formGroup]="ledgerForm" (ngSubmit)="submit(ledgerForm)">
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4">
+                    <!-- <label for="last">Voucher Type</label> -->
+                </div>
+                <!-- <div class="p-col-12 p-md-4">
+          <strong><h1 for="" *ngIf="nDocType==1">Cash Transaction</h1></strong>
+          <strong><h1 for="" *ngIf="nDocType==2">Transfer Transaction</h1></strong>
+          <input (change)="onTransferF()" [(ngModel)]="cashVal" type="radio" class="ml-2" value="1" name="nDocType" id="" formControlName="nDocType">
+          <label for="">Cash</label>
+        </div> -->
+                <!-- <div class="p-col-12 p-md-3">
+          <input (change)="onTransferF()" [(ngModel)]="transferVal" type="radio" class="ml-2" value="2" name="nDocType" id="" formControlName="nDocType">
+
+          <label for="">Transfer</label>
+        </div> -->
+            </div>
+        </div>
+        <div class="p-grid p-nogutter p-mb-3">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Date<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-calendar [(ngModel)]="formDate" [ngModelOptions]="{standalone: true}" [disabledDates]="invalidDates" placeholder="Select Date" formControlName="dVrDate" dateFormat="dd-mm-yy"></p-calendar>
+                        <p class="danger" *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.dVrDate.touched)">
+                            Date Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Branch<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [options]="branchData"    placeholder="Select Branch" optionLabel="txt" [(ngModel)]="branchId"  formControlName="nBranchid"></p-dropdown>
+                        <p class="danger" *ngIf="formControls.nBranchid.invalid && (formControls.nBranchid.dirty || formControls.nBranchid.touched)">
+                            Branch Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2" id="drop"><label for="first">Ledger<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-10">
+                        <!-- <p-dropdown (onChange)="jobItemF($event)" [(ngModel)]="branch" [options]="selectLedger" optionLabel="cLedgerNm" formControlName="nAcid" placeholder="Search Ledger By Name" [filter]="true" filterBy="cLedgerNm">
+                        </p-dropdown> -->
+                        <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" 
+                            (completeMethod)="filterLedger($event)" (onChange)="jobItemF($event)" 
+                            field="cLedgerNm" placeholder="Search Ledger By Name" formControlName="nAcid" 
+                            [filter]="true" [dropdown]="true"></p-autoComplete> -->
+
+                        <p-dropdown [(ngModel)]="searchLedger" (keypress)="selectLedger()" 
+                        (onChange)="jobItemF($event)" [options]="ledgerData" optionLabel="cLedgerNm"
+              formControlName="nAcid" placeholder="Search Ledger" [filter]="true" filterBy="cLedgerNm">
+            </p-dropdown>
+                        <!-- <input type="text" [(ngModel)]="searchLedger" (keypress)="selectLedger()" (onChange)="jobItemF($event)"
+            formControlName="nAcid" placeholder="Search Ledger" pInputText> -->
+                        <p class="danger" *ngIf="formControls.nAcid.invalid && (formControls.nAcid.dirty || formControls.nAcid.touched)">
+                            Ledger Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Amount Type<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <!-- <p-dropdown (onChange)="amoountTypeF($event)" [filter]="true" filterBy="codeName" placeholder="Select Amount Type" [options]="ammountData" optionLabel="codeName" formControlName="nAmtType">
+                        </p-dropdown> -->
+                        <p-autoComplete appendTo="body" [suggestions]="filteredGroups" (completeMethod)="filterAtype($event)" (onChange)="amoountTypeF($event)" (onSelect)=" amtType($event)" field="codeName" placeholder="Select Amount Type" formControlName="nAmtType" [filter]="true" [dropdown]="true"></p-autoComplete>
+                        <p class="danger" *ngIf="formControls.nAmtType.invalid && (formControls.nAmtType.dirty || formControls.nAmtType.touched)">
+                            Amount Type Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="depositTable" class="p-col-12 p-md-12 p-my-3">
+                <p-table [value]="products" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr>
+                            <td>{{product.code}}</td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.category}}</td>
+                            <td>{{product.quantity}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4" id="drop"><label for="first">Cheque No</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input placeholder="Enter Cheque No" id="middle" type="text" pInputText formControlName="cChequeNo">
+                        <!-- <p class="danger" *ngIf="formControls.cChequeNo.invalid && (formControls.cChequeNo.dirty || formControls.cChequeNo.touched)">
+              Cheque No Is Required
+            </p> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF('debit')"  [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt" (focus)="onFocusCredit('debit')" [readonly]="!isPaymentClicked">
+           
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF('credit')"  [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt" (focus)="onFocusCredit('credit')" [readonly]="!isReceiptClicked">
+        
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focus)="onFocusCredit($event)" [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt">
+       
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focusout)="onFocusCredit($event)" [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt">
+            
+                    </div>
+                </div>
+            </div> -->
+
+
+
+            <div class="p-col-12 p-md-6" *ngIf="job">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Job</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cJob" formControlName="nJobid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="iteam">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Item</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cItem" formControlName="nItemid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2">
+                        <label for="middle">Narration<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <input id="middle" type="text" pInputText formControlName="cNarration">
+                        <p class="danger" *ngIf="formControls.cNarration.invalid && (formControls.cNarration.dirty || formControls.cNarration.touched)">
+                            Narration Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-10 p-md-offset-2">
+                        <p-button class="p-button-text" (click)="AddLedgerEntry()" label="Add">
+                        </p-button>
+                        <button pButton label="Save" class="p-button-text p-ml-2"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- {{ledgerEntry | json }} -->
+        <p-table [value]="ledgerEntry" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SNo</th>
+                    <th>Ledger</th>
+                    <th>Narration</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-vData let-i="rowIndex">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td>{{vData.nAcid}}</td>
+                    <td>{{vData.cNarration}}</td>
+                    <td>{{vData.nDrAmt}}</td>
+                    <td>{{vData.nCrAmt}}</td>
+                    <td>
+                        <p-button (click)="deleteLedgerEntry(i)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <ng-template pTemplate="footer">
+            <p>Data Not Found</p>
+            <!-- <p-button icon="pi pi-check" (click)="submit(ledgerForm);displayPosition=false" label="Save" class="p-button-text"></p-button> -->
+        </ng-template>
+        <div class="p-grid">
+            <div class="p-col-12 text-left">
+                <p *ngIf="ledgerEntry.length==0">No Data Found</p>
+                <!-- <p-button  type="submit" label="SAVE" (click)="submit(ledgerForm);displayPosition=false" class="p-button-text"></p-button> -->
+            </div>
+        </div>
+    </form>
+
+</p-dialog>
+
+<!-- modal -->
+<p-dialog header="{{transactionTitle}}" 
+[(visible)]="displayPayment" [position]="position" [modal]="true" 
+[style]="{width: '45vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false" (onHide)="onHideModal()">
+    <p-toast [baseZIndex]="100000"></p-toast>
+    <p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+    <p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+    <form [formGroup]="ledgerForm" (ngSubmit)="submit(ledgerForm)">
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4">
+                    <!-- <label for="last">Voucher Type</label> -->
+                </div>
+                <!-- <div class="p-col-12 p-md-4">
+          <strong><h1 for="" *ngIf="nDocType==1">Cash Transaction</h1></strong>
+          <strong><h1 for="" *ngIf="nDocType==2">Transfer Transaction</h1></strong>
+          <input (change)="onTransferF()" [(ngModel)]="cashVal" type="radio" class="ml-2" value="1" name="nDocType" id="" formControlName="nDocType">
+          <label for="">Cash</label>
+        </div> -->
+                <!-- <div class="p-col-12 p-md-3">
+          <input (change)="onTransferF()" [(ngModel)]="transferVal" type="radio" class="ml-2" value="2" name="nDocType" id="" formControlName="nDocType">
+
+          <label for="">Transfer</label>
+        </div> -->
+            </div>
+        </div>
+        <div class="p-grid p-nogutter p-mb-3">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Date<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-calendar [(ngModel)]="formDate" [ngModelOptions]="{standalone: true}" [disabledDates]="invalidDates" placeholder="Select Date" formControlName="dVrDate" dateFormat="dd-mm-yy"></p-calendar>
+                        <p class="danger" *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.dVrDate.touched)">
+                            Date Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Branch<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [options]="branchData"  placeholder="Select Branch" optionLabel="txt" [(ngModel)]="selectedBranch"  formControlName="nBranchid"></p-dropdown>
+                        <p class="danger" *ngIf="formControls.nBranchid.invalid && (formControls.nBranchid.dirty || formControls.nBranchid.touched)">
+                            Branch Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2" id="drop"><label for="first">Ledger<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-10">
+                        <!-- <p-dropdown (onChange)="jobItemF($event)" [(ngModel)]="branch" [options]="selectLedger" optionLabel="cLedgerNm" formControlName="nAcid" placeholder="Search Ledger By Name" [filter]="true" filterBy="cLedgerNm">
+                        </p-dropdown> -->
+                        <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" 
+                        (completeMethod)="filterLedger($event)" (onChange)="jobItemF($event)" 
+                        field="cLedgerNm" placeholder="Search Ledger By Name" 
+                        formControlName="nAcid" [filter]="true" [dropdown]="true"></p-autoComplete> -->
+
+                        <p-dropdown [(ngModel)]="searchLedger" (keypress)="selectLedger()" (onChange)="jobItemF($event)" [options]="ledgerData" optionLabel="cLedgerNm"
+              formControlName="nAcid" placeholder="Search Ledger" [filter]="true" filterBy="cLedgerNm">
+            </p-dropdown>
+                        <!-- <input type="text" [(ngModel)]="searchLedger" (keypress)="selectLedger()" (onChange)="jobItemF($event)"
+            formControlName="nAcid" placeholder="Search Ledger" pInputText> -->
+                        <p class="danger" *ngIf="formControls.nAcid.invalid && (formControls.nAcid.dirty || formControls.nAcid.touched)">
+                            Ledger Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Amount Type<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <!-- <p-dropdown (onChange)="amoountTypeF($event)" [filter]="true" filterBy="codeName" placeholder="Select Amount Type" [options]="ammountData" optionLabel="codeName" formControlName="nAmtType">
+                        </p-dropdown> -->
+                        <p-autoComplete appendTo="body" [suggestions]="filteredGroups" (completeMethod)="filterAtype($event)" (onChange)="amoountTypeF($event)" (onSelect)=" amtType($event)" field="codeName" placeholder="Select Amount Type" formControlName="nAmtType" [filter]="true" [dropdown]="true"></p-autoComplete>
+                        <p class="danger" *ngIf="formControls.nAmtType.invalid && (formControls.nAmtType.dirty || formControls.nAmtType.touched)">
+                            Amount Type Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="depositTable" class="p-col-12 p-md-12 p-my-3">
+                <p-table [value]="products" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr>
+                            <td>{{product.code}}</td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.category}}</td>
+                            <td>{{product.quantity}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4" id="drop"><label for="first">Cheque No</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input placeholder="Enter Cheque No" id="middle" type="text" pInputText formControlName="cChequeNo">
+                        <!-- <p class="danger" *ngIf="formControls.cChequeNo.invalid && (formControls.cChequeNo.dirty || formControls.cChequeNo.touched)">
+              Cheque No Is Required
+            </p> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF('debit')"  [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt" (focus)="onFocusCredit('debit')">
+           
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF('credit')"  [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt" (focus)="onFocusCredit('credit')">
+        
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focus)="onFocusCredit($event)" [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt">
+       
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focusout)="onFocusCredit($event)" [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt">
+            
+                    </div>
+                </div>
+            </div> -->
+
+
+
+            <div class="p-col-12 p-md-6" *ngIf="job">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Job</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cJob" formControlName="nJobid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="iteam">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Item</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cItem" formControlName="nItemid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2">
+                        <label for="middle">Narration<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <input id="middle" type="text" pInputText formControlName="cNarration">
+                        <p class="danger" *ngIf="formControls.cNarration.invalid && (formControls.cNarration.dirty || formControls.cNarration.touched)">
+                            Narration Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-10 p-md-offset-2">
+                        <p-button class="p-button-text" (click)="AddLedgerEntry()" label="Add">
+                        </p-button>
+                        <button pButton label="Save" class="p-button-text p-ml-2"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- {{ledgerEntry | json }} -->
+        <p-table [value]="ledgerEntry" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SNo</th>
+                    <th>Ledger</th>
+                    <th>Narration</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-vData let-i="rowIndex">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td>{{vData.nAcid}}</td>
+                    <td>{{vData.cNarration}}</td>
+                    <td>{{vData.nDrAmt}}</td>
+                    <td>{{vData.nCrAmt}}</td>
+                    <td>
+                        <p-button (click)="deleteLedgerEntry(i)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <ng-template pTemplate="footer">
+            <p>Data Not Found</p>
+            <!-- <p-button icon="pi pi-check" (click)="submit(ledgerForm);displayPosition=false" label="Save" class="p-button-text"></p-button> -->
+        </ng-template>
+        <div class="p-grid">
+            <div class="p-col-12 text-left">
+                <p *ngIf="ledgerEntry.length==0">No Data Found</p>
+                <!-- <p-button  type="submit" label="SAVE" (click)="submit(ledgerForm);displayPosition=false" class="p-button-text"></p-button> -->
+            </div>
+        </div>
+    </form>
+
+</p-dialog>
+
+<!-- modal -->
+<p-dialog header="{{transactionTitle}}" [(visible)]="displayJournal" 
+[position]="position" [modal]="true" [style]="{width: '45vw'}" 
+[baseZIndex]="10000" [draggable]="false" [resizable]="false" (onHide)="onHideModal()">
+    <p-toast [baseZIndex]="100000"></p-toast>
+    <p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+    <p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+    <form [formGroup]="ledgerForm" (ngSubmit)="submit(ledgerForm)">
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4">
+                    <!-- <label for="last">Voucher Type</label> -->
+                </div>
+                <!-- <div class="p-col-12 p-md-4">
+          <strong><h1 for="" *ngIf="nDocType==1">Cash Transaction</h1></strong>
+          <strong><h1 for="" *ngIf="nDocType==2">Transfer Transaction</h1></strong>
+          <input (change)="onTransferF()" [(ngModel)]="cashVal" type="radio" class="ml-2" value="1" name="nDocType" id="" formControlName="nDocType">
+          <label for="">Cash</label>
+        </div> -->
+                <!-- <div class="p-col-12 p-md-3">
+          <input (change)="onTransferF()" [(ngModel)]="transferVal" type="radio" class="ml-2" value="2" name="nDocType" id="" formControlName="nDocType">
+
+          <label for="">Transfer</label>
+        </div> -->
+            </div>
+        </div>
+        <div class="p-grid p-nogutter p-mb-3">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Date<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-calendar [(ngModel)]="formDate" [ngModelOptions]="{standalone: true}" [disabled]="ledgerEntry.length > 0" [disabledDates]="invalidDates" placeholder="Select Date" formControlName="dVrDate" dateFormat="dd-mm-yy"></p-calendar>
+                        <p class="danger" *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.dVrDate.touched)">
+                            Date Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Branch<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body"  [disabled]="ledgerEntry.length > 0" [options]="branchData"  placeholder="Select Branch" optionLabel="txt" [(ngModel)]="selectedBranch"  formControlName="nBranchid"></p-dropdown>
+                        <p class="danger" *ngIf="formControls.nBranchid.invalid && (formControls.nBranchid.dirty || formControls.nBranchid.touched)">
+                            Branch Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2" id="drop"><label for="first">Ledger<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-10">
+                        <!-- <p-dropdown (onChange)="jobItemF($event)" [(ngModel)]="branch" [options]="selectLedger" optionLabel="cLedgerNm" formControlName="nAcid" placeholder="Search Ledger By Name" [filter]="true" filterBy="cLedgerNm">
+                        </p-dropdown> -->
+                        <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" 
+                        (completeMethod)="filterLedger($event)" (onChange)="jobItemF($event)" 
+                        field="cLedgerNm" placeholder="Search Ledger By Name" formControlName="nAcid" 
+                        [filter]="true" [dropdown]="true"></p-autoComplete> -->
+
+                        <p-dropdown [(ngModel)]="searchLedger" (keypress)="selectLedger()" (onChange)="jobItemF($event)" [options]="ledgerData" optionLabel="cLedgerNm"
+              formControlName="nAcid" placeholder="Search Ledger" [filter]="true" filterBy="cLedgerNm">
+            </p-dropdown>
+                        <!-- <input type="text" [(ngModel)]="searchLedger" (keypress)="selectLedger()" (onChange)="jobItemF($event)"
+            formControlName="nAcid" placeholder="Search Ledger" pInputText> -->
+                        <p class="danger" *ngIf="formControls.nAcid.invalid && (formControls.nAcid.dirty || formControls.nAcid.touched)">
+                            Ledger Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Amount Type<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <!-- <p-dropdown (onChange)="amoountTypeF($event)" [filter]="true" filterBy="codeName" placeholder="Select Amount Type" [options]="ammountData" optionLabel="codeName" formControlName="nAmtType">
+                        </p-dropdown> -->
+                        <p-autoComplete appendTo="body" [suggestions]="filteredGroups" (completeMethod)="filterAtype($event)" (onChange)="amoountTypeF($event)" (onSelect)=" amtType($event)" field="codeName" placeholder="Select Amount Type" formControlName="nAmtType" [filter]="true" [dropdown]="true"></p-autoComplete>
+                        <p class="danger" *ngIf="formControls.nAmtType.invalid && (formControls.nAmtType.dirty || formControls.nAmtType.touched)">
+                            Amount Type Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="depositTable" class="p-col-12 p-md-12 p-my-3">
+                <p-table [value]="products" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr>
+                            <td>{{product.code}}</td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.category}}</td>
+                            <td>{{product.quantity}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4" id="drop"><label for="first">Cheque No</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input placeholder="Enter Cheque No" id="middle" type="text" pInputText formControlName="cChequeNo">
+                        <!-- <p class="danger" *ngIf="formControls.cChequeNo.invalid && (formControls.cChequeNo.dirty || formControls.cChequeNo.touched)">
+              Cheque No Is Required
+            </p> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input   [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt" (change)="onFocusCredit('debit')">
+           
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="cash">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input   [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt" (change)="onFocusCredit('credit')">
+        
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Debit</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focus)="onFocusCredit($event)" [(ngModel)]="debitA" placeholder="Enter Debit Amount" id="middle" type="text" pInputText formControlName="nDrAmt">
+       
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="transfer">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4"><label for="first">Credit</label></div>
+                    <div class="p-col-12 p-md-8">
+                        <input (keyup)="creditF()" (focusout)="onFocusCredit($event)" [(ngModel)]="creditA" placeholder="Enter Credit Amount" id="middle" type="text" pInputText formControlName="nCrAmt">
+            
+                    </div>
+                </div>
+            </div> -->
+
+
+
+            <div class="p-col-12 p-md-6" *ngIf="job">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Job</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cJob" formControlName="nJobid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6" *ngIf="iteam">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-4">
+                        <label for="middle">Item</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <p-dropdown appendTo="body" [filter]="true" filterBy="" placeholder="Select Location" [options]="jobItemResData" optionLabel="cItem" formControlName="nItemid"></p-dropdown>
+                        <!-- <p *ngIf="formControls.dVrDate.invalid && (formControls.dVrDate.dirty || formControls.cDisplayNm.dVrDate)">
+              Date Is Required
+              </p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-2">
+                        <label for="middle">Narration<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-10">
+                        <input id="middle" type="text" pInputText formControlName="cNarration">
+                        <p class="danger" *ngIf="formControls.cNarration.invalid && (formControls.cNarration.dirty || formControls.cNarration.touched)">
+                            Narration Is Required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-10 p-md-offset-2">
+                        <p-button class="p-button-text" (click)="AddLedgerEntry()" label="Add">
+                        </p-button>
+                        <button pButton label="Save" class="p-button-text p-ml-2"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- {{ledgerEntry | json }} -->
+        <p-table [value]="ledgerEntry" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SNo</th>
+                    <th>Ledger</th>
+                    <th>Narration</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-vData let-i="rowIndex">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td>{{vData.nAcid}}</td>
+                    <td>{{vData.cNarration}}</td>
+                    <td>{{vData.nDrAmt}}</td>
+                    <td>{{vData.nCrAmt}}</td>
+                    <td>
+                        <p-button (click)="deleteLedgerEntry(i)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <ng-template pTemplate="footer">
+            <p>Data Not Found</p>
+            <!-- <p-button icon="pi pi-check" (click)="submit(ledgerForm);displayPosition=false" label="Save" class="p-button-text"></p-button> -->
+        </ng-template>
+        <div class="p-grid">
+            <div class="p-col-12 text-left">
+                <p *ngIf="ledgerEntry.length==0">No Data Found</p>
+                <!-- <p-button  type="submit" label="SAVE" (click)="submit(ledgerForm);displayPosition=false" class="p-button-text"></p-button> -->
+            </div>
+        </div>
+    </form>
+
+</p-dialog>
+
+<!-- Refund modal -->
+
+<p-dialog header="{{transactionTitle}}" [(visible)]="displayRefund" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-md-7">
+            <form>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="date">Date</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <p-calendar placeholder="Select Date" [showIcon]="true" inputId="date" [ngModelOptions]="{standalone: true}" dateFormat="dd-mm-yy">
+                        </p-calendar>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="customer">Customer</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <p-dropdown appendTo="body" placeholder="Select type" id="customer" [showClear]="true"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="jnumber">Job Number</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <input type="text" id="jnumber" pInputText>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12 p-p-0"><h3 class="p-m-0">Payment Details</h3></div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="pmode">Payment Mode</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <p-dropdown appendTo="body" placeholder="Select Mode" id="pmode" [showClear]="true"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="refno">Ref No.</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <input type="text" id="refno" pInputText>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="bank">Bank</label>
+                    </div>
+                    <div class="p-md-8 p-p-0">
+                        <p-dropdown appendTo="body" placeholder="Select Bank" id="bank" [showClear]="true"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                        <label for="amnt">Amount</label>
+                    </div>
+                    <div class="p-md-6 p-p-0">
+                        <input type="text" id="amnt" pInputText>
+                    </div>
+                    <div class="p-md-2 p-p-0">
+                        <button type="button" label="Add" pButton></button>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12 p-p-0"><h3 class="p-m-0">Payment Details:</h3></div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12 p-p-0">
+                        <p-table [value]="bankDetailTable" responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Payment Mode</th>
+                                    <th>Instr No.</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-bankdetail>
+                                <tr>
+                                    <td>{{bankdetail.pmode}}</td>
+                                    <td>{{bankdetail.insno}}</td>
+                                    <td>{{bankdetail.amount}}</td>
+                                    <td><p-button icon="pi pi-trash" class="p-button-raised p-button-danger"></p-button></td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-4 p-p-0">
+                    </div>
+                    <div class="p-md-8 p-p-0 p-mt-2x">
+                        <button type="button" label="Save" class="p-mr-2" pButton></button>
+                        <button type="button" label="Cancel" pButton></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-md-5 p-p-0">
+            <h3 class="p-pm-0">Security Deposits:</h3>
+            <p-table [value]="securityDeposit" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Items</th>
+                        <th>Security deposits</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-security>
+                    <tr>
+                        <td>{{security.item}}</td>
+                        <td class="p-text-right">{{security.deposit}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td class="p-p-0 p-text-right">Total</td>
+                        <td class="p-p-0 p-text-right">
+                            <h2 class="p-m-0">5000</h2>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-dialog>

@@ -1,0 +1,16 @@
+small {
+  font-size: 12px;
+}
+
+.grid-gutter [class*="p-col-"]:not(:first-child) {
+  padding: 0 15px 8px 0;
+}
+
+.mrpError {
+  color: red;
+}
+
+.break-word {
+  word-wrap: break-word !important;
+}
+/*# sourceMappingURL=item-stock.component.css.map */

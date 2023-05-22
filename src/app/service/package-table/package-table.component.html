@@ -1,0 +1,96 @@
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+                <form>
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-12 p-md-3">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="shift">Branch</label>
+                                </div>
+                                <div class="p-col-8">
+                                    <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt" inputId="priority"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBranch">
+                                  </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-1">
+                            <button type="button" label="View" (click)="searchJobApproval()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="p-grid p-no-gutter">
+            <div class="p-col-12">
+                <p-table #jobApprov [value]="packageData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                    [showCurrentPageReport]="true" [(first)]="first"
+                    [globalFilterFields]="['branchId','dCreatedate','cJobNo','srvName','dCreatedate','cCustNm']"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10,20,40,80,120]" scrollHeight="350px">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid  p-jc-end p-mt-3">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" type="text"
+                                        (input)="jobApprov.filterGlobal($event.target.value,'contains')" pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+
+                            </div>
+                            <div class="p-col-3 p-md-7 p-text-right">
+                                <p-button icon="pi pi-plus" (click)="addPackage()" class="p-button-raised"></p-button>
+                            </div>
+
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th pSortableColumn="branchId">Branch<p-sortIcon field="branchId"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="dCreatedate">Package Name<p-sortIcon field="dCreatedate"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cJobNo">MRP<p-sortIcon field="cJobNo"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="srvName">Security<p-sortIcon field="srvName"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="billMode">BillMode<p-sortIcon field="billMode"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="billMode">Status<p-sortIcon field="billMode"></p-sortIcon>
+                            </th>
+
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-tableData let-i="rowIndex">
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td> {{tableData.BranchName}} </td>
+                            <td>{{tableData.cPackageNm}}</td>
+                            <td>{{tableData.nMRP}}</td>
+                            <td>{{tableData.nSecurityDeposit}}</td>
+                            <td>{{tableData.BillMode}}</td>
+                            <td>
+                                <p-selectButton [options]="stateOptions" [(ngModel)]="tableData.cStatus" optionLabel="label" optionValue="value"
+                                (onChange)="updateStatus($event,tableData.nPackid)"></p-selectButton>
+                            </td>
+                            <td>
+                                <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJobApproval(tableData.nJobid,tableData.cCustNm,tableData.cJobNo)"></button> -->
+                                    <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJob(tableData.nJobid, tableData.cStatus)"></button> -->
+                                    <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJob(tableData.nJobid, tableData.cStatus)"></button> -->
+                                    <p-button icon="pi pi-pencil" class="p-button-raised" (click)="viewJobWithId(tableData.nPackid, tableData.cStatus, tableData.cJobNo,tableData.cPackageNm)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

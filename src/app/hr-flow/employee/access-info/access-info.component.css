@@ -1,0 +1,13 @@
+.grid-gutter [class*="p-col-"]:not(:first-child) {
+  padding: 0 15px 5px 0;
+}
+
+.p-field-checkbox {
+  display: inline-block !important;
+  margin: 0 7px 0;
+}
+
+.p-field-checkbox label {
+  line-height: 20px;
+}
+/*# sourceMappingURL=access-info.component.css.map */

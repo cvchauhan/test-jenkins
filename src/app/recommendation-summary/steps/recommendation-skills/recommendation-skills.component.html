@@ -1,0 +1,209 @@
+<div class="dashboard">
+    <div class="flex">
+        <p-radioButton class="p-col-12 p-md-2" name="groupname" value="SR" label="Service(s) Recommendation" [(ngModel)]="selectedValue"></p-radioButton>
+        <p-radioButton class="p-col-12 p-md-3" name="groupname" value="SPR" label="Service Point(s) Recommendation" [(ngModel)]="selectedValue"></p-radioButton>
+        <button class="p-text-left p-ml-6" pButton type="button" icon="pi pi-plus" iconPos="left" (click)="addTaxDetail()" *ngIf="selectedValue === 'SPR'" p-text></button>
+        <div *ngIf="selectedValue === 'SR'">
+            <div class="p-col-12 p-md-6">
+                <p-table [value]="users" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Check</th>
+                            <th>Type</th>
+                            <th>Service</th>
+                            <th>Skills</th>
+                            <th>Price (unit)</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user>
+                        <tr>
+                            <td>
+                                <p-checkbox></p-checkbox>
+                            </td>
+                            <td>{{user.type}}</td>
+                            <td>{{user.service}}</td>
+                            <td>{{user.skills}}</td>
+                            <td>
+                                <p-dropdown [options]="serviceArr" [(ngModel)]="selectedService" optionLabel="name"></p-dropdown>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <p-dialog class="manage-ledger" header="Add Equipments(s)" [(visible)]="displayAddEquipment" [modal]="true" [style]="{width: '55vw'}" [baseZIndex]="10000">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Select Servive</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Select"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Equipment</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Service"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Price</label>
+                    <div class="p-md-9">
+                        <strong>100 Per Visit</strong>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-2">
+                    </div>
+                    <div class="p-md-9">
+                        <p-button type="submit" label="Add" class="p-button-text"></p-button>
+                    </div>
+                </div>
+            </p-dialog>
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-5 ">
+                    <div class="p-grid p-ai-center p-md-12">
+                        <div class="p-md-11">
+                            <p><strong>Machine Recommendation</strong></p>
+                        </div>
+                        <div class="p-text-left">
+                            <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="addEquipment()"></button>
+                        </div>
+                    </div>
+                    <p-table [value]="user_name" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Check</th>
+                                <th>Equipment</th>
+                                <th>S.Deposit</th>
+                                <th>Rental</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-userr>
+                            <tr>
+                                <td>
+                                    <p-checkbox></p-checkbox>
+                                </td>
+                                <td>{{userr.equipment}}</td>
+                                <td>{{userr.s_deposit}}</td>
+                                <td>{{userr.rental}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table><br>
+                    <button class="template p-ml-1" pButton type="button" label="Next" (click)="nextPage()"></button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedValue === 'SPR'">
+            <p-dialog class="manage-ledger" header="Add Service Points" [(visible)]="displayTaxDetail" [modal]="true" [style]="{width: '55vw'}" [baseZIndex]="10000">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Select Service</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Select Service"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Service Point</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Service Point"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Price</label>
+                    <div class="p-md-9">
+                        <strong>100 Per Visit</strong>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-2">
+                    </div>
+                    <div class="p-md-9">
+                        <p-button type="submit" label="Add" class="p-button-text"></p-button>
+                    </div>
+                </div>
+            </p-dialog>
+            <div class="p-col-12 p-md-6">
+                <p-table [value]="point" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Check</th>
+                            <th>Service Points</th>
+                            <th>Service</th>
+                            <th>Skills</th>
+                            <th>Duration(Hrs)</th>
+                            <th>Price(Unit)</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user>
+                        <tr>
+                            <td>
+                                <p-checkbox></p-checkbox>
+                            </td>
+                            <td>{{user.service_points}}</td>
+                            <td>{{user.service}}</td>
+                            <td>{{user.skill}}</td>
+                            <td>{{user.duration_hrs}}</td>
+                            <td>{{user.price_unit}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <p-dialog class="manage-ledger" header="Add Equipments(s)" [(visible)]="displayAddEquipment" [modal]="true" [style]="{width: '55vw'}" [baseZIndex]="10000">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Select Servive</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Select"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Equipment</label>
+                    <div class="p-md-9">
+                        <p-dropdown placeholder="Service"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-2">Price</label>
+                    <div class="p-md-9">
+                        <strong>100 Per Visit</strong>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-2">
+                    </div>
+                    <div class="p-md-9">
+                        <p-button type="submit" label="Add" class="p-button-text"></p-button>
+                    </div>
+                </div>
+            </p-dialog>
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-5 ">
+                    <div class="p-grid p-ai-center p-md-12">
+                        <div class="p-md-11">
+                            <p><strong>Machine Recommendation</strong></p>
+                        </div>
+                        <div class="p-text-left">
+                            <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="addEquipment()"></button>
+                        </div>
+                    </div>
+                    <p-table [value]="user_name" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Check</th>
+                                <th>Equipment</th>
+                                <th>S.Deposit</th>
+                                <th>Rental</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-userr>
+                            <tr>
+                                <td>
+                                    <p-checkbox></p-checkbox>
+                                </td>
+                                <td>{{userr.equipment}}</td>
+                                <td>{{userr.s_deposit}}</td>
+                                <td>{{userr.rental}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table><br> <button pButton type="button" label="Next" (click)="nextPage()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,424 @@
+<!-- toaster -->
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<!-- End Toaster -->
+
+<div class="dashboard">
+    <div class="manage-groups">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-12">
+                <p-table #ledger [value]="tableData" [globalFilterFields]="['cLedgerNm','schNm']" [autoLayout]="true"
+                    [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10,20,40,80,120]">
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" type="text"
+                                        (input)="ledger.filterGlobal($event.target.value,'contains')" pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+
+                            </div>
+                            <div class="p-col-3 p-md-2 p-text-right">
+                                <button pButton type="button" icon="pi pi-plus" iconPos="left"
+                                    (click)="addLedgerModel()"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th pSortableColumn="cLedgerNm">Ledger<p-sortIcon field="cLedgerNm"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="schNm">Group<p-sortIcon field="schNm"></p-sortIcon>
+                            </th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-tData let-i="rowIndex">
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td>{{tData.cLedgerNm}}</td>
+                            <td>{{tData.schNm}}</td>
+                            <td>
+                                <p-button (click)="editLedgerF(tData.nAcid);addLedgerModel()" icon="pi pi-pencil"
+                                    class="p-button-raised"></p-button>
+                                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"
+                                    (click)="delLedgerDataF(tData.nAcid)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <!-- <ng-template pTemplate="footer">
+              <p *ngIf="tableData.length === 0"> There Is Not Data Found </p>
+            </ng-template> -->
+
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<p-dialog class="manage-ledger" header="Quick Ledger Creation" [(visible)]="displayPosition" [position]="position"
+    [modal]="true" [style]="{width: '70vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false"
+    (onHide)="close()">
+    <form [formGroup]="ledgerForm">
+        <div class="p-grid p-nogutter p-mb-2">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-3" id="drop"><label>Under<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-9">
+                        <!-- <p-dropdown [filter]="true" filterBy="txt" placeholder="Select Under Group" [options]="underData" optionLabel="txt" formControlName="nSchid"></p-dropdown> -->
+                        <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" field="txt" filterBy="txt" (completeMethod)="filterGroup($event)" placeholder="Select Under Group" formControlName="nSchid" [filter]="true" [dropdown]="true"></p-autoComplete> -->
+                        <p-autoComplete [showEmptyMessage]="true" formControlName="nSchid"
+                            [suggestions]="filteredGroups" (completeMethod)="filterUnderGroup($event)" [dropdown]="true"
+                            field="txt" placeholder="Select Uder Group" emptyMessage="No Data Found"></p-autoComplete>
+
+                        <p class="danger"
+                            *ngIf="ledgerFormControls.nSchid.invalid && (ledgerFormControls.nSchid.dirty || ledgerFormControls.nSchid.touched)">
+                            Under Group Is Required</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-grid p-nogutter p-mb-2">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-3">
+                        <label>Ledger<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+                        <input placeholder="Enter Ledger" (input)="SaveLedger($event.target.value)" type="text" pInputText formControlName="cLedgerNm">
+                        <p class="danger"
+                            *ngIf="ledgerFormControls.cLedgerNm.invalid && (ledgerFormControls.cLedgerNm.dirty || ledgerFormControls.cLedgerNm.touched)">
+                            Ledger Is Required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-3">
+                        <label>Display Name<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+                        <input placeholder="Enter display Name" type="text" pInputText formControlName="cDisplayNm">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p-tabView class="p-py-2">
+            <p-tabPanel header="Contact">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-4">
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3">
+                                <label for="middle">Contact</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter Contact Person Name" formControlName="cContactPerson"
+                                    type="text" pInputText>
+                            </div>
+                        </div>
+                        <!-- <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3">
+                                <label for="middle">Display Name</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter display Name" formControlName="cDisplayNm" type="text"
+                                    pInputText>
+                            </div>
+                        </div> -->
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3"><label>Mobile</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <!-- <p-chips formControlName="cMobile" separator=","></p-chips> -->
+                                <input placeholder="Enter Mobile" formControlName="cMobile" type="text" pInputText>
+                                <p class="danger"
+                            *ngIf="ledgerFormControls.cMobile.invalid && (ledgerFormControls.cMobile.dirty || ledgerFormControls.cMobile.touched)">
+                            Mobile Is Required</p>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3"><label>Address</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter Address" formControlName="cAddress1" type="text" pInputText>
+                                <p class="danger"
+                                *ngIf="ledgerFormControls.cAddress1.invalid && (ledgerFormControls.cAddress1.dirty || ledgerFormControls.cAddress1.touched)">
+                                Address Is Required</p>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3"><label>Pin</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter Pin" formControlName="cPin" type="text" pInputText>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3" id="drop"><label>State</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" field="name" (completeMethod)="filterState($event)" (onSelect)="getDistrictData($event)" placeholder="Select State" formControlName="nState" [filter]="true" [dropdown]="true"></p-autoComplete> -->
+                                <p-autoComplete id="pstate" [suggestions]="filteredGroups"
+                                    (completeMethod)="filterGroup($event, 'states')" field="name"
+                                    placeholder="Select State" (onSelect)="onStateChange($event, 'permanent')"
+                                    (onChange)="getState($event,'current')" formControlName="nState" optionLabel="name"
+                                    [filter]="true" filterBy="name" [dropdown]="true"></p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3" id="drop"><label>District</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" field="name" (completeMethod)="filterDistrict($event)" (onChange)="getCityctData($event)" placeholder="Select District" formControlName="nDistrict" [filter]="true" [dropdown]="true"></p-autoComplete> -->
+                                <p-autoComplete [suggestions]="filteredDistricts"
+                                    (onSelect)="onDistChange($event, 'permanent')"
+                                    (completeMethod)="filteredGroupDistrict($event)" field="name"
+                                    (onChange)="getBlocksBasedOnDist($event,'current')" placeholder="Select District"
+                                    id="pdist" [filter]="true" filterBy="name" formControlName="nDistrict"
+                                    [dropdown]="true">
+                                </p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3" id="drop"><label>City/Tehsil</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <!-- <p-autoComplete appendTo="body" [suggestions]="filteredGroups" field="cityName" (completeMethod)="filterCity($event)" placeholder="Select City/Tehsil" formControlName="nCity" [filter]="true" [dropdown]="true"></p-autoComplete> -->
+                                <p-autoComplete id="pcity" [suggestions]="filteredBlocks"
+                                    (onSelect)="onBlockChange($event, 'current')"
+                                    (completeMethod)="filteredGroupBlocks($event)" field="name"
+                                    (onChange)="onBlockChange($event,'current')" placeholder="Select City"
+                                    [filter]="true" filterBy="name" formControlName="nCity" [filter]="true"
+                                    filterBy="name" [dropdown]="true">
+                                </p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter Email" formControlName="cEmail" type="text" pInputText>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3">
+                                <label>latitude</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter latitude" disabled="true" formControlName="latitude"
+                                    type="text" pInputText>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-mb-2">
+                            <div class="p-col-12 p-md-3">
+                                <label>longitude</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter longitude" disabled="true" formControlName="longitude"
+                                    type="text" pInputText>
+                            </div>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-12 p-md-3"></div>
+                            <div class="p-col-12 p-md-9 p-pl-0">
+                                <p-button (click)="addContactF()" label="{{isContactEdit? 'UPDATE': 'Add'}}" [disabled]="ledgerForm.invalid"
+                                    class="p-button-text p-mr-2"></p-button>
+                                <p-button (click)="clearContactF()" label="Clear" class="p-button-text"></p-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-8 p-pl-4">
+                        <!-- <button pButton type="button" icon="pi pi-plus" iconPos="left"
+                            (click)="NewAddContactF()"></button> -->
+                        <app-map-common (latLong)="getLatLng($event)" [Name]="sendToChild"></app-map-common>
+
+                        <!-- <app-map (latLong)="getLatLng($event)">
+
+                        </app-map> -->
+                    </div>
+                </div>
+
+                <p-table [value]="contactData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-contact let-i="rowIndex">
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td>{{contact.cContactPerson}}</td>
+                            <td>{{contact.cAddress1}}</td>
+                            <td>{{contact.cMobile}}</td>
+                            <td>{{contact.cEmail}}</td>
+                            <td>
+                                <p-button (click)="removeContactF(i,contact)" icon="pi pi-trash"
+                                    class="p-button-raised p-button-danger p-ml-2"></p-button>
+                                <p-button (click)="editContact(contact,i)" icon="pi pi-pencil" class="p-button-raised">
+                                </p-button>
+                            </td>
+                            <!-- <div class="p-col-12 text-left">
+                  <p *ngIf="contactData.length==0">No Data Found</p>
+                </div> -->
+                        </tr>
+
+                    </ng-template>
+
+                </p-table>
+
+            </p-tabPanel>
+            <p-tabPanel header="Other Details">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12 p-p-0">
+                        <p-checkbox name="groupname" value="val1" label="Set Bank Details"
+                            (onChange)="handleBank($event)"></p-checkbox>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-3" id="drop"><label for="first">Account Number</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder="Enter Account Number" type="text" pInputText
+                                    formControlName="cBankAc" [readonly]="disableBankFields">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-3">
+                                <label for="middle">IFSC</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input placeholder=" Enter IFSC" type="text" pInputText formControlName="cIfsc"
+                                    [readonly]="disableBankFields">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-3"><label for="first">Bank</label></div>
+                            <div class="p-col-12 p-md-9">
+                                <p-dropdown appendTo="body" [filter]="true" filterBy="name" placeholder="Select Bank"
+                                    [options]="sBank" optionLabel="name" formControlName="nBankid"
+                                    [disabled]="disableBankFields"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12  p-p-0">
+                        <p-checkbox name="groupname" value="val1" label="Set GST Details"
+                            (onChange)="handleGst($event)"></p-checkbox>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-3">
+                                <label for="middle">GSTIN</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <input type="text" pInput [readonly]="disableGstFields">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-3">
+                                <label for="middle">Branch</label>
+                            </div>
+                            <div class="p-col-12 p-md-9">
+                                <p-dropdown appendTo="body" [filter]="true" filterBy="txt" placeholder="Select Branch"
+                                    formControlName="registration"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </p-tabPanel>
+
+        </p-tabView>
+        <div class="p-grid">
+            <div class="p-col-12 p-md-6 text-left">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-9">
+                        <button type="submit" (click)="submitBankF(ledgerForm);displayPosition=false"
+                            label="{{editButton? 'UPDATE': 'SAVE'}}" class="p-button-text" pButton></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- 2nd popup -->
+
+<p-dialog class="manage-ledger" header="Add Bank" [(visible)]="displayBasic" [modal]="true" [style]="{width: '55vw'}"
+    [baseZIndex]="10000">
+    <div class="p-grid p-nogutter">
+        <div class="p-col-12 p-md-5">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3"><label for="">Bank</label></div>
+                <div class="p-col-12 p-md-9">
+                    <p-dropdown appendTo="body" (onChange)="bankDistrictF($event)" placeholder="Select Bank"
+                        [options]="sBank" optionLabel="name"></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-5">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4">
+                    <label for="middle">District</label>
+                </div>
+                <div class="p-col-12 p-md-8">
+                    <p-dropdown appendTo="body" (onChange)="ifscCodeSearchF($event)" placeholder="Select District"
+                        [options]="getBankDist" optionLabel="txt"></p-dropdown>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="p-col-12 p-mt-3">
+            <p-table [value]="bankDetail" [autoLayout]="true" [paginator]="true" [rows]="row"
+                [showCurrentPageReport]="true" [(first)]="firsts"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [rowsPerPageOptions]="[10,20,40,80,120]" [scrollable]="true" scrollHeight="80px">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th></th>
+                        <th>Bank Name</th>
+                        <th>Branch</th>
+                        <th>District</th>
+                        <th>IFSC Code</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pdata>
+                    <tr>
+                        <td>
+                            <div class="p-col-12 p-md-4">
+                                <input type="radio" class="ml-2" (change)="onChangeEvent(pdata)" value=""
+                                    name="cDisplayMode" id="">
+                            </div>
+                        </td>
+                        <td>{{pdata.cBank}}</td>
+                        <td>{{pdata.cBranch}}</td>
+                        <td>{{pdata.cDistrict}}</td>
+                        <td>{{pdata.cifsc}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="p-col-12 text-left">
+        <p-button type="button" (click)="saveBank()" label="Save" class="p-button-text"></p-button>
+    </div>
+    <!-- <ng-template pTemplate="footer">
+    <p-button type="submit" (click)="displayBasic=false" label="Save" class="p-button-text"></p-button>
+  </ng-template> -->
+</p-dialog>

@@ -1,0 +1,7 @@
+ {
+    "/api/*": {
+        "target": "http://astroportal.bancplus.in/api/",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

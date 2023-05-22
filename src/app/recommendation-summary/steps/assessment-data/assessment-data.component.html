@@ -1,0 +1,118 @@
+<div class="dashboard">
+    <div class="p-grid p-nogutter">
+        <div class="p-col-12 p-md-4">
+            <h4>Assessment Data</h4>
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-2">
+                    <label for="">Customer</label>
+                </div>
+                <div class="p-col-12 p-md-10">
+                    <!-- <input type="text" pInputTex> -->
+                    {{assesmentData?.cCustNm}}
+                </div>
+            </div>
+
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-2">
+                    <label for="">Service Point</label>
+                </div>
+                <div class="p-col-12 p-md-8">
+                    <p-dropdown [options]="srvPointData" optionLabel="txt"></p-dropdown>
+                </div>
+                <div class="p-col-12 p-md-2">
+                    <button pButton type="button" label="Load"></button>
+                </div>
+            </div>
+
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12">
+                    <p-table [value]="users" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Check</th>
+                                <th>sno</th>
+                                <th>Service point</th>
+                                <th>Actions</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+                            <tr>
+                                <td>
+                                    <p-radioButton name="groupname" [(ngModel)]="selectedValue" value="{{user?.s_no}}"></p-radioButton>
+                                </td>
+                                <td>{{user.s_no}}</td>
+                                <td>{{user.Service_Point}}</td>
+                                <td>
+                                    <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-6"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-6 p-ml-6">
+            <strong><p>
+              Patient info
+              <p-button icon="pi pi-pencil" class="p-button-raised p-button-primary p-ml-4" [style]="{width: '22px', height:'16px'}"></p-button>
+            </p>
+            </strong>
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-1">
+                    <label for="">Name</label>
+                </div>
+                <div class="p-col-12 p-md-5">
+                    <input type="text" pInputTex>
+                </div>
+                <div class="p-col-12 p-md-1">
+                    <label for="">Gender</label>
+                </div>
+                <div class="p-col-12 p-md-2">
+                    <p-dropdown [options]="serviceArr" [(ngModel)]="selectedService" optionLabel="name"></p-dropdown>
+                </div>
+            </div>
+
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-1"><label for="">Age</label></div>
+                <div class="p-col-12 p-md-2">
+                    <input type="text" pInputTex>
+                </div>
+                <div class="p-col-12 p-md-1"><label for="">Weight</label></div>
+                <div class="p-col-12 p-md-2">
+                    <input type="text" pInputTex>
+                </div>
+                <div class="p-col-12 p-md-1"><label for="">Height</label></div>
+                <div class="p-col-12 p-md-2">
+                    <input type="text" pInputTex>
+                </div>
+            </div>
+
+            <h4>Patient Condition</h4>
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12">
+                    <p-table [value]="patients" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>sno</th>
+                                <th>Task</th>
+                                <th>Value</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-patient>
+                            <tr>
+                                <td>{{patient.s_no}}</td>
+                                <td>{{patient.task}}</td>
+                                <td *ngIf="patient.showInput"><input type="text" pInputTex></td>
+                                <td *ngIf="!patient.showInput">
+                                    <p-dropdown></p-dropdown>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <br>
+                </div>
+                <button pButton type="submit" label="Submit" (click)="nextPage()"></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+<p-toast></p-toast>
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-md-3">
+            <div class="p-grid">
+                <label class="p-col-fixed">Branch</label>
+                <div class="p-col">
+                    <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt" optionValue="val" inputId="priority"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-3">
+            <div class="p-grid">
+                <label class="p-col-fixed">Status</label>
+                <div class="p-col">
+                    <p-dropdown placeholder="Select" [options]="statusData" optionLabel="name" optionValue="code"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="statusId">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-2">
+            <button type="button" label="View" (click)="viewData()" pButton></button>
+        </div>
+
+    </div>
+    <div class="p-grid p-no-gutter">
+        <div class="p-col-12">
+            <p-table #clouser [value]="jobClouserData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [rowsPerPageOptions]="[15,25,40,80,120]"
+                [globalFilterFields]="['branchId','cJobNo','srvCategory','billMode','cCustNm','dJobDate']"
+                scrollHeight="350px">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid p-mt-3">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search" type="text"
+                                    (input)="clouser.filterGlobal($event.target.value,'contains')" pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+                        <div class="p-col-3 p-md-7 p-text-right">
+                            <!-- <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showDialog()"
+                                class="btn-plus"></button> -->
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SNo</th>
+                        <th pSortableColumn="branchId">Job No<p-sortIcon field="branchId"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="branchId">Request Date<p-sortIcon field="branchId"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="cJobNo">Request By<p-sortIcon field="cJobNo"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="srvCategory">Customer/Employee<p-sortIcon field="srvCategory"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="billMode">Service Component<p-sortIcon field="billMode"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="billMode">Serial No<p-sortIcon field="billMode"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="cCustNm">Approved By<p-sortIcon field="cCustNm"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="dJobDate">Status<p-sortIcon field="dJobDate"></p-sortIcon>
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowIndex="rowIndex" let-jobdata>
+                    <tr>
+                        <td>{{rowIndex + 1}}</td>
+                        <td>{{jobdata.cJobNo}}</td>
+                        <td>{{jobdata.dCreateDate | dateFormat}}</td>
+                        <td>{{jobdata.closedby}}</td>
+                        <td>{{jobdata.accountName}}</td>
+                        <td>{{jobdata.skillName}}{{jobdata.itemName}}</td>
+                        <td></td>
+                        <td>{{jobdata.approverName}}</td>
+                        <td>{{jobdata.cStatus}}</td>
+                        <td *ngIf="jobdata.cStatus == 'Pending'">
+                            <button type="button"icon="pi pi-send" (click)="sendJobApproval(jobdata)" pTooltip="click to Send Approval" class="p-button-raised p-mr-2" tooltipPosition="left" placeholder="left" pButton></button>
+                            <button type="button" icon="pi pi-trash" class="p-button-raised p-button-danger" pButton (click)="deleteJob(jobdata)"></button>
+                        </td>
+                        <td *ngIf="jobdata.cStatus == 'UnApproved'">
+                            <button type="button" icon="pi pi-eye" [disabled]="jobdata.cStatus === 'Approved'" (click)="approvedJob(jobdata)" pTooltip="click to Approved" tooltipPosition="left" placeholder="left" pButton></button>
+                            <button type="button" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2" pButton (click)="deleteJob(jobdata)"></button>
+                        </td>
+                        <td *ngIf="jobdata.cStatus !== 'Pending' && jobdata.cStatus !== 'UnApproved'"></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr *ngIf="manageJobData > 0">
+                        <td colspan="9">There Is No Data Found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog header="Job Closure Request: #{{jobClserId}}" [modal]="true" [(visible)]="viewDisplay" [style]="{width: '40vw'}">
+    <div class="p-grid">
+        <div class="p-md-4">
+            <div class="p-grid">
+                <label class="p-col-fixed">Service Component:</label>
+                <div class="p-col">
+                    <p class="p-m-0" style="padding-top: 7px">{{serviceComponent}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-4">
+            <div class="p-grid">
+                <label class="p-col-fixed">Service Type:</label>
+                <div class="p-col">
+                    <p class="p-m-0" style="padding-top: 7px">{{serviceType}}</p>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div class="p-grid">
+        <label style="width: 100px;" class="p-col-fixed">Target Date</label>
+        <div class="p-md-4">
+            <p-calendar appendTo="body" [showIcon]="true" [(ngModel)]="targetDate" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+    </div>
+    <h3>
+        <p-checkbox [binary]="true" inputId="binary" (onChange)="checkboxChecked($event)" [disabled]="disabledCheckBox"></p-checkbox>
+    Item pickup Details:</h3>
+    <div class="p-grid">
+        <label style="width: 100px;" class="p-col-fixed">Pickup Due Date</label>
+        <div class="p-md-4">
+            <p-calendar appendTo="body" [showIcon]="true" [(ngModel)]="pickupDate" [disabled]="disabledPickup" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <label style="width: 100px;" class="p-col-fixed">Pickup By</label>
+        <div class="p-md-4">
+            <p-dropdown appendTo="body" [filter]="true" [options]="employeeData" optionLabel="empName" optionValue="nEmpid" placeholder="Select" [(ngModel)]="pickupBy" [disabled]="disabledPickup"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <label style="width: 100px;" class="p-col-fixed"></label>
+        <div class="p-md-4">
+           <button type="submit" label="Save" (click)="requestApproved()" pButton></button>
+        </div>
+    </div>
+</p-dialog>
+

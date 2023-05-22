@@ -1,0 +1,68 @@
+<div class="dashboard">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12 p-md-12">
+      <p-table [value]="leadlist" [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+      >
+      <ng-template pTemplate="caption">
+        <div class="p-grid p-mt-3">
+          <div class="p-col-12 p-md-12 p-text-right">
+            <button pButton type="button" icon="pi pi-plus" [style]="{width: '100px', padding:'8px'}"
+                                    iconPos="left" label="Create Lead" (click)="addLeadData()" class="btn-plus"></button>
+          </div>
+        </div>
+      </ng-template>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th>#</th>
+            <th pSortableColumn="Service">Service<p-sortIcon field="Service"></p-sortIcon></th>
+            <th pSortableColumn="Name">Name<p-sortIcon field="Name"></p-sortIcon></th>
+            <th pSortableColumn="Contact">Contact<p-sortIcon field="Contact"></p-sortIcon></th>
+            <th>Remarks</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lead>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="lead"></p-tableCheckbox>
+            </td>
+            <td>{{lead.Service}}</td>
+            <td>{{lead.Name}}</td>
+            <td>{{lead.Contact}}</td>
+            <td>{{lead.Remarks}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Create Lead" [(visible)]="showModalBox" [modal]="true" [draggable]="false" [style]="{width: '400px'}">
+  <form [formGroup]="leadInfoForm" (onSubmit)="onSubmit()">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12 p-md-12 p-mb-2">
+        <label>Service Category<sup>*</sup></label>
+        <p-dropdown formControlName="serId"  [options]="" optionLabel=""></p-dropdown>
+      </div>
+      <div class="p-col-12 p-md-12 p-mb-2">
+        <label>Enquired By<sup>*</sup></label>
+        <input formControlName="userName" type="text" pInputText />
+      </div>
+      <div class="p-col-12 p-md-12 p-mb-2">
+        <label>Enquired Phone<sup>*</sup></label>
+        <input formControlName="userMobile" type="text" pInputText />
+      </div>
+      <div class="p-col-12 p-md-12 p-mb-2">
+        <label>Location</label>
+        <input formControlName="location" type="text" pInputText />
+      </div>
+      <div class="p-col-12 p-md-12 p-mb-2">
+        <label>Remarks</label>
+        <input formControlName="remark" type="text" pInputText />
+      </div>
+      <div class="p-md-12 p-text-right">
+        <button pButton type="button" label="Save" class="p-button"
+        [disabled]="leadInfoForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

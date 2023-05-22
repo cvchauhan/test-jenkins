@@ -1,0 +1,1342 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog
+  [style]="{ width: '30vw' }"
+  [baseZIndex]="10000"
+  style="color: red"
+></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12">
+      <form>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-3">
+            <div class="p-grid">
+              <label class="p-col-fixed" for="Date">Job Schedule Date</label>
+              <div class="p-col">
+                <p-calendar
+                  [(ngModel)]="Date"
+                  [showIcon]="true"
+                  inputId="Date"
+                  [ngModelOptions]="{ standalone: true }"
+                  dateFormat="dd-mm-yy"
+                >
+                </p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-2">
+            <div class="p-grid">
+              <label class="p-col-fixed" for="priority">Status</label>
+              <div class="p-col">
+                <p-dropdown
+                  [options]="jobAssignStatus"
+                  [(ngModel)]="jobStatus"
+                  placeholder="Select Status"
+                  optionLabel="name"
+                  optionValue="val"
+                  [ngModelOptions]="{ standalone: true }"
+                ></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-2">
+            <div class="p-grid">
+              <label class="p-col-fixed" for="priority">Branch</label>
+              <div class="p-col">
+                <p-dropdown
+                  placeholder="Select Branch"
+                  [options]="branchData"
+                  optionLabel="txt"
+                  inputId="priority"
+                  [(ngModel)]="branchId"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-1">
+            <button
+              pButton
+              type="submit"
+              label="View"
+              (click)="getAssignJobData()"
+            ></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <p-tabView>
+    <p-tabPanel [selected]="true">
+      <ng-template pTemplate="header">
+        <div>Job Start</div>
+      </ng-template>
+      <div class="manage-job">
+        <div class="p-grid p-no-gutter">
+          <div class="p-col-12">
+            <p-table
+              #js
+              [value]="jobStartTableData"
+              [autoLayout]="true"
+              [globalFilterFields]="[
+                'BillingMode',
+                'DCreateDate',
+                'cJobNo',
+                'dStartTm',
+                'srvName',
+                'srvSkill',
+                'cPatientNm',
+                'cMobile',
+                'employeeName',
+                'cAddress'
+              ]"
+              [paginator]="true"
+              [rows]="rows"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [rowsPerPageOptions]="[15, 25, 40, 80, 120]"
+            >
+              <ng-template pTemplate="caption">
+                <div class="p-grid">
+                  <div class="p-col-9 p-md-5">
+                    <div class="search">
+                      <input
+                        placeholder="Search"
+                        id="search"
+                        type="text"
+                        (input)="
+                          js.filterGlobal($event.target.value, 'contains')
+                        "
+                        pInputText
+                      />
+                      <button
+                        pButton
+                        type="button"
+                        icon="pi pi-search"
+                        iconPos="left"
+                      ></button>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>SNo</th>
+                  <!-- <th pSortableColumn="DCreateDate">Create Date<p-sortIcon field="DCreateDate">
+                                        </p-sortIcon>
+                                    </th> -->
+                  <th pSortableColumn="srvName">
+                    Service(s)<p-sortIcon field="srvName"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="srvSkill">
+                    Service skill<p-sortIcon field="srvSkill"> </p-sortIcon>
+                  </th>
+                  <th pSortableColumn="cJobNo">
+                    Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="cPatientNm">
+                    Customer<p-sortIcon field="cPatientNm"> </p-sortIcon>
+                  </th>
+                  <!-- <th pSortableColumn="dUpdateDate">Plan Date<p-sortIcon field="dUpdateDate">
+                                        </p-sortIcon>
+                                    </th> -->
+                  <th pSortableColumn="dStartTm">
+                    Start Time<p-sortIcon field="dStartTm"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="employeeName">
+                    Employee<p-sortIcon field="employeeName"> </p-sortIcon>
+                  </th>
+                  <th pSortableColumn="BillingMode">
+                    Billing Mode<p-sortIcon field="BillingMode"> </p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="cAddress">
+                    Address<p-sortIcon field="cAddress"></p-sortIcon>
+                  </th>
+                  <th>Response at</th>
+                  <th>Action</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-start let-i="rowIndex">
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ start.srvName }}</td>
+                  <td>{{ start.srvSkill }}</td>
+                  <!-- <td>{{start.DCreateDate | dateFormat}}</td> -->
+                  <td>{{ start.cJobNo }}</td>
+                  <td>{{ start.cPatientNm }}<br />({{ start.cMobile }})</td>
+                  <!-- <td>{{start.dUpdateDate | dateFormat}}</td> -->
+                  <td>{{ start.dStartTm }}</td>
+                  <td>{{ start.employeeName }}</td>
+                  <td>{{ start.BillingMode }}</td>
+
+                  <td>{{ start.cAddress }}</td>
+                  <td>
+                    <button
+                      pButton
+                      type="button"
+                      label="{{ start.cJobResp }}"
+                      [ngClass]="
+                        start.cJobResp == 'UnAssign'
+                          ? 'p-button-danger'
+                          : 'p-button-success'
+                      "
+                      class="p-px-1 asnjob"
+                      [style]="{ width: '70px' }"
+                    ></button>
+                  </td>
+                  <td>
+                    <p-button
+                      icon="pi pi-pencil"
+                      class="p-button-raised p-ml-3"
+                      (click)="jobEditDialog(start, 'job')"
+                    >
+                    </p-button>
+                    <p-button
+                      icon="pi pi-user-plus"
+                      class="p-button-raised p-ml-3"
+                      [disabled]="!start.nJSchid"
+                      (click)="manageTrainee(start)"
+                    >
+                    </p-button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div>Daily Schedulling</div>
+      </ng-template>
+
+      <div class="manage-job">
+        <div class="p-grid p-no-gutter">
+          <div class="p-col-12">
+            <p-table
+              #ds
+              [value]="jobScheduleTableData"
+              [autoLayout]="true"
+              responsiveLayout="stack"
+              breakpoint="1366px"
+              [globalFilterFields]="[
+                'cJobNo',
+                'dStartTm',
+                'CCustNm',
+                'CPatientNm',
+                'Skills',
+                'JOBSTATUS',
+                'EmployeeResponse',
+                'ResponseReason',
+                'LastAssignedTo',
+                'SrvPoint',
+                'Days'
+              ]"
+              [paginator]="true"
+              [rows]="rows"
+              [showCurrentPageReport]="true"
+              [rowsPerPageOptions]="[15, 25, 40, 80, 120]"
+            >
+              <ng-template pTemplate="caption">
+                <div class="p-grid">
+                  <div class="p-col-9 p-md-5">
+                    <div class="search">
+                      <input
+                        placeholder="Search"
+                        id="search"
+                        type="text"
+                        (input)="
+                          ds.filterGlobal($event.target.value, 'contains')
+                        "
+                        pInputText
+                      />
+                      <button
+                        pButton
+                        type="button"
+                        icon="pi pi-search"
+                        iconPos="left"
+                      ></button>
+                    </div>
+                  </div>
+                  <!-- <div class="p-col-3 p-md-7 p-text-right">
+                    <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showAssignDialog()"
+                      class="btn-plus"></button>
+                  </div> -->
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>
+                    <p-checkbox
+                      name="groupname"
+                      value="val1"
+                      (onChange)="selectAllJob($event)"
+                      binary="true"
+                    >
+                    </p-checkbox>
+                  </th>
+
+                  <th pSortableColumn="CSrvName">
+                    Service(s)<p-sortIcon field="CSrvName"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="Skills">
+                    Service Skill<p-sortIcon field="Skills"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="cJobNo">
+                    Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="CCustNm">
+                    Customer<p-sortIcon field="CCustNm"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="CPatientNm">
+                    Patient<p-sortIcon field="CPatientNm"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="dStartTm">
+                    StartTime<p-sortIcon field="dStartTm"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="">
+                    Assigned to<p-sortIcon field=""></p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="JOBSTATUS">
+                    Job Status<p-sortIcon field="JOBSTATUS"> </p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="EmployeeResponse">
+                    Employee Response<p-sortIcon
+                      field="EmployeeResponse"
+                    ></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="ResponseReason">
+                    Response Reason<p-sortIcon
+                      field="ResponseReason"
+                    ></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="LastAssignedOn">
+                    Last Assigned On<p-sortIcon
+                      field="LastAssignedOn"
+                    ></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="LastAssignedTo">
+                    Last Assigned To<p-sortIcon
+                      field="LastAssignedTo"
+                    ></p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="SrvPoint">
+                    Service Points<p-sortIcon field="SrvPoint"> </p-sortIcon>
+                  </th>
+                  <th pSortableColumn="Days">
+                    Days<p-sortIcon field="Days"></p-sortIcon>
+                  </th>
+                  <th>RESPONSE AT</th>
+                  <th>Trainees</th>
+                  <th>Action</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-schedule let-i="rowIndex">
+                <tr>
+                  <td>
+                    <span class="p-column-title">
+                      <p-checkbox
+                        *ngIf="schedule.LastAssignedEmpid > 0"
+                        name="groupname"
+                        value="schedule['isChecked']"
+                        [(ngModel)]="schedule['isChecked']"
+                        binary="true"
+                        (onChange)="manageScJob($event, schedule, i)"
+                      ></p-checkbox>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.CSrvName }}</span>
+                  </td>
+                  <!-- | dateFormat -->
+                  <td>
+                    <span class="p-column-title">{{ schedule.Skills }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.cJobNo }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.CCustNm }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule.CPatientNm
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.dStartTm }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule["Assigned To"]
+                    }}</span>
+                  </td>
+
+                  <td>
+                    <span class="p-column-title">{{ schedule.JOBSTATUS }}</span>
+                  </td>
+
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule["EmployeeResponse"]
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule.ResponseReason
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule.LastAssignedOn
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{
+                      schedule.LastAssignedTo
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="p-column-title"
+                      ><a
+                        href="javascript:void(0)"
+                        (click)="getSrvPoints(schedule.SrvPoint)"
+                        >Get Service Points</a
+                      >
+                    </span>
+                  </td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.Days }}</span>
+                  </td>
+                  <td><span class="p-column-title">--</span></td>
+                  <td>
+                    <span class="p-column-title">{{ schedule.Trainees }}</span>
+                  </td>
+                  <!-- <td><button pButton type="button" label="{{schedule.cJobResp}}" [ngClass]="schedule.cJobResp == 'UnAssign' ? 'p-button-danger':'p-button-success'" class=" p-px-1 asnjob" [style]="{'width':'70px'}"></button></td> -->
+                  <td>
+                    <span class="p-column-title display-flex">
+                      <button
+                        icon="pi pi-pencil"
+                        class="p-button-raised"
+                        (click)="jobEditDialog(schedule, 'day')"
+                        pButton
+                      ></button>
+                      <button
+                        icon="pi pi-copy"
+                        class="p-button-raised p-mx-2"
+                        (click)="history(schedule)"
+                        pTooltip="History"
+                        placeholder="Left"
+                        pButton
+                      ></button>
+                      <button
+                        icon="pi pi-map-marker"
+                        class="p-button-raised p-mx-2"
+                        (click)="showLocation(schedule)"
+                        pButton
+                      ></button>
+                      <button
+                        icon="pi pi-user-plus"
+                        class="button-raised"
+                        [disabled]="!schedule.nJSchid"
+                        (click)="manageTrainee(schedule)"
+                        pButton
+                      ></button>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <div class="p-col-12">
+            <button
+              pButton
+              type="button"
+              label="Reschedule"
+              class="template"
+              (click)="rescheduleJobDialog()"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div>Employee View</div>
+      </ng-template>
+
+      <div class="manage-job">
+        <div class="p-grid p-no-gutter">
+          <div class="p-col-12 p-md-4 p-mt-3">
+            <p-dropdown
+              [options]="staffData"
+              [(ngModel)]="staffId"
+              placeholder="Select employee"
+              optionLabel="EmpName"
+              optionValue="NEmpId"
+              [ngModelOptions]="{ standalone: true }"
+              class="emp-ddown"
+              (onChange)="onStaffChange($event)"
+              appendTo="body"
+              [filter]="true"
+              filterBy="EmpName"
+            ></p-dropdown>
+          </div>
+          <div class="p-col-12 p-md-12 p-mt-3" *ngIf="isCalendarLoad">
+            <full-calendar [options]="calendarOptions"></full-calendar>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<!-- Job table edit modal -->
+<!-- <p-dialog header="Edit" [(visible)]="editJobDialog" [modal]="true" [style]="{width: '60vw'}" [baseZIndex]="10000">
+
+    <div class="p-grid p-nogutter">
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4">
+                    <label>Job Start Date:</label>
+                </div>
+
+                <div class="p-col-12 p-md-8">
+                    <h4 class="p-py-2">{{Date | date}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutte grid-gutterr">
+                <div class="p-col-1 p-md-4"><label for="">Job Number</label></div>
+                <div class="p-col-4 p-md-8">
+                    <h4 class="p-py-2">{{jobStartAssignmentData?.cJobNo}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-1 p-md-4"><label for="">Customer</label></div>
+                <div class="p-col-4 p-md-8">
+                    <h4 class="p-py-2">{{jobStartAssignmentData?.cCustNm}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-1 p-md-4"><label for="">Patient</label></div>
+                <div class="p-col-4 p-md-8">
+                    <h4 class="p-py-2">{{jobStartAssignmentData?.cPatientNm}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-1 p-md-4"><label for="">Address</label></div>
+                <div class="p-col-4 p-md-8">
+                    <p-dropdown appendTo="body" [options]="jobStartAssignmentData?.addressDetail" optionLabel="address"
+                        optionValue="jobStartAssignmentData['nAddId']"></p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-1 p-md-4"><label for="">Service Name</label></div>
+                <div class="p-col-4 p-md-8">
+                    <h4 class="p-py-2">{{jobStartAssignmentData?.srvName}}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-1 p-md-4"><label for="">Service Skill</label></div>
+                <div class="p-col-4 p-md-8">
+                    <h4 class="p-py-2">{{jobStartAssignmentData?.srvSkill}}</h4>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="p-grid">
+
+        <div class="p-col-12 p-md-6">
+            <p-table [value]="empData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th>#</th>
+                        <th>Employee Name</th>
+                        <th>Last Job End</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-staff>
+                    <tr>
+                        <td>
+                            <input type="radio" name="groupname" value="{{staff.nEmpId}}"
+                                (click)="getEmp(staff.nEmpId)">
+                        </td>
+                        <td>{{staff.empName}}</td>
+                        <td>{{staff.lastJobEnd | dateFormat}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="p-col-12 p-mt-3">
+            <button pButton type="button" label="Assign" (click)="assignJobD()"></button>
+        </div>
+    </div>
+
+</p-dialog> -->
+
+<!-- Daily schedule table edit modal -->
+<p-dialog
+  header="ASSIGN JOB #{{ jobStartAssignmentData?.cJobNo }}"
+  [(visible)]="editScheduleDialog"
+  [modal]="true"
+  [style]="{ width: '80vw' }"
+  [baseZIndex]="10000"
+  (onHide)="closeDialog()"
+>
+  <!-- {{jobStartAssignmentData | json}} -->
+  <div class="p-grid" *ngIf="jobStartAssignmentData != null">
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6 p-2">Job Start Date:</div>
+        <div class="p-col-12 p-md-6 p-2">
+          <h4 class="mb-2">
+            {{ jobStartAssignmentData.dUpdateDate | date : "dd-MM-yyyy" }}
+          </h4>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-1 p-md-6 p-2">Job Number</div>
+        <div class="p-col-4 p-md-3 p-2">
+          <h4 class="mb-2">{{ jobStartAssignmentData.cJobNo }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-1 p-md-6 p-2">Customer</div>
+        <div class="p-col-4 p-md-6 p-2">
+          <h4>{{ jobStartAssignmentData.cCustNm }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-1 p-md-6 p-2">Patient</div>
+        <div class="p-col-4 p-md-6 p-2">
+          <h4 class="mb-2">{{ jobStartAssignmentData.cPatientNm }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-1 p-md-6 p-2">Service Skill</div>
+        <div class="p-col-4 p-md-6 p-2">
+          <h4 class="mb-2">{{ jobStartAssignmentData?.srvSkill }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4">
+      <div class="p-grid">
+        <div class="p-col-1 p-md-6 p-2">Service Name</div>
+        <div class="p-col-4 p-md-6 p-2">
+          <h4 class="mb-2">{{ jobStartAssignmentData?.srvName }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="p-col-12 p-md-12">
+            <div class="p-grid">
+                <div class="p-col-1 p-md-3 p-2">            
+                    <label class="p-col-fixed" for="priority">Transportation</label>
+                </div>
+                <div class="p-col-4 p-md-6 p-2">
+                    <p-dropdown [options]="transportationData" [(ngModel)]="transportation"
+                        placeholder="Select transportation" optionLabel="name" optionValue="val"
+                        [ngModelOptions]="{standalone: true}" class="emp-ddown"></p-dropdown>
+                </div>
+            </div>
+        </div>
+  -->
+
+    <div class="p-col-6">
+      <label>Shift<sup>*</sup></label>
+      <br />
+      <p-dropdown
+        [options]="shiftOption"
+        [(ngModel)]="ShiftId"
+        placeholder="Select Shift"
+        optionLabel="cShiftName"
+        optionValue="nShiftId"
+        [ngModelOptions]="{ standalone: true }"
+        class="emp-ddown"
+        (onChange)="onShiftSelect()"
+        appendTo="body"
+        [filter]="true"
+        filterBy="cShiftName"
+      >
+        <ng-template let-shift pTemplate="item">
+          <div class="country-item">
+            <div>
+              {{ shift.cShiftName }} ({{ shift.dStarttime }} to
+              {{ shift.dEndTime }})
+            </div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-6">
+        <h2>Add Employee</h2>
+        <div class="p-col-12 p-md-12">
+          <label>Employee<sup>*</sup></label>
+          <p-dropdown
+            [options]="empData"
+            [(ngModel)]="EmpId"
+            placeholder="Select employee"
+            optionLabel="empName"
+            optionValue="nEmpId"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            (onChange)="onElementChange($event)"
+            appendTo="body"
+            [filter]="true"
+            filterBy="empName"
+          ></p-dropdown>
+        </div>
+
+        <div class="p-col-12 p-md-12">
+          <label>Transportation </label>
+          <p-dropdown
+            [options]="transportationData"
+            [(ngModel)]="transportation"
+            placeholder="Select transportation"
+            optionLabel="name"
+            optionValue="val"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            appendTo="body"
+            [filter]="true"
+            filterBy="name"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <label>Transportation points</label>
+          <p-dropdown
+            [options]="transportPointsData"
+            [(ngModel)]="nTransportPointId"
+            placeholder="Select transportation points"
+            optionLabel="cTransportPointNm"
+            optionValue="nTransportPointId"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            appendTo="body"
+            [filter]="true"
+            filterBy="cTransportPointNm"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12 pb-0">
+          <br />
+          <label>Start time</label>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-12 display-flex" style="padding: 0px;">
+              <div class="p-md-5">
+                <p-dropdown
+                  appendTo="body"
+                  placeholder="Select Start Time"
+                  [options]="StartTimeddl"
+                  (onChange)="ChangeStartZone($event)"
+                  optionLabel="name"
+                  inputId="frquncy"
+                  [(ngModel)]="SelStartddl"
+                >
+                </p-dropdown>
+              </div>
+              <div class="p-md-5" *ngIf="IsStarTimeDisabled">
+                <p-calendar
+                  class="p-calendar-timeonly"
+                  [(ngModel)]="timeValue"
+                  [showIcon]="true"
+                  inputId="timepicker"
+                  [ngModelOptions]="{ standalone: true }"
+                  [showTime]="true"
+                  view="time"
+                  timeOnly="true"
+                  (onSelect)="onSelect($event)"
+                  (onSelect)="onSelect($event)"
+                >
+                </p-calendar>
+                <span *ngIf="isDisable" style="color: red; font-size: 11px"
+                  >please enter valid time</span
+                >
+              </div>
+            </div>
+            <span
+              *ngIf="shiftError"
+              style="color: red; font-size: 11px; padding-left: 9px"
+              >please select valid time
+              <strong>(time not match with shift)</strong></span
+            >
+          </div>
+        </div>
+        <div class="p-col-12 p-md-12 pt-0">
+          <!-- <div class="p-grid"> -->
+          <label>Address</label>
+          <!-- <div class="p-col-4 p-md-8 p-2"> -->
+          <p-dropdown
+            appendTo="body"
+            [placeholder]="jobStartAssignmentData.cAddress"
+            [options]="jobStartAssignmentData?.addressDetail"
+            optionLabel="address"
+            optionValue="jobStartAssignmentData['NAddId']"
+            class="emp-ddown"
+          ></p-dropdown>
+          <!-- </div> -->
+          <!-- </div> -->
+        </div>
+        <div class="p-col-12 p-md-12 p-mt-3">
+          <button
+            pButton
+            type="button"
+            label="Add employee"
+            [disabled]="!EmpId || !timeValue || isDisable || shiftError"
+            (click)="onAddEmployee($event)"
+          ></button>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <p-table
+            [value]="employeeData"
+            [scrollable]="true"
+            scrollHeight="200px"
+            [showCurrentPageReport]="true"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>Employee Name</th>
+                <th>Transportation</th>
+                <th>Start time</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-trainee>
+              <tr>
+                <td>{{ trainee.empName }}</td>
+                <td>{{ trainee.transportName }}</td>
+                <td>{{ trainee.dStartTm }}</td>
+                <td>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-times"
+                    (click)="removeEmp(trainee.nEmpid)"
+                    class="close"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <div class="p-col-6">
+        <h2>Add trainee</h2>
+        <div class="p-col-12 p-md-12">
+          <label>Skills<sup>*</sup></label>
+          <p-dropdown
+            [options]="allSkillsData"
+            [(ngModel)]="skillId"
+            placeholder="Select skills"
+            optionLabel="codeName"
+            optionValue="serialNo"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            (onChange)="onSkillChange($event, skillId)"
+            appendTo="body"
+            [filter]="true"
+            filterBy="codeName"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <label>Trainee<sup>*</sup></label>
+          <p-dropdown
+            [options]="traineeEmpData"
+            [(ngModel)]="nEmpId"
+            placeholder="Select trainee"
+            optionLabel="empName"
+            optionValue="nEmpId"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            (onChange)="onElementChange($event)"
+            appendTo="body"
+            [filter]="true"
+            filterBy="empName"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <label>Transportation</label>
+          <p-dropdown
+            [options]="transportationData"
+            [(ngModel)]="transportationTrainee"
+            placeholder="Select transportation"
+            optionLabel="name"
+            optionValue="val"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            appendTo="body"
+            [filter]="true"
+            filterBy="name"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12" *ngIf="transportationTrainee">
+          <label>Transportation points<sup>*</sup></label>
+          <p-dropdown
+            [options]="transportPointsData"
+            [(ngModel)]="nTransportPointIdTrainee"
+            placeholder="Select transportation"
+            optionLabel="cTransportPointNm"
+            optionValue="nTransportPointId"
+            [ngModelOptions]="{ standalone: true }"
+            class="emp-ddown"
+            appendTo="body"
+            [filter]="true"
+            filterBy="cTransportPointNm"
+          ></p-dropdown>
+        </div>
+        <div class="p-col-12 p-md-12 p-mt-3">
+          <button
+            pButton
+            type="button"
+            [disabled]="!skillId || !nEmpId"
+            (click)="onTransportationChange($event)"
+            label="Add trainee"
+          ></button>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <p-table
+            [value]="tempTraineeData"
+            [scrollable]="true"
+            scrollHeight="200px"
+            [showCurrentPageReport]="true"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>Skill Name</th>
+                <th>Trainee Name</th>
+                <th>Transportation</th>
+                <th>transportPointsData</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-trainee>
+              <tr>
+                <td>{{ trainee.skillName }}</td>
+                <td>{{ trainee.empName }}</td>
+                <td>{{ trainee.transportName }}</td>
+                <td>{{ trainee.transportPointIdName }}</td>
+                <td>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-times"
+                    (click)="remove(trainee)"
+                    class="close"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      <div class="p-col-12 p-mt-3">
+        <button
+          pButton
+          type="button"
+          label="Assign"
+          [disabled]="!employeeData.length"
+          (click)="assignJobD()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="customerLoader" class="progress-loader">
+    <div class="loading-spinner">
+      <img src="../../../assets/images/loader.svg" />
+      <span class="loading-message">Please wait...</span>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Day Schedule Preview"
+  [(visible)]="RescheduleDialog"
+  [modal]="true"
+  [style]="{ width: '40vw' }"
+  [baseZIndex]="10000"
+>
+  <div class="p-grid">
+    <div class="p-col-12 p-md-12">
+      <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter grid-gutter" style="color: red">
+          <div class="p-col-1 p-md-4">
+            <h1>Job Scheduled Date</h1>
+          </div>
+          <div class="p-col-4 p-md-8">
+            <h1>{{ JobScheduleDate }}</h1>
+          </div>
+        </div>
+      </div>
+      <p-table
+        [value]="multipleScheduleData"
+        [scrollable]="true"
+        scrollHeight="500px"
+      >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th [ngStyle]="{ width: '30px' }">JobNo</th>
+            <th [ngStyle]="{ width: '80px' }">Patient Name</th>
+            <th [ngStyle]="{ width: '50px' }">Start Time</th>
+            <th [ngStyle]="{ width: '100px' }">Employee Name</th>
+            <th [ngStyle]="{ width: '50px' }">Phone No</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-staff>
+          <tr>
+            <td [ngStyle]="{ width: '30px' }">{{ staff.cJobNo }}</td>
+            <td [ngStyle]="{ width: '80px' }">{{ staff.CPatientNm }}</td>
+            <td [ngStyle]="{ width: '50px' }">{{ staff.dStartTm }}</td>
+            <td [ngStyle]="{ width: '100px' }">{{ staff.EmpName }}</td>
+            <td [ngStyle]="{ width: '50px' }">{{ staff.PhoneNo }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="p-col-12 p-mt-3">
+      <button
+        pButton
+        type="button"
+        label="Confirm"
+        style="margin-right: 5px"
+        (click)="rescheduleJob()"
+      ></button>
+      <button pButton type="button" label="Cancel" (click)="close()"></button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Full calendar dialog -->
+<div *ngIf="fullCalendar && calenderData.length" class="caelndar-popup">
+  <div class="calendar-wrraper">
+    <div class="custom-header">
+      <div class="p-grid p-nogutter">
+        <!-- <div class="p-col-10">
+                        <p>{{fcalJobNo}} - {{fcalCustomerName}} - {{fcalPatientName}}</p>
+                    </div> -->
+        <div class="p-col-12 p-text-right">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-times"
+            (click)="closeCalendar()"
+            class="close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <p-tabView [(activeIndex)]="index">
+      <p-tabPanel header="History">
+        <h3>
+          {{ fcalJobNo }} - {{ fcalCustomerName }} - {{ fcalPatientName }}
+        </h3>
+        <div style="height: 600px">
+          <app-full-calendar
+            [calendarData]="calenderData"
+            (newItemEvent)="getEventItem($event)"
+          >
+          </app-full-calendar>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="List">
+        <div class="list-data" *ngFor="let item of eventLists">
+          <h4>{{ item.eventDate }}</h4>
+          <p>{{ item.title }}</p>
+          <p>{{ item.mobile }}</p>
+          <p>{{ item.dstartDate }}</p>
+          <p>{{ item.dendDate }}</p>
+          <p>{{ item.latLng }}</p>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<!-- Get service point popup -->
+
+<p-dialog header="Title" [(visible)]="viewSrvPoint" [style]="{ width: '50vw' }">
+  Content
+</p-dialog>
+
+<!-- Display location based on lat long popup -->
+
+<p-dialog
+  header="{{ customerData?.cJobNo }} - {{ customerData?.CCustNm }}"
+  [(visible)]="displayLocation"
+  [style]="{ width: '80vw' }"
+>
+  <div class="p-grid p-nogutte">
+    <div class="p-col-6">
+      <div class="p-grid p-nogutte">
+        <div class="p-col">
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Patient Name:</span
+            >
+            {{ customerData?.CPatientNm }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Customer Name:</span
+            >
+            {{ customerData?.CCustNm }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Service Name:</span
+            >
+            {{ customerData?.CSrvName }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Skills:</span
+            >
+            {{ customerData?.Skills }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Job Status:</span
+            >
+            {{ customerData?.JOBSTATUS }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Days:</span
+            >
+            {{ customerData?.Days }}
+          </p>
+        </div>
+        <div class="p-col">
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Contact Person:</span
+            >
+            {{ customerData?.addressDetail[0].ContactPerson }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Mobile No:</span
+            >
+            {{ customerData?.addressDetail[0].Mobile }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Address:</span
+            >
+            {{ customerData?.addressDetail[0].Address }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >City:</span
+            >
+            {{ customerData?.addressDetail[0].City }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >District:</span
+            >
+            {{ customerData?.addressDetail[0].District }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >State:</span
+            >
+            {{ customerData?.addressDetail[0].State }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Lat.:</span
+            >
+            {{ lat }}
+          </p>
+          <p class="p-pb-2">
+            <span style="font-weight: bold; width: 90px; display: inline-block"
+              >Long.:</span
+            >
+            {{ long }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-6">
+      <app-assign-map
+        *ngIf="loadMap"
+        [nLat]="lat"
+        [nLong]="long"
+        (newItemEvent)="itemEventData($event)"
+        class="jobassign-map"
+      ></app-assign-map>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Manage trainee"
+  [(visible)]="isTraineeView"
+  [style]="{ width: '50vw' }"
+>
+  <div class="p-grid p-nogutte">
+    <div class="p-grid">
+      <div class="p-col-12 p-md-12">
+        <h3
+          style="text-decoration: underline; color: green; cursor: pointer"
+          (click)="openForm()"
+        >
+          Add trainee
+        </h3>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-md-12">
+        <p-table
+          [value]="traineeData"
+          [scrollable]="true"
+          scrollHeight="200px"
+          [showCurrentPageReport]="true"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th>Skill Name</th>
+              <th>Trainee Name</th>
+              <th>Transportation</th>
+              <th>transportPointsData</th>
+              <th>Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-trainee>
+            <tr>
+              <td style="overflow-wrap: break-word">{{ trainee.Empskills }}</td>
+              <td>{{ trainee.Employee }}</td>
+              <td>{{ trainee.transportation }}</td>
+              <td>{{ trainee.TransportPoint }}</td>
+              <td>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-times"
+                  (click)="remove(trainee, true)"
+                  class="close"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="p-grid">
+      <button
+        pButton
+        type="button"
+        label="Manage Trainee"
+        (click)="addALLTrainee()"
+      ></button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Add trainee"
+  [(visible)]="isAddForm"
+  [style]="{ width: '40vw' }"
+>
+  <div class="p-grid p-nogutte">
+    <div class="p-grid">
+      <h2>Add trainee</h2>
+      <div class="p-col-12 p-md-12">
+        <label>Skills<sup>*</sup></label>
+        <p-dropdown
+          [options]="allSkillsData"
+          [(ngModel)]="skillId"
+          placeholder="Select skills"
+          optionLabel="codeName"
+          optionValue="serialNo"
+          [ngModelOptions]="{ standalone: true }"
+          class="emp-ddown"
+          (onChange)="onSkillChange($event, skillId)"
+        ></p-dropdown>
+      </div>
+      <div class="p-col-12 p-md-12">
+        <label>Trainee<sup>*</sup></label>
+        <p-dropdown
+          [options]="traineeEmpData"
+          [(ngModel)]="nEmpId"
+          placeholder="Select trainee"
+          optionLabel="empName"
+          optionValue="nEmpId"
+          [ngModelOptions]="{ standalone: true }"
+          class="emp-ddown"
+          (onChange)="onElementChange($event)"
+        ></p-dropdown>
+      </div>
+      <div class="p-col-12 p-md-12">
+        <label for="priority">Transportation</label>
+        <p-dropdown
+          [options]="transportationData"
+          [(ngModel)]="transportationTrainee"
+          placeholder="Select transportation"
+          optionLabel="name"
+          optionValue="val"
+          [ngModelOptions]="{ standalone: true }"
+          class="emp-ddown"
+        ></p-dropdown>
+      </div>
+      <div class="p-col-12 p-md-12">
+        <label>Transportation points<sup>*</sup></label>
+        <p-dropdown
+          [options]="transportPointsData"
+          [(ngModel)]="nTransportPointIdTrainee"
+          placeholder="Select transportation"
+          optionLabel="cTransportPointNm"
+          optionValue="nTransportPointId"
+          [ngModelOptions]="{ standalone: true }"
+          class="emp-ddown"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid" style="margin-top: 20px">
+      <button
+        pButton
+        type="button"
+        label="Add"
+        (click)="addOneTrainee()"
+      ></button>
+    </div>
+  </div>
+</p-dialog>

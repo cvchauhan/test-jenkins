@@ -1,0 +1,191 @@
+<div class="dashboard">
+    <p-tabView>
+      <p-tabPanel header="Pending">
+        <div class="jobs">
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-11">
+                  <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-12 p-md-3"><label for="first">Date</label></div>
+                        <div class="p-col-12 p-md-9  p-pl-2">
+                          <input id="txtFromDate" type="date" pInputText>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-12 p-md-4">
+                          <label for="middle">To</label>
+                        </div>
+                        <div class="p-col-12 p-md-8">
+                          <input id="txtFromDate" type="date" pInputText>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-612 p-md-4">
+                          <label for="last">Priority</label>
+                        </div>
+                        <div class="p-col-12 p-md-8">
+                            <p-dropdown id="ddlPriority" [options]="priorities" optionLabel="priority"></p-dropdown>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-col-12 p-md-2">
+                        <div class="p-grid p-nogutter grid-gutter">
+                          <div class="p-col-612 p-md-4">
+                            <label for="last">Shift</label>
+                          </div>
+                          <div class="p-col-12 p-md-8">
+                              <p-dropdown id="ddlShift" [options]="" optionLabel=""></p-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                    <div class="p-col-12 p-md-1">
+                    <div class="p-col-12 p-md-12 p-pt-0 p-text-right">
+                      <button pButton type="button" label="Submit"></button>
+                   </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-11">
+                    <div class="p-grid p-nogutter">
+                      <div class="p-col-8 p-md-8">
+                        <input id="txtSearch" type="text" pInputText>
+                      </div>
+                      <div class="p-col-3 p-md-3"></div>
+                      <div class="p-col-1 p-md-1">
+                      </div>
+                    </div>
+                </div>
+            </div>
+             
+            <p-table [value]="jobPendinglist" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+              <ng-template pTemplate="header" let-columns>
+                  <tr>
+                      
+                      <th>SrNo</th>
+                      <th>Priority</th>
+                      <th>JobNo</th>
+                      <th>Job Date</th>
+                      <th>Shift</th>
+                      <th>Service</th>
+                      <th>Customer</th>
+                      <th>BillingMode</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-job>
+                  <tr>
+                      
+                      <td>{{job.SrNo}}</td>
+                      <td>{{job.Priority}}</td>
+                      <td>{{job.JobNo}}</td>
+                      <td>{{job.JobDate | dateFormat}}</td>
+                      <td><label style="width: 180px;">{{job.Shift}}</label></td>
+                      <td>{{job.Service}}</td>
+                      <td>{{job.Customer}}</td>
+                      <td>{{job.BillingMode}}</td>
+                      <td>{{job.Amount}}</td>
+                      <td><a href="#">{{job.Status}}</a></td>
+                  </tr>
+              </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Assign">
+        <div class="jobs">
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-11">
+                  <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-12 p-md-3"><label for="first">Date</label></div>
+                        <div class="p-col-12 p-md-9  p-pl-2">
+                          <input id="txtFromDate" type="date" pInputText>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-12 p-md-4">
+                          <label for="middle">To</label>
+                        </div>
+                        <div class="p-col-12 p-md-8">
+                          <input id="txtFromDate" type="date" pInputText>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                      <div class="p-grid p-nogutter grid-gutter">
+                        <div class="p-col-612 p-md-4">
+                          <label for="last">Priority</label>
+                        </div>
+                        <div class="p-col-12 p-md-8">
+                            <p-dropdown id="ddlPriority" [options]="priorities" optionLabel="priority"></p-dropdown>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                    <div class="p-col-12 p-md-12 p-pt-0 p-text-right">
+                      <button pButton type="button" label="Submit"></button>
+                   </div>
+                  </div>
+                  </div>
+                  
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-11">
+                    <div class="p-grid p-nogutter">
+                      <div class="p-col-8 p-md-8">
+                        <input id="txtSearch" type="text" pInputText>
+                      </div>
+                      <div class="p-col-3 p-md-3"></div>
+                      <div class="p-col-1 p-md-1">
+                      </div>
+                    </div>
+                </div>
+            </div>
+             
+            <p-table [value]="jobAssignedlist" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+              <ng-template pTemplate="header" let-columns>
+                  <tr>
+                      
+                      <th>SrNo</th>
+                      <th>Priority</th>
+                      <th>JobNo</th>
+                      <th>Job Date</th>
+                      <th>Shift</th>
+                      <th>Service</th>
+                      <th>Customer</th>
+                      <th>BillingMode</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-job>
+                  <tr>
+                      
+                      <td>{{job.SrNo}}</td>
+                      <td>{{job.Priority}}</td>
+                      <td>{{job.JobNo}}</td>
+                      <td>{{job.JobDate | dateFormat}}</td>
+                      <td><label style="width: 180px;">{{job.Shift}}</label></td>
+                      <td>{{job.Service}}</td>
+                      <td>{{job.Customer}}</td>
+                      <td>{{job.BillingMode}}</td>
+                      <td>{{job.Amount}}</td>
+                      <td><a href="#" >{{job.Status}}</a></td>
+                  </tr>
+              </ng-template>
+          </p-table>
+        </div>    
+      </p-tabPanel>
+    </p-tabView>
+</div>

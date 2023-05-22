@@ -1,0 +1,205 @@
+<div class="dashboard">
+    <div class="manage-groups">
+
+        <div class="p-grid p-nogutter">
+            <div class="p-md-6">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-10">
+                        <div class="search">
+                            <!-- <p-dropdown [options]="accounts" optionLabel="cDisplayNm" [(ngModel)]="selectedAccounts" (onChange)="accountDetail($event)" [filter]="true" filterBy="cDisplayNm" [showClear]="true" placeholder="Search"> -->
+                            <p-autoComplete [suggestions]="filteredGroups" field="cDisplayNm" [(ngModel)]="selectedAccounts" (completeMethod)="filterGroup($event)" placeholder="Search" (onSelect)="accountDetail($event)" [filter]="true" [showClear]="true" [style]="{width: '30rem'}"
+                                [dropdown]="true">
+                                <ng-template pTemplate="selectedItem">
+                                    <div class="customer-item customer-item-value" *ngIf="selectedAccounts">
+                                        <div>{{selectedAccounts.cDisplayNm}}</div>
+                                    </div>
+                                </ng-template>
+                                <!-- <ng-template let-customer pTemplate="item">
+                                <div class="customer-item">
+                                    <div>{{customer.cDisplayNm}}</div>
+                                </div>
+                            </ng-template>-->
+                                <!-- </p-dropdown> -->
+                            </p-autoComplete>
+                            <!-- <button pButton type="button" icon="pi pi-search" iconPos="left"></button> -->
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="showAccountDetail">
+                    <h5>Account Details:</h5>
+                    <div class="p-grid p-nogutter">
+                        <label class="p-md-2 p-p-0">Account:</label>
+                        <div class="p-md-5 p-p-0">
+                            <h6 class="p-m-0 p-pt-2">{{selectedAccounts.cDisplayNm}}</h6>
+                        </div>
+                        <div class="p-md-4 p-p-0"></div>
+                    </div>
+                    <div class="p-grid p-nogutter">
+                        <label class="p-md-2 p-p-0">Mobile:</label>
+                        <div class="p-md-5 p-p-0">
+                            <h6 class="p-m-0 p-pt-2">{{selectedAccounts.addresses[0]?.cMobile}}</h6>
+                        </div>
+                        <div class="p-md-4 p-p-0"></div>
+                    </div>
+                    <div class="p-grid p-nogutter">
+                        <label class="p-md-2 p-p-0">Address:</label>
+                        <div class="p-md-5 p-p-0">
+                            <h6 class="p-m-0 p-pt-2">{{selectedAccounts.addresses[0]?.cAddress1}}</h6>
+                        </div>
+                        <div class="p-md-4 p-p-0">
+                            <button pButton type="button" icon="pi pi-ellipsis-h" (click)="showMoreAddress()">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-6">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-3 p-md-offset-3 p-text-right">
+                                <p class="tdue p-m-0">Total Credits</p>
+                                <h4 class="tdueamt p-m-0">{{accountLedgerData['totalCredit']}}</h4>
+                            </div>
+                            <div class="p-md-3 p-text-right">
+                                <p class="tdue p-m-0">Total Debits</p>
+                                <h4 class="tdueamt p-m-0">{{accountLedgerData['totalDebit']}}</h4>
+                            </div>
+                            <div class="p-md-3 p-text-right">
+                                <p class="tdue p-m-0">Balance</p>
+                                <h4 class="tdueamt p-m-0">{{accountLedgerData['balance']}}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="p-md-12">
+                        <h5 class="p-m-0">Bank Details</h5>
+                        <p-table [value]="products" [scrollable]="true" scrollHeight="80px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>SNo</th>
+                                    <th pSortableColumn="">Bank<p-sortIcon field=""></p-sortIcon></th>
+                                    <th pSortableColumn="">Account Number<p-sortIcon field=""></p-sortIcon></th>
+                                    <th pSortableColumn="">IFSC<p-sortIcon field=""></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-product>
+                                <tr>
+                                    <td>1</td>
+                                    <td>{{product.patientId}}</td>
+                                    <td>{{product.description}}</td>
+                                    <td>{{product.age}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-grid p-nogutter">
+            <div class="p-md-12">
+                <p-tabView>
+                    <p-tabPanel header="Normal View">
+                        <p-table [value]="accountLedgerData['normalView']" [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+                        [scrollable]="true" scrollHeight="200px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th [ngStyle]="{'width':'30px'}"> SNo</th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="trDate">Tr. Date<p-sortIcon field="trDate"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="invoiceNo">Invoice No<p-sortIcon field="invoiceNo"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'150px'}" pSortableColumn="particulars">Particulars<p-sortIcon field="particulars"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'80px'}" pSortableColumn="instrumentNo">Instruments No.<p-sortIcon field="instrumentNo"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="debit">Debit<p-sortIcon field="debit"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="credit">Credit<p-sortIcon field="credit"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="balance">Balance<p-sortIcon field="balance"></p-sortIcon></th>
+                                    <th [ngStyle]="{'width':'50px'}" pSortableColumn="ind">Ind<p-sortIcon field="ind"></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-product let-i="rowIndex">
+                                <tr>
+                                    <td [ngStyle]="{'width':'30px'}">
+                                        {{i+1}}
+                                    </td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.trDate | dateFormat}}</td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.invoiceNo}}</td>
+                                    <td [ngStyle]="{'width':'150px'}">{{product.particulars}}</td>
+                                    <td [ngStyle]="{'width':'80px'}">{{product.instrumentNo}}</td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.debit}}</td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.credit}}</td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.balance}}</td>
+                                    <td [ngStyle]="{'width':'50px'}">{{product.ind}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Monthly View">
+                        <p-table [value]="accountLedgerData['monthlyView']"  [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+                        [scrollable]="true" scrollHeight="200px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>SNo</th>
+                                    <th pSortableColumn="month">Month<p-sortIcon field="month"></p-sortIcon></th>
+                                    <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>
+
+                                    <th pSortableColumn="debit">Debit<p-sortIcon field="debit"></p-sortIcon></th>
+                                    <th pSortableColumn="credit">Credit<p-sortIcon field="credit"></p-sortIcon></th>
+                                    <th pSortableColumn="balance">Balance<p-sortIcon field="balance"></p-sortIcon></th>
+                                    <th pSortableColumn="ind">Ind<p-sortIcon field="ind"></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-product let-i="rowIndex">
+                                <tr>
+                                    <td>
+                                        {{i+1}}
+                                    </td>
+                                    <td>{{product.month}}</td>
+                                    <td>{{product.year}}</td>
+
+                                    <td>{{product.debit}}</td>
+                                    <td>{{product.credit}}</td>
+                                    <td>{{product.balance}}</td>
+                                    <td>{{product.ind}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+
+                </p-tabView>
+
+            </div>
+        </div>
+
+
+        <div class="p-grid p-nogutter">
+            <div class="p-md-12">
+                <button pButton type="button" label="Receipt"></button>
+                <button pButton type="button" label="Payments" class="p-mx-1"></button>
+                <button pButton type="button" label="Journal" class="p-mr-1"></button>
+                <button pButton type="button" label="Cancel"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- More address popup -->
+<p-dialog header="Address" [(visible)]="moreAddressDialog" [style]="{width: '50vw'}">
+    <p-table [value]="accountLedgerData.addressDetail" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Customer</th>
+                <th>Mobile</th>
+                <th>Address</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-custDetail>
+            <tr>
+                <td>{{custDetail.contactPerson}}</td>
+                <td>{{custDetail.mobile}}</td>
+                <td>{{custDetail.address}}, {{custDetail.district}}, {{custDetail.state}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+</p-dialog>

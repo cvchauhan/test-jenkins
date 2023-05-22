@@ -1,0 +1,1385 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+                <form>
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-12 p-md-2 p-pr-2">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="Date">Date</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <!-- <p-calendar placeholder="Select Date" (onSelect)="onSelectMethod($event,'fromD')" [(ngModel)]="formDate" [showIcon]="true" inputId="Date"
+                [ngModelOptions]="{standalone: true}"></p-calendar> -->
+                                  <p-calendar placeholder="Select Date" (onSelect)="onSelectMethod($event,'fromD')"
+                                       [showIcon]="true"  dateFormat="dd-mm-yy" [(ngModel)]="formDate" [ngModelOptions]="{standalone: true}"
+                                       ></p-calendar> 
+                                         <!-- <p-calendar [(ngModel)]="formDate" (onSelect)="onSelectMethod($event,'fromD')" [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}" name="formDate" placeholder="Select Date" dateFormat="dd-mm-yy"></p-calendar>  -->
+                                        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-pr-2">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="to">To</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-calendar placeholder="Select Date" (onSelect)="onSelectMethod($event,'to')"
+                                        [showIcon]="true" inputId="to"
+                                         dateFormat="dd-mm-yy"  [(ngModel)]="toDate" [ngModelOptions]="{standalone: true}"></p-calendar>
+                                        <!-- <p-calendar [(ngModel)]="toDate" (onSelect)="onSelectMethod($event,'toDate')" [showIcon]="true" inputId="toDate" [ngModelOptions]="{standalone: true}" name="toDate" placeholder="Select Date" dateFormat="dd-mm-yy"></p-calendar>  -->
+                                        
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-md-3">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="shift">Branch</label>
+                                </div>
+                                <div class="p-col-8">
+                                    <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+                                        [showClear]="true" inputId="priority" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="branchId">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-1">
+                            <button type="button" label="View" (click)="searchJobApproval()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="p-grid p-no-gutter">
+            <div class="p-col-12">
+                <p-table #jobApprov [value]="jobApprovalData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                    [showCurrentPageReport]="true" [(first)]="first"
+                    [globalFilterFields]="['branchId','dCreatedate','cJobNo','srvName','dCreatedate','cCustNm']"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10,20,40,80,120]" scrollHeight="350px">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid  p-jc-end p-mt-3">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" type="text"
+                                        (input)="jobApprov.filterGlobal($event.target.value,'contains')" pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+
+                            </div>
+                            <div class="p-col-3 p-md-7 p-text-right">
+
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th pSortableColumn="branchId">Branch<p-sortIcon field="branchId"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="dCreatedate">Create Date<p-sortIcon field="dCreatedate"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cJobNo">Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="srvName">Service(s)<p-sortIcon field="srvName"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="billMode">Billing Mode<p-sortIcon field="billMode"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="dCreatedate">Job Start Date<p-sortIcon field="dCreatedate">
+                                </p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cCustNm">Customer<p-sortIcon field="cCustNm"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="">Mobile<p-sortIcon field=""></p-sortIcon>
+                            </th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-tableData let-i="rowIndex">
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td> {{tableData.branchId}} </td>
+                            <td>{{tableData.dCreatedate | date: 'dd-MM-yyyy HH:mm'}}</td>
+                            <td>{{tableData.cJobNo}}</td>
+                            <td>{{tableData.srvName}}</td>
+                            <td>{{tableData.billMode}}</td>
+                            <td>{{tableData.dJobDate | dateFormat}}</td>
+                            <td>{{tableData.cCustNm}}</td>
+                            <td></td>
+                            <td>{{tableData.cStatus}}</td>
+                            <td>
+                                <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJobApproval(tableData.nJobid,tableData.cCustNm,tableData.cJobNo)"></button> -->
+                                    <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJob(tableData.nJobid, tableData.cStatus)"></button> -->
+                                    <!-- <button pButton type="button" icon="pi pi-pencil" iconPos="left"
+                                    (click)="editJob(tableData.nJobid, tableData.cStatus)"></button> -->
+                                    <p-button icon="pi pi-pencil" class="p-button-raised"
+                                    (click)="viewJobWithId(tableData.nJobid, tableData.cStatus, tableData.cJobNo)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popup -->
+
+<!-- <ng-container *ngIf="displayModal">
+    <app-add-update-manage-job [processOfJob]="'jobapproval'" [serviveJobStatus]="serviveJobStatus" [serviveJobId]="serviveJobId" [display]="displayModal" (displayChange)="onDialogClose($event)"></app-add-update-manage-job>
+</ng-container> -->
+
+<p-dialog class="jobalert mjob" header="Manage Job {{editJobId}}" [modal]="true" [(visible)]="manageJobDialog"
+    [style]="{width: '85vw' }" (onHide)="onHideManageJobForm()" [maximizable]="true">
+    <form [formGroup]="formsGroup">
+        <div class="p-grid p-nogutter">
+
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 120px;padding-left: 5px;"><label for="">Job Start Date<sup>*</sup></label></div>
+                    <div class="p-col">
+                        <!-- <p-calendar appendTo="body" formControlName="dJobDate" placeholder="Select Date"
+                            (onSelect)="onSelectDate($event,'fromD');" [showIcon]="true" inputId="fromD"
+                            [(ngModel)]="selectedStartDate" dateFormat="dd-mm-yy" [disabledDates]="invalidDates"
+                            [minDate]="StartminDate" [maxDate]="StartmaxDate" (onSelect)="onStartDate()"
+                            [readonlyInput]="true"></p-calendar> -->
+                        <p class="danger"
+                            *ngIf="formControls.dJobDate.invalid && (formControls.dJobDate.dirty || formControls.dJobDate.touched)">
+                            Job Start Date Is Required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-3 p-pt-0 p-pl-0">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 100px;padding-left: 5px;"><label for="">Job End Date</label></div>
+                    <div class="p-col">
+                        <p-calendar appendTo="body" placeholder="Select Date" formControlName="dJobEndDate"
+                            (onSelect)="onSelectDateEnd($event);" [showIcon]="true" inputId="fromD"
+                            dateFormat="dd-mm-yy" [disabledDates]="invalidDates" [minDate]="endMinDate"
+                            [maxDate]="endMaxDate" [readonlyInput]="true" name="dJobEndDate" ngDefaultControl></p-calendar>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 80px;">
+                        <label for="">Services<sup>*</sup></label>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown appendTo="body" (onChange)="onService($event)" placeholder="Select Service"
+                            [ngClass]="{'is-invalid': submitted && formControls.nSrvid.errors}" [options]="serviceData"
+                            optionLabel="txt" formControlName="nSrvid"></p-dropdown>
+                        <p class="danger"
+                            *ngIf="formControls.nSrvid.invalid && (formControls.nSrvid.dirty || formControls.nSrvid.touched)">
+                            Services Is Required</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-0 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 80px;"><label for="">Billing Mode<sup>*</sup></label></div>
+                    <div class="p-col">
+                        <p-dropdown appendTo="body" [disabled]="disableBillingMode" placeholder="Billing Mode"
+                            [options]="billingMode" optionLabel="name" formControlName="nBillMode"
+                            (onChange)="billingModeChange($event)" [ngModel]="BillMode">
+                        </p-dropdown>
+                        <p class="danger"
+                            *ngIf="formControls.nBillMode.invalid && (formControls.nBillMode.dirty || formControls.nBillMode.touched)">
+                            Billing Mode Is Required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 120px;padding-left: 5px;">
+                        <label for="">Customer(if any)<sup>*</sup></label>
+                    </div>
+                    <div class="p-col">
+                        <!-- <p-dropdown id="state" class="emp-ddown" [options]="customerData" optionLabel="cLedgerNm" formControlName="nAcid" (onChange)="selectAddressF($event)" placeholder="Search Customer By Mobile, Name" [filter]="true" filterBy="cLedgerNm">
+                        </p-dropdown> -->
+                        <p-autoComplete class="emp-ddown" formControlName="customer" [(ngModel)]="customerTxt"
+                            id="state" [suggestions]="filteredGroups" optionLabel="cLedgerNm"
+                            (completeMethod)="filterCustomer($event)" placeholder="Search Customer By Mobile, Name"
+                            [ngModelOptions]="{standalone: true}" [dropdown]="true" (onSelect)="selectAddressF($event)">
+                        </p-autoComplete>
+
+
+                        <p-button class="btn-add emp-addp cust-add" (click)="showCustomerDialog()" icon="pi pi-plus">
+                        </p-button>
+                        <p class="danger"
+                            *ngIf="formControls.nAcid.invalid && (formControls.nAcid.dirty || formControls.nAcid.touched)">
+                            Select Customer Is Required</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 100px;padding-left: 5px;">
+                        <label for="">Patient(if any)<sup>*</sup></label>
+                    </div>
+                    <div class="p-col">
+
+                        <!-- <p-autoComplete appendTo="body" class="emp-ddown" [showEmptyMessage]="true"
+                            formControlName="patient" [suggestions]="patientData"
+                            (completeMethod)="searchPatient($event)" [dropdown]="true" field="cPatientNm"
+                            placeholder="Select Patient" (onSelect)="selectPatient($event)"
+                            emptyMessage="No Data Found"></p-autoComplete> -->
+
+                        <p-dropdown appendTo="body" [filter]="true" [showClear]="true" class="emp-ddown"
+                            placeholder="Select Patient" [options]="patientData" optionLabel="cPatientNm"
+                            (onSelect)="selectPatient($event)" formControlName="patient"></p-dropdown>
+
+                        <p-button class="btn-add emp-addp cust-add" (click)="showPatientDialog()" icon="pi pi-plus">
+                        </p-button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-3 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div style="width: 80px;">
+                        <label for="">Address<sup>*</sup></label>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown appendTo="body" placeholder="Select Address"
+                            [ngClass]="{'is-invalid': submitted && formControls.nAddress.errors}"
+                            [options]="addressData" optionLabel="cAddress1" (onSelect)="selectAdd($event)"
+                            formControlName="nAddress"></p-dropdown>
+                        <p class="danger"
+                            *ngIf="formControls.nAddress.invalid && (formControls.nAddress.dirty || formControls.nAddress.touched)">
+                            Services Is Required</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-md-2 p-pt-0 p-pl-0">
+                <button pButton type="button" (click)="proceed(1)" label="Proceed"></button>
+            </div>
+
+        </div>
+
+        <div *ngIf="showNextFields" class="p-grid p-nogutter">
+
+            <div class="p-md-6 p-p-0" *ngIf="showSelfAssigned">
+                <label class="p-text-bold p-mr-2">Man Service Skills</label>
+                <!-- <p-checkbox name="groupname" (onChange)="selfAssignedVal($event)" value="val1" label="Self Assigned">
+                </p-checkbox> -->
+            </div>
+            <div class="p-md-12 p-p-0" formGroupName="serviceKitGroup" *ngIf="showServiceSkillgroup">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label for="">Service Skills<sup>*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Service Skill" [options]="srvSkillsData"
+                            optionLabel="srvSkillName" id="servSkill" formControlName="nSrvSkillid"
+                            [(ngModel)]="servSkillModel" inputId="stype" (onChange)="serviceSkillChange()"></p-dropdown>
+                        <div
+                            *ngIf="(formsGroup.get('serviceKitGroup.nSrvSkillid').invalid) && (formsGroup.get('serviceKitGroup.nSrvSkillid').touched || formsGroup.get('serviceKitGroup.nSrvSkillid').dirty)">
+                            <p class="danger" *ngIf="formsGroup.get('serviceKitGroup.nSrvSkillid').errors.required">
+                                Service
+                                Service Skills is Required</p>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label>Rate(unit)<sup *ngIf="rateNotMandatory">*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Unit" [disabled]="disableRate"
+                            [(ngModel)]="globalRateData" [options]="rateData" optionLabel="name"
+                            formControlName="nRateId" id="unit"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discount(%)</label>
+                        <input type="text" class="reptfrq" [disabled]="disableRate" (keyup)="skillDiscount($event)"
+                            [(ngModel)]="discountRatePerSkill" [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discounted Rate</label>
+                        <input type="text" class="reptfrq" [(ngModel)]="discountRateSkill" disabled
+                            [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-col-12 p-md-2 p-pr-2">
+                                <label>Frequency<sup>*</sup></label>
+                                <p-dropdown appendTo="body" placeholder="Select Frequency"
+                                    (onChange)="frequencyDataF($event)" [options]="manageService"
+                                    formControlName="nJobFrq" optionLabel="name" inputId="frquncy"
+                                    [(ngModel)]="frequencyV">
+                                </p-dropdown>
+                            </div>
+                            
+                            <div class="p-col-12 p-md-2 p-pr-2">
+                                <label>Repeats on every</label>
+                                <input type="text" class="reptfrq" [disabled]="disabledRepeat"
+                                    (keyup)="repeatFunc($event.target.value)" #repeatsOn pInputText>
+                                <span *ngIf="showMonthRepeatError" style="color: red;">Repeat value is not valid</span>
+                            </div>
+
+                            <div class="p-col-12 p-md-3 p-pr-2">
+                                <div style="display: inline-block; vertical-align: top;padding-right: 10px;">
+                                    <!-- <p-checkbox appendTo="body" (onChange)="checkStartTime($event)"
+                                        [(ngModel)]="isChecked" [ngModelOptions]="{standalone: true}" name="scheduled"
+                                        binary="true" inputId="sdulestrt">
+                                    </p-checkbox> -->
+                                    <label for="sdulestrt"
+                                        style="padding:24px 0 0 5px;display:inline-block;line-height:26px">Scheduled
+                                        start</label>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-2 p-pr-2">
+                                <div style="display: inline-block; vertical-align: top;">
+                                    <label>Mode</label>
+                                    <p-dropdown appendTo="body" placeholder="Select Start Time" [options]="StartTimeddl"
+                                        (onChange)="ChangeStartZone($event)" optionLabel="name" inputId="frquncy"
+                                        [(ngModel)]="SelStartddl" [ngModelOptions]="{standalone: true}">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-2 p-pr-2">
+                                <div style="display: inline-block;">
+
+                                    <label for="timeonly">Start time</label>
+                                    <p-calendar #startTime [timeOnly]="true" [disabled]="!IsStarTimeDisabled"
+                                        appendTo="body" inputId="timeonly" timeFormat="HH:mm:ss"
+                                        formControlName="startTime" [(ngModel)]="stTime"
+                                        [ngModelOptions]="{standalone: true}"></p-calendar>
+                                    <div
+                                        *ngIf="(formsGroup.get('serviceKitGroup.startTime').invalid) && (formsGroup.get('serviceKitGroup.startTime').touched || formsGroup.get('serviceKitGroup.startTime').dirty)">
+                                        <p class="danger"
+                                            *ngIf="formsGroup.get('serviceKitGroup.startTime').errors.required">
+                                            Start Time is Required</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-1 p-pr-2">
+                                <button type="button" label="Add" style="margin-top: 1.78rem;"
+                                    [disabled]="disabledServiceSkills" (click)="saveServSkillFunc()" pButton>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-9 p-mt-3" *ngIf="showServiceSkillsTable">
+                    <p-table [value]="tmpSrvSkills">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th [ngStyle]="{'width':'20px'}">SNo.</th>
+                                <th [ngStyle]="{'width':'120px'}">Service Skill Name </th>
+                                <th [ngStyle]="{'width':'50px'}">Rate Unit Name </th>
+                                <th [ngStyle]="{'width':'50px'}">Discount</th>
+                                <th [ngStyle]="{'width':'50px'}">Discounted Rate</th>
+                                <th [ngStyle]="{'width':'50px'}">Frequency Name</th>
+                                <th [ngStyle]="{'width':'50px'}">FrqQty</th>
+                                <th [ngStyle]="{'width':'50px'}">StartTime</th>
+                                <th [ngStyle]="{'width':'50px'}">Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-joblist let-rowIndex="rowIndex">
+                            <tr>
+                                <td [ngStyle]="{'width':'20px'}"> {{rowIndex + 1}}</td>
+                                <td [ngStyle]="{'width':'120px'}"> {{joblist.srvSkill}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.RateUnitName}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.nDiscRatePer}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.nadRate}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.FrequencyName}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.nFrqQty}}</td>
+                                <td [ngStyle]="{'width':'50px'}">{{joblist.dStartTm}}</td>
+                                <td [ngStyle]="{'width':'50px'}">
+                                    <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                        (click)="deleteServiceSkills(rowIndex)"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+
+            </div>
+            <div class="p-md-12 p-p-0 p-mt-3" *ngIf="showSkillSave">
+                <h3 class="p-mt-1 p-mb-1">Service Kit</h3>
+            </div>
+            <div class="p-md-12 p-p-0" formGroupName="serviceKitGroup" *ngIf="showSkillSave">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label for="">Service Type<sup>*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Service Type" [options]="srvType"
+                            optionLabel="name" id="serviceType" formControlName="servTypeD" #serviceTypeV
+                            inputId="stype" (onChange)="serviceTypeF($event)"></p-dropdown>
+                        <div
+                            *ngIf="(formsGroup.get('serviceKitGroup.servTypeD').invalid) && (formsGroup.get('serviceKitGroup.servTypeD').touched || formsGroup.get('serviceKitGroup.servTypeD').dirty)">
+                            <p class="danger" *ngIf="formsGroup.get('serviceKitGroup.servTypeD').errors.required">
+                                Service
+                                Type is Required</p>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2" *ngIf="!showServicePointCarePoint">
+                        <label for="sserv">Select Item(s)<sup>*</sup></label>
+                        <p-dropdown appendTo="body" *ngIf="!isMachine" placeholder="Select Service"
+                            [options]="sSkillsItemData" optionLabel="srvSkillName" formControlName="nSrvSkillid"
+                            id="service" inputId="sserv" (onChange)="unitF($event,'man')"></p-dropdown>
+
+                        <p-dropdown appendTo="body" *ngIf="isMachine" placeholder="Select Service"
+                            [options]="sSkillsItemData" optionLabel="itemName" id="service" inputId="sserv"
+                            (onChange)="unitF($event,'machine')" [(ngModel)]="machineRateId"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2" *ngIf="showServicePointCarePoint">
+                        <label for="sserv1">Select Service Point(s)</label>
+                        <p-dropdown appendTo="body" placeholder="Select Service" [options]="servicePointData"
+                            optionLabel="srvPointName" [(ngModel)]="NSrvPointid" formControlName="nSrvPoint"
+                            id="servicePoint" inputId="sserv1" (onChange)="srvPointChange($event)"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label>Rate(unit)<sup *ngIf="rateNotMandatory">*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Unit" [options]="servicePointRateData"
+                            optionLabel="name" formControlName="nRateId" id="unit"
+                            (onChange)="srvPointRateChange($event)" [(ngModel)]="unitVa" #unitV></p-dropdown>
+                    </div>
+
+                    <!-- <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discount(%)</label>
+                        <input type="text" class="reptfrq" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discounted Rate</label>
+                        <input type="text" class="reptfrq" pInputText>
+                    </div>
+
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Security Deposite</label>
+                        <input type="text" class="reptfrq" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discount(%)</label>
+                        <input type="text" class="reptfrq" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>After Discount</label>
+                        <input type="text" class="reptfrq" pInputText>
+                    </div> -->
+                    <div class="p-col-12 p-md-3">
+                        <div class="p-grid">
+                            <div class="p-col p-pr-2" *ngIf="showInstallationCharge">
+                                <label>Installation Charges</label>
+                                <input type="text" formControlName="instCharges" [(ngModel)]="installationCharges"
+                                    pInputText>
+                            </div>
+                            <div class="p-col">
+                                <button type="button" label="Add" style="margin-top: 1.78rem;"
+                                    [disabled]="addServiceKitButtonDisabled"
+                                    (click)="addServiceKit(serviceTypeV?.value,unitV?.value)" pButton>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-mt-3" *ngIf="showJobTable">
+                        <p-table [value]="jobService">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th [ngStyle]="{'width':'20px'}">SNo.</th>
+                                    <th [ngStyle]="{'width':'40px'}">Type</th>
+                                    <th [ngStyle]="{'width':'100px'}">Item/Service Point</th>
+
+                                    <th [ngStyle]="{'width':'40px'}">Price(Unit)</th>
+                                    <th [ngStyle]="{'width':'40px'}">Disc</th>
+                                    <th [ngStyle]="{'width':'40px'}">Amount</th>
+                                    <th [ngStyle]="{'width':'40px'}">Sec. Deposit</th>
+                                    <th [ngStyle]="{'width':'40px'}">Disc</th>
+                                    <th [ngStyle]="{'width':'40px'}">Total</th>
+                                    <th *ngIf="showInstallationCharge" [ngStyle]="{'width':'40px'}">Inst. Charges</th>
+                                    <th [ngStyle]="{'width':'40px'}">Action</th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-joblist let-rowIndex="rowIndex">
+                                <tr>
+                                    <td [ngStyle]="{'width':'20px'}">{{rowIndex + 1}}</td>
+                                    <td [ngStyle]="{'width':'40px'}">{{joblist.cSrvType}}</td>
+                                    <td [ngStyle]="{'width':'100px'}">{{joblist.srvSkill ? joblist.srvSkill :
+                                        joblist.cSrvPointNm}} {{joblist.item ?
+                                        joblist.item : ""}}</td>
+                                    <!-- <td>{{joblist.cSrvPointNm}}</td> -->
+                                    <td [ngStyle]="{'width':'40px'}">{{joblist.rate}} {{joblist.unit}} <ng-container
+                                            *ngIf="editButton">
+                                            {{joblist.unitName}}
+                                        </ng-container>
+                                    </td>
+                                    <td [ngStyle]="{'width':'40px'}"><input style="border: 0;" type="text" pInputText
+                                            value="{{joblist.nDiscRatePer}}"
+                                            (blur)="calcDisc($event,rowIndex, joblist.rate,joblist)" />
+                                    </td>
+                                    <td [ngStyle]="{'width':'40px'}">{{joblist.nadRate}} </td>
+                                    <td [ngStyle]="{'width':'40px'}">
+                                        <ng-container *ngIf="editButton">
+                                            {{ joblist.security ? joblist.security : joblist.nSecurity}}
+                                        </ng-container>
+                                        <ng-container *ngIf="!editButton">
+                                            {{joblist.security ? joblist.security : joblist.securityAmt}}
+                                        </ng-container>
+
+
+                                    </td>
+                                    <td [ngStyle]="{'width':'40px'}"><input style="border: 0;" type="text"
+                                            [disabled]="joblist.security==0" pInputText value="{{joblist.nDiscPerSec}}"
+                                            (blur)="calcDiscSec($event,rowIndex, joblist.security,joblist)" /></td>
+                                    <td [ngStyle]="{'width':'40px'}">{{joblist.nDiscAmtSec}}</td>
+                                    <td [ngStyle]="{'width':'40px'}" *ngIf="showInstallationCharge"><input type="text"
+                                            disabled
+                                            value="{{joblist?.nInstallationCharge?joblist.nInstallationCharge:''}}"
+                                            pInputText>
+                                    </td>
+                                    <td [ngStyle]="{'width':'40px'}">
+                                        <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                            (click)="deleteJob(joblist, rowIndex)"></p-button>
+                                    </td>
+
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+                    <div class="p-md-12 p-p-0 p-mt-1" *ngIf="showConsumableItemsTable">
+                        <h3>Consumables</h3>
+                    </div>
+                    <div class="p-col-12 p-mt-1" *ngIf="showConsumableItemsTable">
+                        <p-table [value]="consumableItems">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Rate</th>
+                                    <th>Disc</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td> {{item.itemName}}</td>
+                                    <td> {{item.nRate}} {{item.rentUnitName}}</td>
+                                    <td [ngStyle]="{'width':'40px'}">
+                                        <input style="border: 0;" type="text" pInputText value="{{item.nDiscRatePer}}"  (blur)="calcConsumables($event,rowIndex, item.nRate,item)"
+                                            />
+                                    </td>
+                                    <td [ngStyle]="{'width':'40px'}">
+                                        {{item.nadRate}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-mt-2">
+                            <p class="danger p-m-0" *ngIf="showModeOfPaymentError">Mode of Payment is Mandatory</p>
+                            <p class="danger p-m-0" *ngIf="showJobServiceKitError">Please Add Service Kit</p>
+                        </div>
+                        <div class="p-col-12 p-mt-2">
+                            <button label="{{btnTextCalculate}}" class="p-mr-2"
+                            (click)="calcServiceAmount();calcServ();" [disabled]="disableModeOfPayment"
+                            pButton></button>
+                            <button label="Approve" class="p-mr-2"
+                                [disabled]="disableApproveReject && !disableModeOfPayment" (click)="ApproveJob()"
+                                pButton></button>
+                            <button label="Reject" class="p-mr-2"
+                                [disabled]="disableApproveReject && !disableModeOfPayment" (click)="rejectJob()"
+                                pButton></button>
+                            <button label="Cancel" class="p-mr-2" (click)="closePopUp()" pButton></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-3">
+                <div class="serviceKit">
+                    <h4 class="p-mb-3">Total Payable</h4>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Security Deposit(Actual):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">{{secDepositActual}}</h4>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Security Deposit (payable):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">{{secDepositTotal}}</h4>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Installation Charges:</h4>
+                        </div>
+                        <div class="p-col-6">
+                            <h4>{{totalInstallationCharges}}</h4>
+                        </div>
+                    </div>
+
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Services(Advance):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <input type="text" PInputText [value]="totalServiceAdvance"
+                                (blur)="calcServiceAdvance($event)">
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Delivery Charges:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h5 class="p-m-0">
+                                <input type="text" PInputText [(ngModel)]="nDeliveryCharge"
+                                    [ngModelOptions]="{standalone: true}" [readonly]="disableInstDeliver">
+                            </h5>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Total:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                {{ getTotal(secDepositTotal , totalInstallationCharges ,nDeliveryCharge ,
+                                totalServiceAdvance)}}
+                            </h4>
+                        </div>
+                    </div>
+
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Mode of Payment:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                <p-dropdown appendTo="body" [disabled]="disableModeOfPayment" placeholder="Select "
+                                    [options]="modeOfPayment" [(ngModel)]="modeOfPaymentD"
+                                    [ngModelOptions]="{standalone: true}" optionLabel="name"></p-dropdown>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Item Delivery:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                <p-dropdown appendTo="body" placeholder="Select "
+                                    [disabled]="disableItemDeliveryDropdown" [options]="itemDeliveryData"
+                                    [(ngModel)]="itemDelivery" [ngModelOptions]="{standalone: true}" optionLabel="name">
+                                </p-dropdown>
+                            </h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- <p-dialog class="jobalert mjob" header="{{manageJobServiceHeader}}" [modal]="true" [(visible)]="manageJobDialog"
+    [style]="{width: '85vw' }" [baseZIndex]="10000" (onHide)="onHideManageJobForm()" [maximizable]="true">
+    <form [formGroup]="formsGroup" (ngSubmit)="submitManageJob(formsGroup)">
+        <div class="p-grid p-nogutter">
+
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-0 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3"><label for="">Billing Mode<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-9">
+                        <p-dropdown appendTo="body" [disabled]="disableBillingMode" placeholder="Billing Mode"
+                            [options]="billingMode" optionLabel="name" formControlName="nBillMode"
+                            (onChange)="billingModeChange($event)">
+                        </p-dropdown>
+                        <p class="danger"
+                            *ngIf="formControls.nBillMode.invalid && (formControls.nBillMode.dirty || formControls.nBillMode.touched)">
+                            Billing Mode Is Required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3 p-pl-2"><label for="">Job Start Date<sup>*</sup></label></div>
+                    <div class="p-col-12 p-md-9">
+                        <p-calendar formControlName="dJobDate" placeholder="Select Date"
+                            (onSelect)="onSelectDate($event,'fromD');" [showIcon]="true" inputId="fromD"
+                            [ngModelOptions]="{standalone: true}" dateFormat="dd-mm-yy" [disabledDates]="invalidDates"
+                            [minDate]="minimumDate" [readonlyInput]="true"></p-calendar>
+                        <p class="danger"
+                            *ngIf="formControls.dJobDate.invalid && (formControls.dJobDate.dirty || formControls.dJobDate.touched)">
+                            Job Start Date Is Required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-pt-0 p-pl-0">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3 p-pl-2"><label for="">Job End Date</label></div>
+                    <div class="p-col-12 p-md-9">
+                        <p-calendar placeholder="Select Date" formControlName="dJobEndDate"
+                            (onSelect)="onSelectDateEnd($event);" [showIcon]="true" inputId="fromD"
+                            dateFormat="dd-mm-yy" [disabledDates]="invalidDates" [minDate]="minimumDate"
+                            [readonlyInput]="true"></p-calendar>
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3">
+                        <label for="">Services<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+                        <p-dropdown appendTo="body" (onChange)="onService($event)" placeholder="Select Service"
+                            [options]="serviceData" optionLabel="txt" formControlName="nSrvid"></p-dropdown>
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3 p-pl-2">
+                        <label for="">Customer<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+                        <p-autoComplete appendTo="body" class="emp-ddown" formControlName="customer"
+                            [(ngModel)]="customerTxt" id="state" [suggestions]="filteredGroups"
+                            (completeMethod)="filterCustomer($event)" placeholder="Search Customer By Mobile, Name"
+                            [ngModelOptions]="{standalone: true}" [dropdown]="true" (onSelect)="selectAddressF($event)">
+                        </p-autoComplete>
+                        <p-button class="btn-add emp-addp cust-add" [disabled]="isDisabledAllControls"
+                            (click)="showCustomerDialog()" icon="pi pi-plus">
+                        </p-button>
+                        <p class="danger"
+                            *ngIf="formControls.nAcid.invalid && (formControls.nAcid.dirty || formControls.nAcid.touched)">
+                            Select Customer Is Required</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3 p-pl-2">
+                        <label for="">Patient<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+
+                        <p-autoComplete appendTo="body" class="emp-ddown" formControlName="patient"
+                            [suggestions]="patientData" (completeMethod)="searchPatient($event)" field="cPatientNm"
+                            placeholder="Select Patient" (onSelect)="selectPatient($event)"></p-autoComplete>
+
+
+                        <p-button class="btn-add emp-addp cust-add" [disabled]="isDisabledAllControls"
+                            (click)="showPatientDialog()" icon="pi pi-plus">
+                        </p-button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-pt-0 p-pl-0 p-pb-1 p-pr-1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-3 p-pl-2">
+                        <label for="">Address<sup>*</sup></label>
+                    </div>
+                    <div class="p-col-12 p-md-9">
+                        <p-dropdown appendTo="body" placeholder="Select Address"
+                            [ngClass]="{'is-invalid': submitted && formControls.nAddress.errors}"
+                            [options]="addressData" optionLabel="cAddress1" (onSelect)="selectAdd($event)"
+                            formControlName="nAddress"></p-dropdown>
+                        <p class="danger"
+                            *ngIf="formControls.nAddress.invalid && (formControls.nAddress.dirty || formControls.nAddress.touched)">
+                            Services Is Required</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-md-2 p-pt-0 p-pl-0">
+                <button pButton type="button" (click)="proceed()" [disabled]="isDisabledAllControls"
+                    label="Proceed"></button>
+            </div>
+
+        </div>
+
+        <div *ngIf="showNextFields" class="p-grid p-nogutter">
+
+            <div class="p-md-6 p-p-0" *ngIf="showSelfAssigned">
+                <label class="p-text-bold p-mr-2">Man Service Skills</label>
+                <p-checkbox name="groupname" (onChange)="selfAssignedVal($event)" value="val1" label="Self Assigned">
+                </p-checkbox>
+            </div>
+            <div class="p-md-12 p-p-0" formGroupName="serviceKitGroup" *ngIf="showServiceSkillgroup">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label for="">Service Skills<sup>*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Service Skill" [options]="srvSkillsData"
+                            optionLabel="srvSkillName" id="servSkill" formControlName="nSrvSkillid"
+                            [(ngModel)]="servSkillModel" inputId="stype" (onChange)="serviceSkillChange()"></p-dropdown>
+                        <div
+                            *ngIf="(formsGroup.get('serviceKitGroup.nSrvSkillid').invalid) && (formsGroup.get('serviceKitGroup.nSrvSkillid').touched || formsGroup.get('serviceKitGroup.nSrvSkillid').dirty)">
+                            <p class="danger" *ngIf="formsGroup.get('serviceKitGroup.nSrvSkillid').errors.required">
+                                Service
+                                Service Skills is Required</p>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label>Rate(unit)<sup *ngIf="rateNotMandatory">*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Unit" [disabled]="disableRate"
+                            [(ngModel)]="globalRateData" [options]="rateData" optionLabel="name"
+                            formControlName="nRateId" id="unit" (onChange)="onChangeRate()"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discount(%)</label>
+                        <input type="text" class="reptfrq" [disabled]="disableRate || isDisabledAllControls"
+                            (keyup)="skillDiscount($event)" [(ngModel)]="discountRatePerSkill"
+                            [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-1 p-pr-2">
+                        <label>Discounted Rate</label>
+                        <input type="text" class="reptfrq" [(ngModel)]="discountRateSkill" disabled
+                            [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-col-12 p-md-3 p-pr-2">
+                                <label>Frequency<sup>*</sup></label>
+                                <p-dropdown appendTo="body" placeholder="Select Frequency"
+                                    (onChange)="frequencyDataF($event)" [options]="manageService"
+                                    formControlName="nJobFrq" optionLabel="name" inputId="frquncy"
+                                    [(ngModel)]="frequencyV">
+                                </p-dropdown>
+                            </div>
+
+                            <div class="p-col-12 p-md-2 p-pr-2">
+                                <label>Repeats on every</label>
+                                <input type="text" class="reptfrq" [disabled]="disabledRepeat || isDisabledAllControls"
+                                    (keyup)="repeatFunc($event)" #repeatsOn pInputText>
+                                <span *ngIf="showMonthRepeatError" style="color: red;">Repeat value is not valid</span>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-pr-2">
+                                <div style="display: inline-block; vertical-align: top;padding-right: 10px;">
+                                    <p-checkbox (onChange)="checkStartTime($event)" [disabled]="isDisabledAllControls"
+                                        [(ngModel)]="isChecked" [ngModelOptions]="{standalone: true}" name="scheduled"
+                                        binary="true" inputId="sdulestrt">
+                                    </p-checkbox>
+                                    <label for="sdulestrt"
+                                        style="padding:24px 0 0 5px;display:inline-block;line-height:26px">Scheduled
+                                        start</label>
+                                </div>
+
+                                <div style="display: inline-block;" *ngIf="isTime">
+                                    <label for="timeonly">Start time</label>
+                                    <p-calendar #startTime [timeOnly]="true" inputId="timeonly" timeFormat="HH:mm:ss"
+                                        formControlName="startTime" [(ngModel)]="stTime"
+                                        [ngModelOptions]="{standalone: true}"></p-calendar>
+                                </div>
+
+                                <div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="p-md-12 p-p-0 p-mt-3" *ngIf="!showSkillSave || billMS != 1">
+                <h3>Service Kit</h3>
+            </div>
+            <div class="p-md-12 p-p-0" formGroupName="serviceKitGroup" *ngIf="!showSkillSave || billMS != 1">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label for="">Service Type<sup>*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Service Type" [options]="srvType"
+                            optionLabel="name" id="serviceType" formControlName="servTypeD" #serviceTypeV
+                            inputId="stype" (onChange)="serviceTypeF($event)"></p-dropdown>
+                        <div
+                            *ngIf="(formsGroup.get('serviceKitGroup.servTypeD').invalid) && (formsGroup.get('serviceKitGroup.servTypeD').touched || formsGroup.get('serviceKitGroup.servTypeD').dirty)">
+                            <p class="danger" *ngIf="formsGroup.get('serviceKitGroup.servTypeD').errors.required">
+                                Service
+                                Type is Required</p>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2" *ngIf="!showServicePointCarePoint">
+                        <label for="sserv">Select Item(s)<sup>*</sup></label>
+                        <p-dropdown appendTo="body" *ngIf="!isMachine" placeholder="Select Service"
+                            [options]="sSkillsItemData" optionLabel="srvSkillName" formControlName="nSrvSkillid"
+                            id="service" inputId="sserv" (onChange)="unitF($event,'man')"></p-dropdown>
+
+                        <p-dropdown appendTo="body" *ngIf="isMachine" placeholder="Select Service"
+                            [options]="sSkillsItemData" optionLabel="itemName" id="service" inputId="sserv"
+                            (onChange)="unitF($event,'machine')" [(ngModel)]="machineRateId"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2" *ngIf="showServicePointCarePoint">
+                        <label for="sserv1">Select Service Point(s)</label>
+                        <p-dropdown appendTo="body" placeholder="Select Service" [options]="servicePointData"
+                            optionLabel="srvPointName" [(ngModel)]="NSrvPointid" formControlName="nSrvPoint"
+                            id="servicePoint" inputId="sserv1" (onChange)="srvPointChange($event)"></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-2 p-pr-2">
+                        <label>Rate(unit)<sup *ngIf="rateNotMandatory">*</sup></label>
+                        <p-dropdown appendTo="body" placeholder="Select Unit" [options]="servicePointRateData"
+                            optionLabel="name" formControlName="nRateId" id="unit"
+                            (onChange)="srvPointRateChange($event)" [disabled]="disableRateUnit" #unitV></p-dropdown>
+                    </div>
+                    <div class="p-col-12 p-md-3">
+                        <div class="p-grid">
+                            <div class="p-col p-pr-2" *ngIf="showInstallationCharge">
+                                <label>Installation Charges</label>
+                                <input type="text" [(ngModel)]="installationCharges"
+                                    [ngModelOptions]="{standalone: true}" pInputText>
+                            </div>
+                            <div class="p-col">
+                                <button type="button" label="Add" style="margin-top: 1.78rem;"
+                                    [disabled]="addServiceKitButtonDisabled || isDisabledAllControls"
+                                    (click)="addServiceKit(serviceTypeV?.value,unitV?.value)" pButton>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-mt-3" *ngIf="showJobTable">
+                        <p-table [value]="jobService">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th [ngStyle]="{'width':'30px'}">SNo.</th>
+                                    <th>Type</th>
+                                    <th>Item/Service Point</th>
+
+                                    <th>Price(Unit)</th>
+                                    <th>Discount</th>
+                                    <th>Amount</th>
+                                    <th>Security Deposit</th>
+                                    <th>Discount</th>
+                                    <th>Installation Charges</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-joblist let-rowIndex="rowIndex">
+                                <tr>
+                                    <td [ngStyle]="{'width':'30px'}">{{rowIndex + 1}}</td>
+                                    <td>{{joblist.cSrvType}}</td>
+                                    <td>{{joblist.cSrvType=='Service Point' ?joblist.cSrvPointNm: joblist.srvSkill }}
+                                        {{joblist.item ?
+                                        joblist.item : ""}}</td>
+                                    <td>{{joblist.rate}} {{joblist.unit}} <ng-container *ngIf="editButton">
+                                            {{joblist.unitName}}</ng-container>
+                                    </td>
+                                    <td style="width:70px"><input type="text" pInputText
+                                            [disabled]="isDisabledAllControls" value="{{joblist.nDiscRatePer}}"
+                                            (blur)="calcDisc($event,rowIndex, joblist.rate,joblist)" />
+                                    </td>
+                                    <td>{{joblist.nadRate}} </td>
+                                    <td>
+                                        <ng-container *ngIf="editButton">
+                                            {{ joblist.security ? joblist.security : joblist.nSecurity}}
+                                        </ng-container>
+                                        <ng-container *ngIf="!editButton">
+                                            {{joblist.security ? joblist.security : joblist.securityAmt}}
+                                        </ng-container>
+
+
+                                    </td>
+
+                                    <td style="width:70px"><input type="text"
+                                            [disabled]="joblist.security==0 || isDisabledAllControls" pInputText
+                                            value="{{joblist.nDiscPerSec}}"
+                                            (blur)="calcDiscSec($event,rowIndex, joblist.nADSecurity,joblist)" /></td>
+
+                                    <td><input type="text" (blur)="calcInstallationCharges($event,rowIndex)"
+                                            [value]="joblist?.nInstallationCharge" pInputText></td>
+                                    <td>
+                                        <ng-container *ngIf="false">
+                                            {{joblist.nDiscAmtSec}}
+                                        </ng-container>
+                                        <p-button icon="pi pi-trash" [disabled]="isDisabledAllControls"
+                                            class="p-button-raised p-button-danger"
+                                            (click)="deleteJob(joblist, rowIndex)"></p-button>
+                                    </td>
+
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+                    <div class="p-md-12 p-p-0 p-mt-1" *ngIf="showConsumableItemsTable">
+                        <h3>Consumables</h3>
+                    </div>
+                    <div class="p-col-12 p-mt-1" *ngIf="showConsumableItemsTable">
+                        <p-table [value]="consumableItems">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Rate</th>
+                                    <th>Unit</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td> {{item.itemName}}</td>
+                                    <td> {{item.nRate}}</td>
+                                    <td> {{item.rentUnitName}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-12 p-mt-2">
+                            <p class="danger p-m-0" *ngIf="showModeOfPaymentError">Mode of Payment is Mandatory</p>
+                            <p class="danger p-m-0" *ngIf="showJobServiceKitError">Please Add Service Kit</p>
+                        </div>
+                        <div class="p-col-12 p-mt-2">
+
+                            <button label="{{btnTextCalculate}}" class="p-mr-2"
+                                (click)="repeatFunc();calcServiceAmount();calcServ();" [disabled]="disableModeOfPayment"
+                                pButton></button>
+                            <button label="Approve" class="p-mr-2"
+                                [disabled]="disableApproveReject && !disableModeOfPayment" (click)="ApproveJob()"
+                                pButton></button>
+                            <button label="Reject" class="p-mr-2"
+                                [disabled]="disableApproveReject && !disableModeOfPayment" (click)="rejectJob()"
+                                pButton></button>
+                            <button label="Cancel" class="p-mr-2" (click)="closePopUp()" pButton></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-3">
+                <div class="serviceKit">
+                    <h4 class="p-mb-3">Total Payable</h4>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Security Deposit(Actual):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">{{secDepositActual}}</h4>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Security Deposit (payable):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">{{secDepositTotal}}</h4>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">Installation Charges:</h4>
+                        </div>
+                        <div class="p-col-6">
+                            <h4>{{totalInstallationCharges}}</h4>
+                        </div>
+                    </div>
+
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Services(Advance):</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <input type="text" PInputText [value]="totalServiceAdvance"
+                                (blur)="calcServiceAdvance($event)">
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Delivery Charges:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h5 class="p-m-0">
+                                <input type="text" PInputText [(ngModel)]="nDeliveryCharge"
+                                    [ngModelOptions]="{standalone: true}" [readonly]="disableInstDeliver">
+                            </h5>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Total:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                {{ getTotal(secDepositTotal , totalInstallationCharges ,nDeliveryCharge ,
+                                totalServiceAdvance)}}
+                            </h4>
+                        </div>
+                    </div>
+
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Mode of Payment:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                <p-dropdown appendTo="body" [disabled]="disableModeOfPayment" placeholder="Select "
+                                    [options]="modeOfPayment" [(ngModel)]="modeOfPaymentD"
+                                    [ngModelOptions]="{standalone: true}" optionLabel="name"></p-dropdown>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0 p-pt-2">Item Delivery:</h4>
+                        </div>
+                        <div class="p-col-6 p-md-6">
+                            <h4 class="p-m-0">
+                                <p-dropdown appendTo="body" placeholder="Select "
+                                    [disabled]="disableItemDeliveryDropdown" [options]="itemDeliveryData"
+                                    [(ngModel)]="itemDelivery" [ngModelOptions]="{standalone: true}" optionLabel="name">
+                                </p-dropdown>
+                            </h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+</p-dialog> -->
+
+<!-- Customer dialog box -->
+<p-dialog header="Quick Ledger Creation" [(visible)]="customerDialog" [modal]="true" [style]="{width: '80vw'}"
+    [baseZIndex]="10000">
+    <form [formGroup]="ledgerForm" (ngSubmit)="onLedgerSubmit(ledgerForm.value)">
+        <div class="p-grid p-mt-0 p-pl-2 p-pr-2">
+            <div class="p-md-6 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2">
+                        <label for="group">Group<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <p-autoComplete appendTo="body" [suggestions]="filteredGroups"
+                            (completeMethod)="filterGroup($event)" field="txt" [minLength]="1"
+                            placeholder="Select Group" formControlName="group">
+                        </p-autoComplete>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-6 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Ledger Name<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Ledger Name" formControlName="ledgerName" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-12 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-1">
+                        <label>Address<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-11">
+                        <input type="text" pInputText placeholder="Address" formControlName="address" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-6 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2">
+                        <label>Contact Person<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Contact Person" formControlName="contactperson" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-6 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Mobile<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Mobile" formControlName="mobile" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mapContainer">
+
+            <app-map (latLong)="getLatLong($event)">
+
+            </app-map>
+        </div>
+        <div class="p-grid">
+
+            <div class="p-md-8 p-mt-3">
+                <p-button type="submit" label="Save"></p-button>
+            </div>
+        </div>
+
+    </form>
+    <ng-template pTemplate="footer">
+
+    </ng-template>
+
+</p-dialog>
+
+<p-dialog header="Add Patient Info" [(visible)]="patientDialog" [modal]="true" [style]="{width: '80vw'}"
+    [baseZIndex]="10000">
+    <form [formGroup]="patientForm" (ngSubmit)="onPatientSubmit(patientForm.value)">
+        <div class="p-grid p-mt-0">
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-3">
+                        <label for="group">Patient Name<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-9">
+                        <input type="text" pInputText placeholder="Patient Name" formControlName="patientName" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Age<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Age" formControlName="age" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Gender<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <p-dropdown appendTo="body" placeholder="Select Gender" [options]="genderData"
+                            formControlName="sex" optionLabel="name">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-3">
+                        <label>Diagnosis<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-9">
+                        <p-autoComplete appendTo="body" class="emp-ddown" [suggestions]="filteredDiagnosisData"
+                            (completeMethod)="filterGroupDiagnosis($event)" field="codeName" [minLength]="1"
+                            placeholder="Select Diagnosis" formControlName="diagnosis">
+                        </p-autoComplete>
+                        <p-button class="btn-add emp-addp cust-add" [disabled]="isDisabledAllControls"
+                            (click)="showDiagnosisDialog()" icon="pi pi-plus">
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Height<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Height" formControlName="height" />
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-4 p-p-0">
+                <div class="p-grid">
+                    <div class="p-md-2 p-pl-3">
+                        <label>Weight<sup>*</sup></label>
+                    </div>
+                    <div class="p-md-10">
+                        <input type="text" pInputText placeholder="Weight" formControlName="weight" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-grid">
+
+            <div class="p-md-8 p-p-0 p-mt-3">
+                <p-button type="submit" label="Save"></p-button>
+            </div>
+        </div>
+
+    </form>
+    <ng-template pTemplate="footer">
+
+    </ng-template>
+
+</p-dialog>
+
+<!-- Diagnosis dialog -->
+<p-dialog header="Add Diagnosis" [(visible)]="diagnosisDialog" [modal]="true" [style]="{width: '40vw'}"
+    [baseZIndex]="100000">
+    <form [formGroup]="departMentFormGroup">
+        <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-12 p-md-2">
+                <label for="ctype">Name<sup>*</sup></label>
+            </div>
+            <div class="p-col-12 p-md-10">
+                <input id="other" type="text" pInputText formControlName="cCodeName">
+                <p class="danger"
+                    *ngIf="deptForm.cCodeName.invalid && (deptForm.cCodeName.dirty || deptForm.cCodeName.touched)">
+                    Department Name Is Required</p>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12 p-pl-0">
+            <p-button (click)="submitPopupF(departMentFormGroup);" type="submit" label="Add"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<div *ngIf="customerLoader" class="progress-loader">
+    <div class="loading-spinner">
+        <img src="../../../assets/images/loader.svg">
+        <span class="loading-message">Please wait...</span>
+    </div>
+</div>

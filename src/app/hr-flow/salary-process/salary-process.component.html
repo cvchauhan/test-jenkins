@@ -1,0 +1,113 @@
+<div class="payhead">
+  <div class="p-grid p-nogutter"> 
+    <div class="p-col-12 p-md-11">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-3" id="drop"><label for="first">Salary Structure</label></div>
+                  <div class="p-col-12 p-md-9  p-pl-2">
+                    <p-dropdown [options]="" optionLabel="" formControlName="sStructur"></p-dropdown> 
+                    <p style="color: red;" *ngIf="(formControl.sStructur.invalid) && (formControl.sStructur.touched || formControl.sStructur.dirty)">
+                        Salary Structure Type Is Required
+                    </p> 
+                  </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                  <label for="middle">Month/Year</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <p-dropdown [options]="" optionLabel="" formControlName="month"></p-dropdown> 
+                  <p style="color: red;" *ngIf="(formControl.month.invalid) && (formControl.month.touched || formControl.month.dirty)">
+                    Month Is Required
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-2">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-9">
+                  <input id="last" type="text" pInputText formControlName="year">
+                  <p style="color: red;" *ngIf="(formControl.year.invalid) && (formControl.year.touched || formControl.year.dirty)">
+                     Year Is Required
+                  </p>
+                </div>
+              </div>
+            </div>
+     
+            <div class="p-col-4 p-md-2">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-6">
+                    <button pButton type="button" label="Save" [disabled]="reactForms.invalid"></button>
+                  </div>
+                  <div class="p-col-12 p-md-6">
+                    <button pButton type="button" label="Import"></button>
+                  </div>
+                </div>
+            </div>
+          </div>
+    </div>
+  </div>
+    <p-table [value]="products" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+              <div class="p-col-8 p-md-8">
+                <input placeholder="Search" id="search" type="text" pInputText>
+              </div>
+              <div class="p-col-3 p-md-1">
+                <i class="pi pi-plus"></i>
+            </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>SNo</th>
+                <th>Emp Code</th>
+                <th>Employee</th>
+                <th>Department/Desig</th>
+                <th>Pay Head</th>
+                <th>Last Month</th>
+                <th>Current Month</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>1</td>
+              <td>NIPL01</td>
+              <td>ABC Singh</td>
+              <td>Sales-PA</td>
+              <td>Allowance</td>
+              <td>1000</td>
+              <td>
+                <input type="text">
+            </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>NIPL02</td>
+                <td>ABC singh</td>
+                <td>Sales-PA</td>
+                <td>Allowance</td>
+                <td>1000</td>
+                <td>
+                    <input type="text">
+                </td>
+            </tr>
+              <tr>
+                <td>3</td>
+                <td>NIPL03</td>
+                <td>ABC singh</td>
+                <td>Sales-PA</td>
+                <td>Allowance</td>
+                <td>1000</td>
+                <td>
+                    <input type="text">
+                </td>
+              </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+

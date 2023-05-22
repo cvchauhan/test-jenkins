@@ -1,0 +1,147 @@
+<!-- toaster -->
+<p-toast  [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<!-- End Toaster -->
+
+<div class="dashboard">
+  <div class="manage-groups">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12 p-md-12">
+        <!-- <div class="p-grid p-nogutter"> -->
+        <p-table #group [value]="tableData" [globalFilterFields]="['cSchNm','groupType','parentNm','cDisplayNm']" [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+          [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [rowsPerPageOptions]="[10,20,40,80,120]" [scrollable]="true" scrollHeight="350px">
+          <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between"> 
+              <div class="p-col-12 p-md-5">
+                <div class="search">
+                  <input placeholder="Search" id="search" type="text" (input)="group.filterGlobal($event.target.value,'contains')" pInputText>
+                  <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                </div>
+              </div>
+              <div class="p-col-3 p-md-2 p-text-right">
+                <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showModal()"></button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>SNo</th>
+              <th pSortableColumn="cSchNm">Group<p-sortIcon field="cSchNm"></p-sortIcon></th>
+              <th pSortableColumn="groupType">Type<p-sortIcon field="groupType"></p-sortIcon></th>
+              <th pSortableColumn="parentNm">Parent<p-sortIcon field="parentNm"></p-sortIcon></th>
+              <th pSortableColumn="groupType">Side<p-sortIcon field="groupType"></p-sortIcon></th>
+              <th pSortableColumn="cDisplayNm">Display Name<p-sortIcon field="cDisplayNm"></p-sortIcon></th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tabData let-i="rowIndex">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{tabData.cSchNm}}</td>
+              <td>{{tabData.groupType}}</td>
+              <td>{{tabData.parentNm}}</td>
+              <td>{{tabData.groupType}}</td>
+              <td>{{tabData.cDisplayNm}}</td>
+              <td>
+                <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editGroupF(tabData.nSchid);showModal()">
+                </p-button>
+                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"
+                  (click)="delGroupDataF(tabData.nSchid)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+          <!-- <ng-template pTemplate="footer">
+              <p *ngIf="tableData.length==0"> There Is Not Data Found </p>
+            </ng-template> -->
+        </p-table>
+        <!-- </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal -->
+<p-dialog class="manage-group" header="New Group" [(visible)]="displayBasic2" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="accountForm">
+    <div class="p-grid p-nogutter p-mb-3">
+      <div class="p-grid p-nogutter">
+        <div class="p-col-12 p-md-12">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-12 p-md-3" id="drop"><label>Group Name<sup>*</sup></label></div>
+            <div class="p-col-12 p-md-9">
+              <input type="text" pTypeText formControlName="cSchNm">
+              <p class="danger"
+                *ngIf="formControls.cSchNm.invalid && (formControls.cSchNm.dirty || formControls.cSchNm.touched)">
+                Group Name Is Required
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <div class="p-grid p-nogutter grid-gutter">
+
+            <div class="p-col-12 p-md-3"><label>Under</label></div>
+            <div class="p-col-12 p-md-9">
+              <p-dropdown appendTo="body" [options]="underData" optionLabel="txt" formControlName="nParentid"></p-dropdown>
+              <!-- <p class="danger"
+            *ngIf="formControls.nParentid.invalid && (formControls.nParentid.dirty || formControls.nParentid.touched)">
+            Under Is Required
+            </p> -->
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-12 p-md-3"><label for="">Display Mode</label></div>
+            <div class="p-col-12 p-md-3">
+              <input type="radio" class="ml-2" value="A" name="cDisplayMode" id="requiresShipping"
+                formControlName="cDisplayMode">
+              <label for="">Accounts</label>
+            </div>
+            <div class="p-col-12 p-md-3">
+              <input type="radio" class="ml-2" value="G" name="cDisplayMode" id="cDisplayMode"
+                formControlName="cDisplayMode">
+              <label for="">Group</label>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+          <div class="p-grid p-nogutter grid-gutter">
+           
+            <div class="p-col-12 p-md-3"><label for="">Display Name<sup>*</sup></label></div>
+            <div class="p-col-12 p-md-9">
+              <input type="text" pTypeText formControlName="cDisplayNm">
+              <p class="danger"
+                *ngIf="formControls.cDisplayNm.invalid && (formControls.cDisplayNm.dirty || formControls.cDisplayNm.touched)">
+                Display Name Is Required
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-2"><label for="">Display Mode</label></div>
+        <div class="p-col-12 p-md-4">
+          <input type="radio" value="A" name="cDisplayMode" id="cDisplayMode" formControlName="cDisplayMode">
+          <label for="">Accounts</label>
+        </div>
+        <div class="p-col-12 p-md-3">
+            <input type="radio" value="G" name="cDisplayMode" id="cDisplayMode" formControlName="cDisplayMode">
+            <label for="">Group</label>
+        </div>
+      </div>
+    </div> -->
+        <!-- <p-button type="submit" (click)="addGroupF(accountForm)" label="{{editGroupButton?'UPDATE':'SAVE'}}" class="p-button-text p-mt-3"></p-button> -->
+        <div class="p-md-9 p-md-offset-3 p-pl-0">
+          <p-button type="submit" (click)="addGroupF(accountForm)" label="{{editGroupButton?'UPDATE':'SAVE'}}"
+          class="p-button-text p-mt-3"></p-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</p-dialog>

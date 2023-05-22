@@ -1,0 +1,349 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+  <div class="p-grid">
+    <div class="p-col-5">
+      <form [formGroup]="roleForm">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-3">
+                <label for="role">Role</label>
+              </div>
+              <div class="p-col-8">
+                <p-dropdown formControlName="cRoleName" [options]="accessPData" [(ngModel)]="selectedrole"
+                  placeholder="Select Role" (onChange)="accessPerRole($event)" class="emp-ddown" optionLabel="txt">
+                </p-dropdown>
+                <p-button (click)="showRowDialogF('Role', catgId)" class="btn-add emp-addp" icon="pi pi-plus">
+                </p-button>
+              </div>
+              <div class="p-col-1">
+                <p-button icon="pi pi-pencil" *ngIf="isButtonVisible" data-toggle="tooltip" data-placement="top"
+                  title="Click to Edit" class="p-button-raised" (click)="EditRole()"></p-button>
+
+                <!-- <a  href="javascript:void(0)"  >
+                  <span class="navLogo">
+                    <img src="../../assets/sidebar-icon/edit.png" alt="">
+                  </span>
+                </a> -->
+                <!-- <button type="button" label="Edit" pButton (click)="EditRole()" *ngIf="isButtonVisible"></button> -->
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-3">
+                <label for="menu">select Menu</label>
+              </div>
+              <div class="p-col-8">
+                <p-dropdown formControlName="nMenuid" placeholder="Select Menue" [options]="menueRes"
+                  (onChange)="accesMenu($event)" optionLabel="cMenuTitle"></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="p-col-12 p-md-12" *ngIf="IsPermShow">
+      <p-tabView [activeIndex]="index" (onChange)="onhandleChange($event)">
+        <p-tabPanel header="Portal">
+          <p-accordion>
+            <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList;let i=index;"
+              header="{{menu['cMenuTitle']}}">
+              <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100"
+                scrollHeight="100px" [virtualScroll]="true" [virtualRowHeight]="34">
+                <ng-template pTemplate="header">
+                  <tr *ngIf="accessPortalList?.length != 0">
+                    <th style="width: 60px;">SNo</th>
+                    <th>Screen Name</th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader($event, menu,'N' ,i)">
+                        </p-checkbox>
+                        <label for="new">New</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader($event, menu,'E',i)">
+                        </p-checkbox>
+                        <label for="edit">Edit</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader($event, menu,'D',i)">
+                        </p-checkbox>
+                        <label for="delete">Delete</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader($event, menu,'Q',i)">
+                        </p-checkbox>
+                        <label for="query">Query</label>
+                      </div>
+                    </th>
+                    <th>Url Path</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                  <tr>
+                    <td style="width: 60px;">{{ri+1}}</td>
+                    <td>{{subm['pageTitle']}}</td>
+                    <td *ngFor="let chk of subm['mPermission']">
+                      <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                        <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                          (onChange)="changePerm($event, subm,chk)" binary="true"></p-checkbox>
+                        <label for="screen1">{{chk['permName']}}</label>
+                      </div>
+                    </td>
+                    <td>{{subm['urlPath']}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-accordionTab>
+          </p-accordion>
+        </p-tabPanel>
+        <p-tabPanel header="Report">
+          <p-accordion>
+            <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList2;let i=index;"
+              header="{{menu['cMenuTitle']}}" >
+              <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100"
+                scrollHeight="100px" [virtualScroll]="true" [virtualRowHeight]="34">
+                <ng-template pTemplate="header">
+                  <tr *ngIf="accessPortalList2?.length != 0">
+                    <th style="width: 60px;">SNo</th>
+                    <th>Screen Name</th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader2($event, menu,'N' ,i)">
+                        </p-checkbox>
+                        <label for="new">New</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader2($event, menu,'E',i)">
+                        </p-checkbox>
+                        <label for="edit">Edit</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader2($event, menu,'D',i)">
+                        </p-checkbox>
+                        <label for="delete">Delete</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader2($event, menu,'Q',i)">
+                        </p-checkbox>
+                        <label for="query">Query</label>
+                      </div>
+                    </th>
+                    <th>Url Path</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                  <tr>
+                    <td style="width: 60px;">{{ri+1}}</td>
+                    <td>{{subm['pageTitle']}}</td>
+                    <td *ngFor="let chk of subm['mPermission']">
+                      <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                        <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                          (onChange)="changePerm2($event, subm,chk)" binary="true"></p-checkbox>
+                        <label for="screen1">{{chk['permName']}}</label>
+                      </div>
+                    </td>
+                    <td>{{subm['urlPath']}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-accordionTab>
+          </p-accordion>
+        </p-tabPanel>
+        <p-tabPanel header="Mobile">
+          <p-accordion>
+            <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList3;let i=index;"
+              header="{{menu['cMenuTitle']}}">
+              <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100"
+                scrollHeight="100px" [virtualScroll]="true" [virtualRowHeight]="34">
+                <ng-template pTemplate="header">
+                  <tr *ngIf="accessPortalList3?.length != 0">
+                    <th style="width: 60px;">SNo</th>
+                    <th>Screen Name</th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader3($event, menu,'N' ,i)">
+                        </p-checkbox>
+                        <label for="new">New</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader3($event, menu,'E',i)">
+                        </p-checkbox>
+                        <label for="edit">Edit</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader3($event, menu,'D',i)">
+                        </p-checkbox>
+                        <label for="delete">Delete</label>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="p-field-checkbox">
+                        <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader3($event, menu,'Q',i)">
+                        </p-checkbox>
+                        <label for="query">Query</label>
+                      </div>
+                    </th>
+                    <th>Url Path</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                  <tr>
+                    <td style="width: 60px;">{{ri+1}}</td>
+                    <td>{{subm['pageTitle']}}</td>
+                    <td *ngFor="let chk of subm['mPermission']">
+                      <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                        <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                          (onChange)="changePerm3($event, subm,chk)" binary="true"></p-checkbox>
+                        <label for="screen1">{{chk['permName']}}</label>
+                      </div>
+                    </td>
+                    <td>{{subm['urlPath']}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-accordionTab>
+          </p-accordion>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+    <!-- <div class="p-col-12">
+      <p-accordion class="role_accord">
+        <p-accordionTab class="infoaccordion" [selected]="true" *ngFor="let menu of accessPortalList;let i=index;"
+          header="{{menu['cMenuTitle']}}">
+          <p-table [value]="menu['submenu']" [autoLayout]="true" [rows]="100" [virtualRowHeight]="34">
+            <ng-template pTemplate="header">
+              <tr *ngIf="accessPortalList?.length != 0">
+                <th style="width: 60px;">SNo</th>
+                <th>Screen Name</th>
+                <th>
+                  <div class="p-field-checkbox">
+                    <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader($event, menu,'N' ,i)">
+                    </p-checkbox>
+                    <label for="new">New</label>
+                  </div>
+                </th>
+                <th>
+                  <div class="p-field-checkbox">
+                    <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader($event, menu,'E',i)">
+                    </p-checkbox>
+                    <label for="edit">Edit</label>
+                  </div>
+                </th>
+                <th>
+                  <div class="p-field-checkbox">
+                    <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader($event, menu,'D',i)">
+                    </p-checkbox>
+                    <label for="delete">Delete</label>
+                  </div>
+                </th>
+                <th>
+                  <div class="p-field-checkbox">
+                    <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader($event, menu,'Q',i)">
+                    </p-checkbox>
+                    <label for="query">Query</label>
+                  </div>
+                </th>
+                <th>Url Path</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+              <tr>
+                <td style="width: 60px;">{{ri+1}}</td>
+                <td>{{subm['pageTitle']}}</td>
+                <td *ngFor="let chk of subm['mPermission']">
+                  <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                    <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                      (onChange)="changePerm($event, subm,chk)" binary="true"></p-checkbox>
+                    <label for="screen1">{{chk['permName']}}</label>
+                  </div>
+                </td>
+                <td>{{subm['urlPath']}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-accordionTab>
+      </p-accordion>
+    </div> -->
+    <div class="p-col-12">
+      <button type="button" label="Save" pButton *ngIf="isButtonVisible" (click)="savePermissions()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Add new Role dailog box -->
+<p-dialog header="Add New {{currentAddData}}" [(visible)]="displayBasic" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="addroleForm" (ngSubmit)="saveRole('Save')">
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-4">
+        <label for="ctype">Role</label>
+      </div>
+      <div class="p-col-12 p-md-8">
+        <input id="other" type="text" formControlName="cRoleName" pInputText>
+        <p class="danger" *ngIf="(f.cRoleName.invalid) && (f.cRoleName.touched || f.cRoleName.dirty)">
+          Role is Required
+        </p>
+        <!-- <p class="danger"
+          *ngIf="contorlForm.cCodeName.invalid && (contorlForm.cCodeName.dirty || contorlForm.cCodeName.touched)">
+          {{categoryName}} Is Required</p> -->
+      </div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter" *ngIf="showParentDropdown">
+      <div class="p-col-12 p-md-4">
+        <label for="parent">Copy Permission from</label>
+      </div>
+      <div class="p-col-12 p-md-8">
+        <p-dropdown appendTo="body" (onChange)="onChangePermission($event)" formControlName="nRoleId" id="parent"
+          [options]="accessPData" optionLabel="txt" [filter]="true" filterBy="txt"></p-dropdown>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <p-button type="submit" [disabled]="addroleForm.invalid" label="Add"></p-button>
+    </div>
+  </form>
+</p-dialog>
+<!-- Add new Role dailog box end-->
+
+
+<!-- Add new Role dailog box -->
+<p-dialog header="Edit Role {{currentAddData}}" [(visible)]="EditdisplayBasic" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="addroleForm" (ngSubmit)="saveRole('Edit')">
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-4">
+        <label for="ctype">Role</label>
+      </div>
+      <div class="p-col-12 p-md-8">
+        <input id="other" type="text" formControlName="cRoleName" pInputText>
+        <p class="danger" *ngIf="(f.cRoleName.invalid) && (f.cRoleName.touched || f.cRoleName.dirty)">
+          Role is Required
+        </p>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <p-button type="submit" [disabled]="addroleForm.invalid" label="Edit"></p-button>
+    </div>
+  </form>
+</p-dialog>
+<!-- Add new Role dailog box end-->

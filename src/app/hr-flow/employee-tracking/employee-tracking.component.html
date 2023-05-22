@@ -1,0 +1,83 @@
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="col-md-3">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-4">
+                    <label>Date</label>
+                </div>
+                <div class="p-md-8">
+                    <p-calendar dateFormat="dd-mm-yy" [showIcon]="true"></p-calendar>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-4">
+                    <label>To</label>
+                </div>
+                <div class="p-md-8">
+                    <p-calendar dateFormat="dd-mm-yy" [showIcon]="true"></p-calendar>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-12">
+            <p-tabView>
+                <p-tabPanel header="Distance Analysis">
+                   <div class="p-grid">
+                       <div class="p-md-3">
+                        <p-table [value]="products">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th></th>
+                                    <th>Employee</th>
+                                    <th>Distance(km)</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-product>
+                                <tr>
+                                    <td><input type="radio" name="employee"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                       </div>
+                       <div class="p-md-9"></div>
+                   </div>
+                </p-tabPanel>
+                <p-tabPanel header="Job Analysis">
+                    <div class="p-grid">
+                        <div class="p-md-12">
+                         <p-table [value]="products">
+                             <ng-template pTemplate="header">
+                                 <tr>
+                                     <th>Day</th>
+                                     <th>Job No</th>
+                                     <th>Patient</th>
+                                     <th>Customer</th>
+                                     <th>Mobile</th>
+                                     <th>Start Time</th>
+                                     <th>End Time</th>
+                                 </tr>
+                             </ng-template>
+                             <ng-template pTemplate="body" let-product>
+                                 <tr>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                 </tr>
+                             </ng-template>
+                         </p-table>
+                        </div>
+                    </div>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+<header>
+
+  <div class="profile">
+    <div class="p-grid p-nogutter">
+      <div class="p-md-6 p-p-0">
+        <h5 class="heading">{{headingText}}</h5>
+      </div>
+      <div class="p-md-6 p-p-0">
+        <!-- <button type="button" class="btn-bell"><i class="pi pi-cog"></i></button> -->
+        <button type="button" class="btn-bell"><i class="pi pi-bell"></i></button>
+        <button type="button" class="profile_icon" (click)="toggleProfile($event)">
+          <img src="../../assets/images/profile.png" alt="">
+        </button>
+        <div class="profile_dropdown" *ngIf="profileToggle">
+          <div class="username">
+            <div class="username_left">
+              <img src="../../assets/images/profile.png" alt="">
+            </div>
+            <div class="username_right">
+              <h6>{{empName}}</h6>
+              <h6>{{roleName}}</h6>
+              <!-- <h5>{{userName}}</h5>
+              <h5>{{empName}}</h5> -->
+            </div>
+            <!-- <div class="username_right">
+              <h6>{{roleName}}</h6>
+            </div> -->
+          </div>
+          <ul>
+            <!-- <li><a href="javascript:void(0)" (click)="closeClick()"><span><i class="pi pi-user"></i></span>My
+                Profile</a></li>
+            <li><a href="javascript:void(0)" [routerLink]="['/profile/manage-Parameters']"
+                (click)="closeClick()"><span><i class="pi pi-wallet"></i></span>Manage Parameters</a></li>
+            <li><a href="javascript:void(0)" [routerLink]="['/profile/manage-permissions']"
+                (click)="closeClick()"><span><i class="pi pi-wallet"></i></span>Manage Permissions</a></li> -->
+            <li><a href="javascript:void(0)" (click)="closeClick()"><span><i class="pi pi-cog"></i></span>Change
+                Password</a></li>
+            <li><a href="javascript:void(0)" (click)="ChangeBranchId()"><span><i class="pi pi-list"></i></span>Change Branch</a></li>
+            <li><a [routerLink]="" (click)="logout()"><span><i class="pi pi-sign-out"></i></span>Logout</a></li>
+            <!-- <li><a href="javascript:void(0)" class="view" (click)="closeClick()">View Profile</a></li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</header>
+
+<p-dialog header="Change Password" [(visible)]="customerDialog" [modal]="true" [style]="{width: '30vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="formsGroup">
+    <div class="p-grid">
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-4">
+            <label for="oldPassword">Old Password</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input id="op" formControlName="oldPassword" type="text" pInputText (blur)="checkOldPassword($event)">
+            <div
+              *ngIf="(formControls.oldPassword.invalid) && (formControls.oldPassword.touched || formControls.oldPassword.dirty)">
+              <p class="danger" *ngIf="formControls.oldPassword.errors.required">Old Password can't blank
+              </p>
+              <span class="danger" *ngIf="(formControls.oldPassword.invalid)">
+                {{formControls.oldPassword.errors.message}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-4">
+            <label for="newPasswod">New Password</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input id="np" formControlName="newPasswod" type="text" pInputText>
+            <div
+              *ngIf="(formControls.newPasswod.invalid) && (formControls.newPasswod.touched || formControls.newPasswod.dirty)">
+              <p class="danger" *ngIf="formControls.newPasswod.errors.required">New Password can't blank
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-4">
+            <label for="confirmPassword">Confirm Password</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input id="cp" formControlName="confirmPassword" type="text" pInputText>
+            <div
+              *ngIf="(formControls.confirmPassword.invalid) && (formControls.confirmPassword.touched || formControls.confirmPassword.dirty)">
+              <p class="danger" *ngIf="formControls.confirmPassword.errors.required">Confirm Password can't blank
+              </p>
+            </div>
+            <span class="danger"
+              *ngIf="formControls.confirmPassword.touched && formControls.confirmPassword.errors?.passwordMismatch">
+              Passwords doesnot match
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12" style="text-align:center;">
+        <button pButton label="Save" (click)="ChangePassword()" [disabled]="formsGroup.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog header="Change Branch" [(visible)]="customerBranchId" [modal]="true" [style]="{width: '30vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="branchForm">
+    <div class="p-grid">
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-8">
+            <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+            optionValue="val" formControlName="branchId" (onChange)="ChangeBranch($event)"></p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12" style="text-align:center;">
+        <button pButton label="Save" (click)="SaveChangeBranch()" [disabled]="branchForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

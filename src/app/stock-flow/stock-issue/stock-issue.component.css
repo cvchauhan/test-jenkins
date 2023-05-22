@@ -1,0 +1,51 @@
+.commonForm {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.commonForm li {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.commonForm li .gst {
+  width: 70px;
+}
+
+.commonForm li:last-child {
+  margin-right: 0;
+}
+
+.commonForm li:first-child {
+  width: 38%;
+}
+
+.commonForm.gstbox {
+  padding: 0;
+}
+
+.commonForm.gstbox li:first-child {
+  width: auto;
+}
+
+.c-dialog-overflow {
+  overflow-y: scroll;
+}
+
+.MTP {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+}
+
+.repeatedForm {
+  margin-bottom: 15px;
+}
+
+.p-input-icon-right > i:last-of-type {
+  right: 5px;
+  z-index: 9;
+}
+/*# sourceMappingURL=stock-issue.component.css.map */

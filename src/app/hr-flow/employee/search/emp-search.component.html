@@ -1,0 +1,79 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<p-table #empsearch [value]="searchList" [globalFilterFields]="['srvSkill','cEmpcode','cEmpName','department','desigid','roleid']"
+  [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [rowsPerPageOptions]="[10,20,40,80,120]" [scrollable]="true" scrollHeight="400px">
+  <ng-template pTemplate="caption">
+    <div class="p-grid p-jc-end">
+      <div class="p-col-9 p-md-5">
+        <div class="search">
+          <input placeholder="Search" id="search" (input)="empsearch.filterGlobal($event.target.value,'contains')"
+            type="text" pInputText>
+          <!-- <input placeholder="Search" id="search" type="text" pInputText [(ngModel)]="filterData" [ngModelOptions]="{standalone: true}"> -->
+          <button pButton type="button" icon="pi pi-search" iconPos="left" (click)=filtersearchTableF()></button>
+        </div>
+      </div>
+      <div class="p-col-3 p-md-7 p-text-left">
+        <button pButton type="button" icon="pi pi-plus" iconPos="right" (click)="AddEmployee()"></button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th [ngStyle]="{'width':'50px'}" >SNo</th>
+      <th [ngStyle]="{'width':'90px'}" pSortableColumn="cEmpcode">Emp Code<p-sortIcon field="cEmpcode"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'220px'}" pSortableColumn="cEmpName">Employee<p-sortIcon field="cEmpName"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'150px'}" pSortableColumn="department">Department<p-sortIcon field="department"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'110px'}" pSortableColumn="cMobile1">Mobile<p-sortIcon field="cMobile1"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'150px'}" pSortableColumn="desigid">Designation<p-sortIcon field="desigid"></p-sortIcon>
+      </th>
+      <th  [ngStyle]="{'width':'150px'}" pSortableColumn="roleid">Role<p-sortIcon field="roleid"></p-sortIcon>
+      </th>
+      <th  [ngStyle]="{'width':'150px'}" pSortableColumn="branch">Branch<p-sortIcon field="branch"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'220px'}" pSortableColumn="srvSkill">Service Skill<p-sortIcon field="srvSkill"></p-sortIcon>
+      </th>
+      <th [ngStyle]="{'width':'100px'}">Action</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-tData let-i="rowIndex">
+    <tr>
+      <td [ngStyle]="{'width':'50px'}">{{i+1}}</td>
+      <td [ngStyle]="{'width':'90px'}">{{tData.cEmpcode}}</td>
+      <td [ngStyle]="{'width':'220px'}">{{tData.cEmpName}}</td>
+      <td [ngStyle]="{'width':'150px'}">{{tData.department}}</td>
+      <td [ngStyle]="{'width':'110px'}">{{tData.cMobile1}}</td>
+      <td [ngStyle]="{'width':'150px'}">{{tData.desigid}}</td>
+      <td [ngStyle]="{'width':'150px'}">{{tData.roleid}}</td>
+      <td [ngStyle]="{'width':'150px'}">{{tData.branch}}</td>
+      <td [ngStyle]="{'width':'220px'}">{{tData.srvSkill}}</td>
+      <td [ngStyle]="{'width':'100px'}">
+        <a (click)="ResetPassword(tData.nEmpid)" href="javascript:void(0)" class="p-ml-2"  data-toggle="tooltip" data-placement="top"  title="Click to ResetPassword">
+          <span class="navLogo">
+              <img src="../../assets/sidebar-icon/reset.png" alt="">
+          </span>
+      </a>
+      <a (click)="ResetDevice(tData.nEmpid)" href="javascript:void(0)"  class="p-ml-2" data-toggle="tooltip" data-placement="top" title="Click to ResetDevice">
+        <span class="navLogo">
+            <img src="../../assets/sidebar-icon/devicereset.png" alt="">
+        </span>
+    </a>
+        <!-- <p-button icon="pi pi-sync" class="p-button-raised p-ml-2" (click)="ResetPassword(tData.nEmpid)"></p-button> -->
+        <!-- <p-button icon="pi pi-pencil" class="p-button-raised p-ml-2" (click)="ResetDevice(tData.nEmpid)"></p-button> -->
+        <p-button icon="pi pi-pencil" class="p-button-raised p-ml-2" (click)="editEmp(tData.nEmpid, tData)" title="Click to Edit Employee"></p-button>
+        <p-button icon="pi pi-trash" (click)="delEmp(tData.nEmpid);" class="p-button-raised p-button-danger p-ml-2" title="Click to Delete Employee">
+        </p-button>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate="summary">
+        <div class="p-d-flex p-ai-center p-jc-between">
+            In total there are {{products ? products.length : 0 }} Employee.
+        </div>
+    </ng-template>  -->
+</p-table>

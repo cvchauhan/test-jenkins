@@ -1,0 +1,58 @@
+<div class="customer-box">
+    <form [formGroup]="customerForm" (ngSubmit)="onSubmitCustomer()">
+        <div class="p-grid">
+            <div class="p-md-4 p-1">
+                <label for="group">Group<sup>*</sup></label>
+                <p-dropdown [disabled]="true" appendTo="body" #custGroup [placeholder]="customerForm.get('groupName').value ? customerForm.get('groupName').value :'Select Group'" [options]="filteredGroups"
+                                optionLabel="txt" formControlName="groupName" optionValue="val" (onChange)="selectGroup($event, custGroup)">
+                </p-dropdown>
+                <!-- <p-autoComplete [suggestions]="filteredGroups" 
+                formControlName="group"
+                (completeMethod)="filterGroup($event)" field="txt" [minLength]="1" placeholder="Select Group">
+                </p-autoComplete> -->
+            </div>
+            <div class="p-md-4 p-1">
+                <label for="group">Ledger Name<sup>*</sup></label>
+                <input type="text" class="form-control" formControlName="cLedgerNm" pInputText placeholder="Ledger Name" />
+            </div>
+            <div class="p-md-4 p-1">
+                <label for="group">Mobile<sup>*</sup></label>
+                <input type="text" formControlName="nMobile" pInputText placeholder="Mobile" />
+            </div>
+            <!-- <div class="p-md-12">
+                <div class="p-grid">
+                    <div class="p-md-8">
+                        <p style="margin-bottom: 0px;"><strong>Address</strong></p>
+                    </div>
+                    <div class="p-md-4">
+                        <p-button type="button" (click)="addItem()" label="Add More Address"></p-button>
+                    </div>
+                </div>
+            </div> -->
+            <div class="p-md-12 p-1" formArrayName="addresses">
+                <ng-container *ngFor="let item of formArray.controls; let i = index">
+                    <div class="p-grid" [formGroupName]="i" >
+                        <div class="p-1" [ngClass]="formArray.controls.length > 1 ? 'p-md-7':'p-md-8'">
+                            <label>Address<sup>*</sup></label>
+                            <input formControlName="cAddress1" type="text" pInputText placeholder="Address" />
+                        </div>
+                        <div class="p-1" [ngClass]="formArray.controls.length > 1 ? 'p-md-3':'p-md-4'">
+                            <label>Contact Person<sup>*</sup></label>
+                            <input type="text" formControlName="cContactPerson" pInputText placeholder="Contact Person" />
+                        </div>
+                        <div class="p-md-2 p-1" *ngIf="formArray.controls.length > 1">
+                            <label class="d-block">&nbsp;</label>
+                            <p-button type="button" (click)="deleteItem(i)" label="Remove"></p-button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="p-md-12 p-1">
+                <app-map-common (latLong)="getLatLong($event)"></app-map-common>
+            </div>
+            <div class="p-md-12 p-1">
+                <p-button type="submit" label="Save"></p-button>
+            </div>
+        </div>
+    </form>
+</div>

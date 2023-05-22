@@ -1,0 +1,89 @@
+<div class="customer-box">
+    <form *ngIf="!newCustomer" [formGroup]="patientForm" (ngSubmit)="onSubmitPatient()">
+        <div  class="p-grid p-nogutter">
+            <div class="p-md-4 p-1" >
+                <label >Customer Name<sup>*</sup></label>
+                <p-dropdown class="emp-ddown" appendTo="body"  [placeholder]="'Select Customer'" [options]="CustomerList"
+                                optionLabel="cDisplayNm" optionValue="nAcid" formControlName="nAcid" >
+                </p-dropdown>
+                <p-button class="btn-add emp-addp cust-add" (click)="addCustomer()" icon="pi pi-plus">
+                </p-button>
+            </div>
+            
+            <div class="p-md-4 p-1">
+                <label >Patient Name<sup>*</sup></label>
+                <input type="text" formControlName="cPatientNm"  class="form-control" pInputText placeholder="Patient Name" />
+            </div>
+            <div class="p-md-4 p-1">
+                <label >Age<sup>*</sup></label>
+                <input type="text" formControlName="nAge"  class="form-control" (keypress)="handleInput($event)" pInputText placeholder="Age" />
+            </div>
+            <div class="p-md-4 p-1">
+                <label >Gender<sup>*</sup></label>
+                <p-dropdown appendTo="body"  formControlName="cSex" [placeholder]="'Select Gender'" [options]="listOfGender"
+                                optionLabel="name" optionValue="value">
+                </p-dropdown>
+            </div>
+            <div class="p-md-4 p-1">
+                <label >Height<sup>*</sup></label>
+                <input type="text" formControlName="nHeight" class="form-control" (keypress)="handleInput($event)" pInputText placeholder="Height" />
+                <p-message-error class="errMsg" text="Message Content" *ngIf="f.nHeight.touched && f.nHeight.invalid">Height should be between 0 to 10</p-message-error>
+            </div>
+            <div class="p-md-4 p-1">
+                <label >Weight<sup>*</sup></label>
+                <input type="text" formControlName="nWeight" class="form-control" (keypress)="handleInput($event)" pInputText placeholder="Weight" />
+                <p-message-error class="errMsg" text="Message Content" *ngIf="f.nWeight.touched && f.nWeight.invalid">Weight should be between 1 to 400</p-message-error>
+            </div>
+            <div class="p-md-4 p-1">
+                <label >Diagnosis<sup>*</sup></label>
+                <p-dropdown class="emp-ddown" appendTo="body" #selectItem [placeholder]="'Select Diagnosis'" [options]="listOfDiagnosis"
+                                optionLabel="codeName" optionValue="serialNo" formControlName="nDiagnosis" (onChange)="selectDiagnosis($event, selectItem)">
+                </p-dropdown>
+                <p-button class="btn-add emp-addp cust-add" (click)="addDiagnosis()" icon="pi pi-plus">
+                </p-button>
+            </div>
+            <div class="p-md-12 p-1">
+                <p-button type="submit" label="Save"></p-button>
+            </div>
+        
+        
+            
+        </div>
+        
+    </form>
+    <form  *ngIf="newCustomer" [formGroup]="customerForm" (ngSubmit)="saveCustomer()">
+        <div class="p-grid">
+            <div  class="p-md-4 p-1">
+                <label >Customer Name<sup>*</sup></label>
+                <input type="text" formControlName="cLedgerNm" class="form-control" pInputText placeholder="Customer Name" />
+            </div>
+            <!-- <div  class="p-md-4 p-1">
+                <label >Address</label>
+                <input type="text" formControlName="cPatientNm" class="form-control" pInputText placeholder="Address" />
+            </div> -->
+            <div   class="p-md-6 p-1" formArrayName="addresses">
+                <ng-container *ngFor="let item of formArray.controls; let i = index">
+                    <div class="p-grid" [formGroupName]="i" >
+                        <div class="p-1" [ngClass]="formArray.controls.length > 1 ? 'p-md-7':'p-md-8'">
+                            <label>Address<sup>*</sup></label>
+                            <input formControlName="cAddress1" type="text" pInputText placeholder="Address" />
+                        </div>
+                       
+                    </div>
+                </ng-container>
+            </div>
+            <div  class="p-md-4 p-1">
+                <label >Mobile No</label>
+                <input type="text" formControlName="nMobile" class="form-control" (keypress)="handleInput($event)" pInputText placeholder="Mobile No" />
+                <p-message-error class="errMsg" text="Message Content" *ngIf="m.nMobile.touched && m.nMobile.invalid">Mobile number shouldbe 10 digit number</p-message-error>
+            </div>
+            
+            
+            <div  class="p-md-12 p-1">
+                <p-button type="submit" label="Save"></p-button>
+            </div>
+        </div>
+
+    </form>
+</div>
+            

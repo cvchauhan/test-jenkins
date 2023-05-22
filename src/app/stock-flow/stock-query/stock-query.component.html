@@ -1,0 +1,215 @@
+<p-toast></p-toast>
+<div class="dashboard">
+    <p-tabView>
+        <p-tabPanel header="Stock Inhand">
+            <!-- <div class="p-grid p-no-gutter">
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Stock Type<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown [options]="stockType" optionLabel="name" placeholder="Select"
+                                [(ngModel)]="stockTypeId">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Stock Category<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown [options]="stockCategoriesData" optionLabel="codeName" placeholder="Select"
+                                [(ngModel)]="stockCatId">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col">Branch<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Item</label>
+                        <div class="p-col">
+                            <p-dropdown placeholder="Select" [options]="items" optionLabel="cItemNm"
+                                optionValue="nItemid" [(ngModel)]="itemId"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="p-grid p-nogutter grid-gutter ">
+                <div class="p-md-1 align-middle"><label for="" >Stock Type<sup>*</sup></label></div>
+                <div class="p-md-2">
+                    <p-dropdown [options]="stockType" optionLabel="name" placeholder="Select" [(ngModel)]="stockTypeId">
+                    </p-dropdown>
+                </div>
+                <div class="p-md-1 align-middle"><label for="" >Stock Categ.<sup>*</sup></label></div>
+                <div class="p-md-2">
+                    <p-dropdown [options]="stockCategoriesData" optionLabel="codeName" placeholder="Select"
+                        [(ngModel)]="stockCatId">
+                    </p-dropdown>
+                </div>
+                <div class="p-md-1 align-middle"><label for="">Item</label></div>
+                <div class="p-md-2">
+                    <p-dropdown placeholder="Select" [options]="items" optionLabel="cItemNm" optionValue="nItemid"
+                        [(ngModel)]="itemId"></p-dropdown>
+                </div>
+                <div class="p-md-1 align-middle"><label for="" >Branch<sup>*</sup></label></div>
+                <div class="p-md-2">
+                    <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId"></p-dropdown>
+                </div>
+
+                
+                <div class="p-md-1 align-middle"><label for="">View Mode</label></div>
+                <div class="p-md-2">
+                    <p-dropdown [options]="viewModeType" optionLabel="name" placeholder="Select"
+                        [(ngModel)]="viewModeTypeId">
+                    </p-dropdown>
+                </div>
+                <div class="p-md-1">
+                    <button type="button" label="View" (click)="onInhandView()" pButton></button>
+                </div>
+            </div>
+            <p-table #inhand [value]="inHandData"
+                [globalFilterFields]="['cBranchName','cStkType','itemName','cSerialNo','stockQty','itemName','cSerialNo','stockQty','issueDate','days']"
+                responsiveLayout="scroll" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search"
+                                    (input)="inhand.filterGlobal($event.target.value,'contains')" type="text"
+                                    pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SNo</th>
+                        <th pSortableColumn="itemName">Item Name<p-sortIcon field="itemName"></p-sortIcon></th>
+                        <th pSortableColumn="cSerialNo">Serial No<p-sortIcon field="cSerialNo"></p-sortIcon></th>
+                        <th pSortableColumn="stockQty">Qty<p-sortIcon field="stockQty"></p-sortIcon></th>
+                        <th pSortableColumn="issueDate">Issue Days<p-sortIcon field="issueDate"></p-sortIcon></th>
+                        <th pSortableColumn="days">Days Passed<p-sortIcon field="days"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data let-index="rowIndex">
+                    <tr>
+                        <td>{{index + 1}}</td>
+                        <td>{{data.itemName}} </td>
+                        <td>{{data.cSerialNo}}</td>
+                        <td>{{data.stockQty}}</td>
+                        <td>{{data.issueDate | dateFormat}}</td>
+                        <td>{{data.days}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Stock Position">
+            <div class="p-grid p-no-gutter">
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Stock Type<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown [options]="stockType" optionLabel="name" placeholder="Select"
+                                [(ngModel)]="stockTypeId">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Stock Category<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown [options]="stockCategoriesData" optionLabel="codeName" placeholder="Select"
+                                [(ngModel)]="stockCatId">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col">Branch<sup>*</sup></label>
+                        <div class="p-col">
+                            <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <div class="p-grid p-field">
+                        <label class="fixed-col" for="">Item</label>
+                        <div class="p-col">
+                            <p-dropdown placeholder="Select" [options]="items" optionLabel="cItemNm"
+                                optionValue="nItemid" [(ngModel)]="itemId"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col">
+                    <button type="button" label="View" (click)="onPositionView()" pButton></button>
+                </div>
+            </div>
+            <p-table #stockposition [value]="stockPositionData"
+                [globalFilterFields]="['cBranchName','cStkType','itemName','cSerialNo','stockQty','customerName','cAddress','cMobile','issueDate','days','cJobNo']"
+                responsiveLayout="scroll" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search"
+                                    (input)="stockposition.filterGlobal($event.target.value,'contains')" type="text"
+                                    pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th >SNo</th>
+                        <th pSortableColumn="itemName">Item Name<p-sortIcon field="itemName"></p-sortIcon></th>
+                        <th pSortableColumn="cSerialNo">Serial No<p-sortIcon field="cSerialNo"></p-sortIcon></th>
+                        <th pSortableColumn="stockQty">Qty<p-sortIcon field="stockQty"></p-sortIcon></th>
+                        <th pSortableColumn="customerName">Customer<p-sortIcon field="customerName"></p-sortIcon></th>
+
+                        <th pSortableColumn="cAddress">Address<p-sortIcon field="cAddress"></p-sortIcon></th>
+
+                        <th pSortableColumn="cMobile">Mobile<p-sortIcon field="cMobile"></p-sortIcon></th>
+                        <th pSortableColumn="issueDate">Issue Days<p-sortIcon field="issueDate"></p-sortIcon></th>
+                        <th pSortableColumn="days">Days Passed<p-sortIcon field="days"></p-sortIcon></th>
+                        <th pSortableColumn="cJobNo">Job No<p-sortIcon field="cJobNo"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data let-index="rowIndex">
+                    <tr>
+                        <td>{{index + 1}}</td>
+                        <td>{{data.itemName}}</td>
+                        <td>{{data.cSerialNo}}</td>
+                        <td>{{data.stockQty}}</td>
+                        <td>{{data.customerName}}</td>
+                        <td>{{data.cAddress}}</td>
+                        <td>{{data.cMobile}}</td>
+                        <td>{{data.issueDate | dateFormat}}</td>
+                        <td>{{data.days}}</td>
+                        <td>{{data.cJobNo}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+
+    </p-tabView>
+
+</div>

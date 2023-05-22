@@ -1,0 +1,527 @@
+<div class="layout-dashboard">
+    <div class="p-grid">
+        <div class="p-col  p-md-3" *ngFor="let items of jobData">
+            <div class="card overview-box blue">
+                <div class="card-header">
+                    <h6>{{items.header}}</h6>
+                </div>
+                <div class="overview-content" *ngIf="items.value">
+                    <div class="font-size-14" *ngFor="let item of items.value">
+                        <strong>{{item.Status}}</strong>
+                    </div>
+                </div>
+                <div class="overview-content" style="padding: 0 25px 0 5px;" *ngIf="items.value">
+                    <div class="font-size-14" *ngFor="let item of items.value">
+                        <span>{{item.Jobs}}</span>
+                    </div>
+                </div>
+                <!-- <ng-template #other_content><span>No record found</span></ng-template> -->
+            </div>
+        </div>
+        <!-- <div class="p-col  p-md-3">
+            <div class="card overview-box teal">
+                <div class="card-header">
+                    <h6>Page View</h6>
+                    <div class="header-buttons"><a href="#"><i class="pi pi-arrow-up"></i></a></div>
+                </div>
+                <div class="overview-content">
+                    <h3>5592</h3>
+                    <div class="overview-graph"><span style="height: 30px;"><span
+                                class="graph-tooltip">30</span></span><span style="height: 43px;"><span
+                                class="graph-tooltip">43</span></span><span style="height: 48px;"><span
+                                class="graph-tooltip">48</span></span><span style="height: 40px;"><span
+                                class="graph-tooltip">40</span></span><span style="height: 52px;"><span
+                                class="graph-tooltip">52</span></span><span style="height: 18px;"><span
+                                class="graph-tooltip">18</span></span></div>
+                </div>
+                <div class="overview-footer down"><span><i class="pi pi-arrow-down"></i><span>12%</span> decrease in
+                        today sales</span></div>
+            </div>
+        </div>
+        <div class="p-col  p-md-3">
+            <div class="card overview-box orange">
+                <div class="card-header">
+                    <h6>Bounce Rate</h6>
+                    <div class="header-buttons"><a href="#"><i class="pi pi-arrow-up"></i></a></div>
+                </div>
+                <div class="overview-content">
+                    <h3>55.95%</h3>
+                    <div class="overview-graph"><span style="height: 20px;"><span
+                                class="graph-tooltip">20</span></span><span style="height: 23px;"><span
+                                class="graph-tooltip">23</span></span><span style="height: 52px;"><span
+                                class="graph-tooltip">52</span></span><span style="height: 18px;"><span
+                                class="graph-tooltip">18</span></span><span style="height: 28px;"><span
+                                class="graph-tooltip">28</span></span><span style="height: 42px;"><span
+                                class="graph-tooltip">42</span></span></div>
+                </div>
+                <div class="overview-footer"><span><i class="pi pi-arrow-up"></i><span>6%</span> increase in today
+                        sales</span></div>
+            </div>
+        </div>
+        <div class="p-col  p-md-3">
+            <div class="card overview-box pink">
+                <div class="card-header">
+                    <h6>Products Sale Rate</h6>
+                    <div class="header-buttons"><a href="#"><i class="pi pi-arrow-up"></i></a></div>
+                </div>
+                <div class="overview-content">
+                    <h3>15.37%</h3>
+                    <div class="overview-graph"><span style="height: 17px;"><span
+                                class="graph-tooltip">20</span></span><span style="height: 39px;"><span
+                                class="graph-tooltip">23</span></span><span style="height: 22px;"><span
+                                class="graph-tooltip">52</span></span><span style="height: 34px;"><span
+                                class="graph-tooltip">18</span></span><span style="height: 28px;"><span
+                                class="graph-tooltip">28</span></span><span style="height: 52px;"><span
+                                class="graph-tooltip">42</span></span></div>
+                </div>
+                <div class="overview-footer down"><span><i class="pi pi-arrow-down"></i><span>1.1%</span> decrease in
+                        today sales</span></div>
+            </div>
+        </div> -->
+        <div class="p-col p-md-9">
+            <div class="card sale-graph">
+                <div class="card-header">
+                    <h6>Top Products</h6>
+                </div>
+                <div id="order-tabs-container" class="order-tabs">
+                    <div data-label="New Sales" data-index="0" data-stroke="#00acac" class="order-tab order-tab-active">
+                        <h6>Current Week</h6>
+                        <h3>$455.55</h3>
+                    </div>
+                    <div data-label="Previous Sales" data-index="1" data-stroke="#2f8ee5" class="order-tab">
+                        <h6>Previous Week</h6>
+                        <h3>$244.40</h3>
+                    </div>
+                </div>
+                <div class="overview-chart">
+                    <p-chart type="line" class="p-element" [data]="lineChartdata" [options]="lineChartoptions">
+                        <div style="position: relative;">
+                            <canvas style="display: block; box-sizing: border-box; height: 372px; width: 744px;"
+                                width="744" height="372"></canvas>
+                        </div>
+                    </p-chart>
+                </div>
+            </div>
+        </div>
+        <div class="p-col p-md-3">
+            <div class="p-grid">
+                <div class="p-col p-md-12 ">
+                    <div class="card traffic">
+                        <div class="card-header">
+                            <h6>Traffic</h6>
+                        </div>
+                        <span>26 May - 27 May</span>
+                        <div class="traffic-chart">
+                            <p-chart type="doughnut" class="p-element" [data]="data1" [options]="options1">
+                                <div style="position: relative;">
+                                    <canvas width="104" height="104"
+                                        style="display: block; box-sizing: border-box; height: 104px; width: 104px;"></canvas>
+                                </div>
+                            </p-chart>
+                        </div>
+                        <div id="traffic-tabs-container" class="traffic-tabs">
+                            <div data-label="New Sales" data-index="0" class="traffic-tab">
+                                <h6>48%</h6>
+                                <i class="pi pi-facebook"></i><span>Facebook</span>
+                            </div>
+                            <div data-label="Previous Sales" data-index="1" class="traffic-tab">
+                                <h6>26%</h6>
+                                <i class="pi pi-twitter"></i><span>Twitter</span>
+                            </div>
+                            <div data-label="Previous Sales" data-index="2" class="traffic-tab">
+                                <h6>17%</h6>
+                                <i class="pi pi-github"></i><span>Github</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col p-md-12 ">
+                    <div class="card goals">
+                        <div class="card-header">
+                            <h6>Today's Goal</h6>
+                            <span><span>183</span> / 255</span>
+                        </div>
+                        <span>22 June, 2020</span>
+                        <div class="goal-graph">
+                            <p-chart type="pie" class="p-element" [data]="data" [options]="options">
+                                <div style="position: relative;">
+                                    <canvas width="104" height="104"
+                                        style="display: block; box-sizing: border-box; height: 104px; width: 104px;"></canvas>
+                                </div>
+                            </p-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col  p-md-4">
+            <div class="card leaderboard">
+                <div class="card-header">
+                    <h6>Leaderboard</h6>
+                </div>
+                <ul>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Peter Taylor</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$224.44</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Nicolina Lindholm</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$86.05</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Su Hua</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$59.44</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Maria Illescas</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$12.32</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Ezequiel Dengra</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$12.32</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Conan Matusov</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$12.32</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="person">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Hector Mariano</p>
+                        </div>
+                        <div class="person-numbers">
+                            <h6>$12.32</h6>
+                            <i class="pi pi-arrow-up"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="p-col p-md-4">
+            <div class="card product-list">
+                <div class="card-header">
+                    <h6>Product List</h6>
+                </div>
+                <ul>
+                    <li>
+                        <div class="product">
+                            <img src="../../assets/images/product.png" alt="poseidon-layout">
+                            <div class="product-info">
+                                <p>Nike Air X12</p>
+                                <span>Sold <span>250</span> times</span>
+                            </div>
+                        </div>
+                        <i class="pi pi-arrow-up"></i>
+                    </li>
+                    <li>
+                        <div class="product">
+                            <img src="../../assets/images/product.png" alt="poseidon-layout">
+                            <div class="product-info">
+                                <p>Nike Sports Watch</p>
+                                <span>Sold <span>189</span> times</span>
+                            </div>
+                        </div>
+                        <i class="pi pi-arrow-up"></i>
+                    </li>
+                    <li>
+                        <div class="product">
+                            <img src="../../assets/images/product.png" alt="poseidon-layout">
+                            <div class="product-info">
+                                <p>Heinz Yellow Mustard</p>
+                                <span>Sold <span>24</span> times</span>
+                            </div>
+                        </div>
+                        <i class="pi pi-arrow-up"></i>
+                    </li>
+                    <li>
+                        <div class="product">
+                            <img src="../../assets/images/product.png" alt="poseidon-layout">
+                            <div class="product-info">
+                                <p>Beats Headphone</p>
+                                <span>Sold <span>24</span> times</span>
+                            </div>
+                        </div>
+                        <i class="pi pi-arrow-down down"></i>
+                    </li>
+                    <li>
+                        <div class="product">
+                            <img src="../../assets/images/product.png" alt="poseidon-layout">
+                            <div class="product-info">
+                                <p>Black Racing Bike</p>
+                                <span>Sold <span>24</span> times</span>
+                            </div>
+                        </div>
+                        <i class="pi pi-arrow-up"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="p-col p-md-4">
+            <div class="card sellers">
+                <div class="card-header">
+                    <h6>Seller List</h6>
+                </div>
+                <ul>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Hector Mariano</p>
+                        </div>
+                        <span>Tier 1</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Maria Illescas</p>
+                        </div>
+                        <span>Tier 2</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Ngô Hải Giang</p>
+                        </div>
+                        <span>Tier 3</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Tamas Bunce</p>
+                        </div>
+                        <span>Tier 4</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Conan Matusov</p>
+                        </div>
+                        <span>Tier 4</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Maria Illescas</p>
+                        </div>
+                        <span>Tier 4</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                    <li>
+                        <div class="seller">
+                            <img src="../../assets/images/profile.png" alt="poseidon-layout">
+                            <p>Su Hua</p>
+                        </div>
+                        <span>Tier 4</span>
+                        <p-rating readonly="true" stars="3" class="p-element">
+                            <div class="p-rating p-readonly">
+                                <span class="p-rating-icon pi  pi-star-fill"></span><span
+                                    class="p-rating-icon pi pi-star "></span><span
+                                    class="p-rating-icon pi pi-star "></span>
+                            </div>
+                        </p-rating>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="p-col p-md-4">
+            <div class="card tasks">
+                <div class="card-header">
+                    <h6>Tasks</h6>
+                </div>
+                <div>
+                    <div class="task task-1">
+                        <div class="task-info">
+                            <div class="task-name"><span>12</span> Orders to fulfill</div>
+                            <i class="pi pi-tag"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-2">
+                        <div class="task-info">
+                            <div class="task-name"><span>40+</span> Payments to withdraw</div>
+                            <i class="pi pi-money-bill"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-3">
+                        <div class="task-info">
+                            <div class="task-name"><span>4</span> Reports to revise</div>
+                            <i class="pi pi-file"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-4">
+                        <div class="task-info">
+                            <div class="task-name"><span>6</span> Questions to respond</div>
+                            <i class="pi pi-comment"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-5">
+                        <div class="task-info">
+                            <div class="task-name"><span>2</span> Chargebacks to review</div>
+                            <i class="pi pi-check-square"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-1">
+                        <div class="task-info">
+                            <div class="task-name"><span>12</span> Orders to fulfill</div>
+                            <i class="pi pi-tag"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="task task-2">
+                        <div class="task-info">
+                            <div class="task-name"><span>40+</span> Payments to withdraw</div>
+                            <i class="pi pi-money-bill"></i>
+                        </div>
+                        <div class="task-progress">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col p-md-8">
+            <div class="card sales">
+                <div class="card-header">
+                    <h4>Recent Skills</h4>
+                </div>
+                <p>Your skills activity over time.</p>
+
+                <p-table [value]="skillsData" [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10, 25, 50]" [scrollable]="true" [autoLayout]="true" scrollWidth="100%"
+                    [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th>Skill Name</th>
+                            <th>Approved Jobs</th>
+                            <th>Closed Jobs</th>
+                            <th>Ending Today</th>
+                            <th>New Jobs</th>
+                            <th>Rejected Jobs</th>
+                            <th>Renewed Jobs</th>
+                            <th>Running Jobs</th>
+                            <th>Started Today</th>
+                            <th>UnApproved Jobs</th>
+                            <th>Approved Advance PendingJobs</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-skill let-i="rowIndex">
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td>{{ skill.SkillName }}</td>
+                            <td>{{ skill.ApprovedJobs }}</td>
+                            <td>{{ skill.ClosedJobs }}</td>
+                            <td>{{ skill.EndingToday }}</td>
+                            <td>{{ skill.NewJobs }}</td>
+                            <td>{{ skill.RejectedJobs }}</td>
+                            <td>{{ skill.RenewedJobs }}</td>
+                            <td>{{ skill.RunningJobs }}</td>
+                            <td>{{ skill.StartedToday }}</td>
+                            <td>{{ skill.UnApprovedJobs }}</td>
+                            <td>{{ skill.ApprovedAdvancePendingJobs }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft">
+                        <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorright">
+                        <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

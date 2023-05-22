@@ -1,0 +1,735 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-no-gutter">
+    <div class="p-md-12">
+      <form>
+        <div class="p-grid">
+          <div class="p-col-3">
+            <div class="p-field p-grid">
+              <div class="p-col-3">
+                <label>Date</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select Start Date" dateFormat="dd-mm-yy" [(ngModel)]="formDate"
+                  [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-3">
+            <div class="p-field p-grid">
+              <div class="p-col-2">
+                <label>To</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select End Date" dateFormat="dd-mm-yy" [(ngModel)]="toDate" [showIcon]="true"
+                  inputId="to" [ngModelOptions]="{standalone: true}">
+                </p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-3">
+            <div class="p-field p-grid">
+              <label for="firstname3" class="p-col-fixed">Transaction Type</label>
+              <div class="p-col">
+                <p-dropdown placeholder="Select Type" [options]="trtypes" optionLabel="name" [showClear]="true"
+                  inputId="priority" [ngModelOptions]="{standalone: true}"  [filter]="true" [dropdown]="true" (change)="onTranChange()" [(ngModel)]="trType">
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-2">
+            <button type="button" label="View" (click)="filterManageItem()" pButton></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="itemdeposit">
+    <p-table #stock [value]="stockItemTableRes" [globalFilterFields]="['cTrType','cPonumber','nJobid','accName']" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+      <ng-template pTemplate="caption">
+        <div class="p-grid">
+          <div class="p-col-9 p-md-5">
+            <div class="search">
+              <input placeholder="Search" id="search" (input)="stock.filterGlobal($event.target.value,'contains')" type="text" pInputText>
+              <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+            </div>
+          </div>
+          <div class="p-col-3 p-md-7">
+            <div class=" p-text-right toggleMenu">
+              <button pButton type="button" icon="pi pi-plus" (click)="showMenuPopup()" iconPos="left"></button>
+              <!-- <p-menu #menu [popup]="true" [model]="menuOptions" [styleClass]="toggleMenu"></p-menu> -->
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th>SrNo</th>
+          <th pSortableColumn="accName">Account Name<p-sortIcon field="accName"></p-sortIcon></th>
+          <th pSortableColumn="empName">Emp Name<p-sortIcon field="empName"></p-sortIcon></th>
+          <th pSortableColumn="cPonumber">Phone<p-sortIcon field="cPonumber"></p-sortIcon></th>
+          <th pSortableColumn="dCreateDate">Create Date<p-sortIcon field="dCreateDate"></p-sortIcon></th>
+          <th pSortableColumn="dStkDate">Stock Date<p-sortIcon field="dStkDate"></p-sortIcon></th>
+          <th pSortableColumn="cTrType">Tr Type<p-sortIcon field="cTrType"></p-sortIcon></th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td>{{i+1}}</td>
+          <td>{{item?.accName}}</td>
+          <td>{{item?.empName}}</td>
+          <td>{{item?.cPonumber}}</td>
+          <td>{{item?.dCreateDate | dateFormat}}</td>
+          <td>{{item?.dStkDate | dateFormat}}</td>
+          <td>{{item?.cTrType}}</td>
+          <td>
+            <button icon="pi pi-pencil" class="p-button-raised" (click)="editStockTrans(item.nStkid)" pButton></button>
+            <button icon="pi pi-trash"   pButton (click)="delStock(item.nStkid)"
+              class="p-button-raised p-button-danger p-ml-2"></button>
+              <button icon="pi pi-file-pdf" *ngIf="item.cTrType == 'I'" class="p-button-raised p-ml-2" pButton></button>
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+
+<!-- For Purchase -->
+<p-dialog header="Add Transaction: Purchase" [(visible)]="purchaseDialog" [modal]="true" [style]="{width: '70vw'}"
+  class="c-dialog-overflow" [baseZIndex]="10000" (onHide)="onHide()">
+  <form [formGroup]="purchaseForm" (ngSubmit)="addPurchaseItems()">
+    <div class="p-col-12 p-md-12">
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar placeholder="Select Date" formControlName="dStkDate" [(ngModel)]="defaultDate" dateFormat="dd-mm-yy"
+            (onSelect)="onSelectDate($event)" [showIcon]="true">
+          </p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" [(ngModel)]="selectedBranch.val"  optionLabel="txt" optionValue="val"
+            formControlName="cTrType"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Invoice No.</label></div>
+        <div class="p-col-4 p-md-3">
+          <input type="text" formControlName="cInvoiceNo" pInputText required>
+        </div>
+        <!-- <div class="p-col-1 p-md-1"><label for="">Phone Number</label></div>
+        <div class="p-col-4 p-md-3">
+          <input type="text" formControlName="cPonumber" pInputText required>
+        </div> -->
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+
+        <div class="p-col-1 p-md-1"><label for="">Invoice Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar formControlName="dInvoiceDate" [showIcon]="true" placeholder="Select Date" dateFormat="dd-mm-yy">
+          </p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Vendor</label></div>
+        <div class="p-col-4 p-md-3">
+          <!-- <input type="text" pInputText formControlName="userName" placeholder="Autocomplete, from Account Master where Group Type nodeid=4"> -->
+          <p-dropdown appendTo="body" id="state" [options]="vendorData" optionLabel="cLedgerNm" optionValue="nAcid"
+            formControlName="nAcid" placeholder="Search Customer" [filter]="true" filterBy="cLedgerNm">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12">
+          <h4 style="margin-top: 0; margin-bottom: 15px;">Item Details</h4>
+        </div>
+      </div>
+      <div formGroupName="purchaseStockDetail">
+        <div class="repeatedForm">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">Item</label></div>
+            <div class="p-col-5 p-md-5">
+              <p-dropdown appendTo="body" placeholder="Select Item" [options]="items" optionLabel="cItemNm" formControlName="nItemid" (onChange)="itemChangePurchase($event)"
+                optionValue="nItemid"></p-dropdown>
+            </div>
+
+            <div class="p-col-1 p-md-1"><label for="">Stock Type</label></div>
+            <div class="p-col-5 p-md-5">
+              <p-dropdown appendTo="body" placeholder="For Rent For, Sale" [options]="stocksType" optionLabel="name" optionValue="val"
+                formControlName="cStkType">
+              </p-dropdown>
+            </div>
+            <div class="clear p-grid p-nogutter grid-gutter"></div>
+          </div>
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">Rate</label></div>
+            <div class="p-col-11 p-md-11">
+              <div class="p-grid p-nogutter">
+                <div class="p-md-4 p-p-0">
+                  <ul class="commonForm">
+                    <li> <input type="text" pInputText formControlName="nRate"></li>
+                    <li>
+                      <p-dropdown appendTo="body" id="ddlUnit" class="emp-ddown" formControlName="nUnit" [options]="stockUnitData"
+                        optionLabel="codeName" placeholder="Select Units"></p-dropdown>
+                      <button type="button" icon="pi pi-plus" class="btn-add emp-addp" pButton [disabled]=""></button>
+                    </li>
+                    </ul>
+                </div>
+                <div class="p-md-3 p-p-0" *ngIf="showSn">
+                  <div class="p-grid p-nogutter">
+                    <div class="p-md-5 p-p-0"><label>S.N.</label></div>
+                    <div class="p-md-7 p-p-0">
+                      <input type="text" formControlName="cSerialNo" pInputText>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-3 p-p-0">
+                  <div class="p-grid p-nogutter">
+                    <div class="p-md-5 p-p-0"><label class="p-pl-3">Quantity</label></div>
+                    <div class="p-md-7 p-p-0">
+                      <input type="text" formControlName="nQty" class="p-w-100" pInputText>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-2 p-p-0">
+                  <p-checkbox value="val1" class="p-ml-2" label="Including Tax"></p-checkbox>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">GST(%)</label></div>
+            <div class="p-col-5 p-md-5">
+              <ul class="commonForm gstbox">
+                <li><input type="text" class="gst" formControlName="ncgst" pInputText placeholder="CGST"></li>
+                <li><input type="text" class="gst" formControlName="nsgst" pInputText placeholder="SGST"></li>
+                <li><input type="text" class="gst" formControlName="nigst" pInputText placeholder="IGST"></li>
+                <li><input type="text" class="gst" formControlName="nCess" pInputText placeholder="CESS"></li>
+              </ul>
+            </div>
+            <div class="p-col-5 p-md-6 p-text-right">
+              <button pButton type="button" (click)="addItemDetails()" label="Add"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter p-text-right">
+        <div class="p-col-12 p-md-12">
+
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div *ngIf="sowPurchaseTable" class="p-col-12 p-md-12">
+          <p-table [value]="purchaseTableQty" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>#</th>
+                <th>Items</th>
+                <th>Rate (Unit)</th>
+                <th>Quantity</th>
+                <th>GST</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-purchase let-i="rowIndex">
+              <tr>
+                <td>
+                  {{i+1}}
+                </td>
+                <td>{{purchase?.itemName}}</td>
+                <td>{{purchase?.nRate}}</td>
+                <td>{{purchase?.nQty}}</td>
+                <td>{{purchase?.gst}}</td>
+                <td>
+
+                  <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2" (click)="deleteJob(purchase, rowIndex)"></p-button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-12 MTP"></div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-12">
+        <button pButton type="submit" label="Save"></button>
+        <!-- <button (click)="resetFormArray()" pButton type="buttom" class="p-ml-2" label="Clear"></button> -->
+      </div>
+    </div>
+  </form>
+</p-dialog>
+<!-- For Sales -->
+<p-dialog header="Add Transaction: Sales" [(visible)]="salesDialog" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="10000" (onHide)="onHide()">
+  <div class="p-col-12 p-md-12 MTP">
+    <h4>Coming Soon</h4>
+  </div>
+</p-dialog>
+
+<!-- for Item issue -->
+<p-dialog header="Add Transaction: Issue" class="stock-issue" [(visible)]="issueDialog" [modal]="true"
+  [style]="{width: '70vw'}" [baseZIndex]="1000" (onHide)="onHide()">
+
+  <div class="p-col-12 p-md-12">
+    <form [formGroup]="issueForm" (ngSubmit)="addIssueItem()">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dStkDate"
+            (onSelect)="onSelectDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Issue To</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="issue" optionLabel="name" placeholder="Select" optionValue="valName"
+            (onChange)="onIssueChange($event)" formControlName="issueTo"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt" optionValue="val"
+            formControlName="issueBranch" (onChange)="onIssueBranchChange($event)"></p-dropdown>
+        </div>
+
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Job Number</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <span class="p-w-100 p-input-icon-right">
+            <i class="pi pi-search"></i>
+            <p-autoComplete formControlName="nJobid" [(ngModel)]="jobModel" id="customer"
+              [suggestions]="jobData" (completeMethod)="searchJobIssueData($event)"
+              placeholder="Search Jobs by Job Number" field="cJobNo" [ngModelOptions]="{standalone: true}"
+              (onSelect)="selectJob($event)">
+            </p-autoComplete>
+          </span>
+          <!-- <input type="text" pInputText placeholder="autocomplete" formControlName="nJobid"
+            (blur)="getIssueJobno($event)"> -->
+        </div>
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Customer</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <!-- <p-dropdown [options]="customerData" optionLabel="cDisplayNm" placeholder="Select Customer"
+            optionValue="nAcid" formControlName="nAcid"></p-dropdown> -->
+          <!-- <p-autoComplete [suggestions]="customerData" (completeMethod)="searchCustomerIssueData()" field="cDisplayNm" [minLength]="1" formControlName="nAcid" [dropdown]="true"
+                        ></p-autoComplete> -->
+
+          <input type="text" pInputText placeholder="Customer" formControlName="nAcid" disabled>
+        </div>
+        <div *ngIf="showEmployeeIssue" class="p-col-1 p-md-1"><label for="">Employee</label></div>
+        <div *ngIf="showEmployeeIssue" class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="employeeData" optionLabel="cEmpName" optionValue="nEmpid" placeholder="Select Employee"
+            formControlName="nEmpid"></p-dropdown>
+
+          <!-- <input type="text" pInputText placeholder="Autocomplete, from Account Master where Group Type nodeid=5"
+            formControlName="cCustomer"> -->
+        </div>
+      </div>
+      <div *ngIf="showIssueEmpItems">
+        <div formGroupName="createIssueItem" class="repeatedForm">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">Item</label></div>
+            <div class="p-col-5 p-md-5">
+              <p-dropdown appendTo="body" placeholder="Select Item" [options]="items" optionLabel="cItemNm" formControlName="nItemid">
+              </p-dropdown>
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Serial NO</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText placeholder="Autocomplete" formControlName="cSerialNo">
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Quantity</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText formControlName="nQty">
+            </div>
+            <div class="p-col-6 p-md-6 p-text-right">
+              <button pButton type="button" (click)="addIssueDetails()" label="Add more"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="isCustDelivery" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Delivery Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dDeliDate"
+            (onSelect)="onSelectDeliveryDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Delivered By</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" (onChange)="onChangeDeliverBy($event)" [options]="employeeData" optionLabel="cEmpName" optionValue="nEmpid" placeholder="Select Employee"
+            formControlName="nDelivered"></p-dropdown>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12" *ngIf="showGrid">
+          <p-table [value]="empTableQty" [autoLayout]="true" [scrollable]="true" [resizableColumns]="true" scrollHeight="80px">
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th pResizableColumn style="width: 5%;">#</th>
+                <th pResizableColumn style="width: 25%;">Items</th>
+
+                <th pResizableColumn style="width: 10%;">Approved Quantity</th>
+                <th pResizableColumn style="width: 10%;">Customer in Hand</th>
+                <th pResizableColumn style="width: 10%;">Stock Balance</th>
+                 <th pResizableColumn style="width: 10%;">Qty</th>
+                <th pResizableColumn>Serialized</th>
+                <!-- <th>GST</th>
+
+            <th>Amount</th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td style="width: 5%;">
+                  {{i+1}}
+                </td>
+                <td style="width: 25%;">{{item?.itemName}}</td>
+                <td style="width: 10%;">{{item?.approveItemQty}}</td>
+                <td style="width: 10%;">{{item?.customerInHand}}</td>
+                <td style="width: 10%">{{item?.stockBalance}}</td>
+                <td style="width: 10%"><input type="text" pInputText value="{{item?.stockBalance < 1 ? 0 : 1}}" [disabled]="item?.cSrlzd == 'True' || item.stockBalance < 1" />
+                  <p (focus)="nQuanty($event)" *ngIf="qntyWrong" class="danger">Wrong number</p>
+                </td>
+                <td>
+                  <ng-container *ngIf="item?.cSrlzd == 'True' && (item?.stockBalance >= item?.approveItemQty)">
+                      <p-chips  separator="," (onAdd)="addChips($event, item.nItemid,i,item?.approveItemQty)" (onRemove)="removeChips($event, item.nItemid,i,item?.approveItemQty)"></p-chips>
+                  </ng-container>
+
+                  <ng-container *ngIf="item?.cSrlzd == 'False' || (item?.approveItemQty > item?.stockBalance) ">
+                   <span>Serialization is not available</span>
+                  </ng-container>
+
+                </td>
+                <!-- <td>{{item?.gst}}</td>
+            <td>{{item?.amount}}</td> -->
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12 p-p-0">
+          <!-- <button pButton type="submit" label="Save"></button> -->
+          <span *ngIf="showSerializedErr" style="color: red;"> No of Serialization is more than Approved Quantity</span>
+          <button pButton type="button" (click)="showOTPDialog()" [disabled]="!saveButtonEnabled" label="Save"></button>&nbsp;
+          <button pButton type="button" (click)="issuePrint()" label="Print"></button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</p-dialog>
+
+<!-- OTP dialog -->
+<p-dialog header="OTP" [(visible)]="otpDialog" [style]="{width: '20vw'}" [modal]="true" [baseZIndex]="10000" >
+  <div class="p-grid p-nogutter grid-gutter">
+    <div class="p-col-1 p-md-5"><label for="">Enter OTP:</label></div>
+    <div class="p-col-4 p-md-7">
+      <input type="text" [(ngModel)]="otpValue"
+      [ngModelOptions]="{standalone: true}" pInputText>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="p-text-right">
+      <p-button label="Confirm" styleClass="p-button-text" (click)="validateOtp()" ></p-button>
+      <p-button (click)="otpDialog=false" label="Close" styleClass="p-button-text"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Issue print preview dialog -->
+<p-dialog header="Print" [(visible)]="issuePrintDialog" [modal]="true" [style]="{width: '80vw'}"
+  [baseZIndex]="10000" (onHide)="onHide()">
+  <div class="p-md-12 contentToConvert" id="contentToConvert">
+    <table style="width: 1150px;margin: 0 auto;border-collapse: collapse;" border="1">
+        <tbody>
+          <tr>
+            <td colspan="2" align="center">
+              <img src="../../../assets/images/logo.png" width="150" alt="logo">
+            </td>
+          </tr>
+            <tr>
+                <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+                  <h3 style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">Regional Office</h3>
+                  <h4 style="font-size: 16px;line-height: 20px;margin:0">SAYLUSS MEDICARE PVT LTD</h4>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">201,GOLDEN HEIGHTS, MOKSH MARG, ASHOK NAGAR, UDAIPUR</h5>
+                  <h6 style="font-size: 13px;line-height: 18px;margin:0">Phone: 9887744001</h6>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Website: WWW.SAYLUSSMEDICARE.COM E-Mail: SAYLUSSMEDICARE@GMAIL.COM</h5>
+                  <h6 style="font-size: 13px;line-height: 18px;margin:0">GSTIN: 08AARCS4660C1Z5</h6>
+                </td>
+                <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+                  <h3 style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">Customer Name & Address</h3>
+                  <h5 style="font-size: 16px;line-height: 20px;margin:0">Name: {{pdfData?.customerName}}</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Address: {{pdfData?.cAddress}}</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">City: {{pdfData?.city}}</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Phone No: {{pdfData?.cMobile}}</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Job No: {{pdfData?.nJobid}}</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Delivered To: </h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0">Delivered By: {{pdfData?.nDeliveredBy}}</h5>
+                </td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center"style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">DESCRIPTION OF GOODS</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <table width="100%" style="border-collapse: collapse;padding: 10px;border: 1px solid #000;margin-bottom: 30px;">
+                  <thead>
+                    <tr style="border-bottom: 1px solid #000;">
+                      <th width="10%" style="width: 10%;border-right: 1px solid #000;padding: 10px;">SNo.</th>
+                      <th width="15%" style="width: 15%;border-right: 1px solid #000;padding: 10px;">Serial No.</th>
+                      <th width="50%" style="width: 50%;border-right: 1px solid #000;padding: 10px; text-align: left;">Item</th>
+                      <th width="25%" style="width: 25%;padding: 10px;">Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let stock of stockData; let i = index" style="border-bottom: 1px solid #000;">
+                      <td width="10%" style="width: 10%;border-right: 1px solid #000;padding: 10px;" align="center">{{i+1}}</td>
+                      <td width="15%" style="width: 15%;border-right: 1px solid #000;padding: 10px;" align="center">{{stock.cSerialNo}}</td>
+                      <td width="50%" style="width: 50%;border-right: 1px solid #000;padding: 10px;" align="left">{{stock.itemName}}</td>
+                      <td width="25%" style="width: 25%;padding: 10px;" align="center">{{stock.nQty}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr style="border-top: 1px solid #000;">
+                <td colspan="2">
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0 0 10px"><strong>Payment Mode: </strong> Cash / Cash On Delivery</h5>
+                  <h5 style="font-size: 13px;line-height: 18px;margin:0 0 20px">This is to Certify that </h5>
+                </td>
+            </tr>
+            <tr>
+              <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+                <h5 style="font-size: 13px;line-height: 18px;margin:50px 0 0">Receiver's Name & Signature</h5>
+              </td>
+              <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;text-align: right;">
+                <h5 style="font-size: 13px;line-height: 18px;margin:0">For SAYLUSS MEDICARE PVT LTD </h5>
+                <h5 style="font-size: 13px;line-height: 18px;margin:50px 0 0">Authorised Signature</h5>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="p-md-12 p-text-center">
+  <button type="button" label="Print" (click)="generatePDF()" pButton></button>
+</div>
+</p-dialog>
+
+<!-- Deposit -->
+<p-dialog header="Add Transaction: Deposit" [(visible)]="depositDialog" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="10000" (onHide)="onHide()">
+  <form [formGroup]="depositForm" (ngSubmit)="addDepositItem()">
+    <div class="p-col-12 p-md-12">
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dStkDate"
+            (onSelect)="onSelectDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Issue To</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="issue" optionLabel="name" placeholder="Select" optionValue="valName"
+            (onChange)="onDepositChange($event)" formControlName="issueTo"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt" optionValue="val"
+            formControlName="nBranchid"></p-dropdown>
+        </div>
+      </div>
+      <div *ngIf="showCustomerDeposit" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Job NO</label></div>
+        <div class="p-col-4 p-md-4">
+          <input type="text" pInputText placeholder="autocomplete" formControlName="nJobid"
+            (blur)="getDepositJobNo($event)">
+        </div>
+      </div>
+      <div *ngIf="showCustomerDeposit" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Customer</label></div>
+        <div class="p-col-4 p-md-11">
+          <p-dropdown appendTo="body" [options]="customerData" optionLabel="cDisplayNm" placeholder="Select Customer"
+            optionValue="nAcid" formControlName="nAcid"></p-dropdown>
+        </div>
+      </div>
+      <div *ngIf="showEmployeeDeposit" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Employee</label></div>
+        <div class="p-col-4 p-md-11">
+          <p-dropdown appendTo="body" [options]="employeeData" (onChange)="onChangeEmpid($event)" optionLabel="cEmpName"
+            optionValue="nEmpid" placeholder="Select Employee" formControlName="nEmpid"></p-dropdown>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div *ngIf="showCustomerDepositeTable" class="p-col-12 p-md-12">
+          <p-table [value]="depositTableQty" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>SNO</th>
+                <th>Items</th>
+                <th>Serial No</th>
+                <th>Quantity</th>
+                <th>Deposit Qty</th>
+                <th>Damaged</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-deposit let-i="rowIndex">
+              <tr>
+                <td>
+                  {{i+1}}
+                </td>
+                <td>{{deposit?.itemName}}</td>
+                <td>{{deposit?.cSerialNo}}</td>
+                <td>{{deposit?.nQty}}</td>
+                <td><input type="text" pInputText></td>
+                <td><input type="text" pInputText></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div *ngIf="showEmployeeDepositeTable" class="p-col-12 p-md-12">
+          <p-table [value]="empDepositTabaleQty" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>SNO</th>
+                <th>Items</th>
+                <th>Serial No</th>
+                <th>Quantity</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-empDeposit let-i="rowIndex">
+              <tr>
+                <td>
+                  {{i+1}}
+                </td>
+                <td>{{empDeposit?.itemName}}</td>
+                <td>{{empDeposit?.cSerialNo}}</td>
+                <td>{{empDeposit?.nQty}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12 MTP">
+          <button pButton type="save" label="Save"></button>&nbsp;
+          <button pButton type="button" label="Print"></button>
+        </div>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+<!-- Item Transfer -->
+<p-dialog header="Add Transaction: Transfer" [(visible)]="transferDialog" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="10000" (onHide)="onHide()">
+  <form [formGroup]="transferForm" (ngSubmit)="addTransferItem()">
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-5 p-md-5">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dStkDate"
+            (onSelect)="onSelectDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+
+        <div class="p-col-1 p-md-1"><label for="">Transfer Type</label></div>
+        <div class="p-col-5 p-md-5">
+          <p-dropdown appendTo="body" [options]="transferType" optionLabel="name" optionValue="valName" placeholder="Select Type"
+            formControlName="transferType">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">From Branch</label></div>
+        <div class="p-col-5 p-md-5">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt" optionValue="val"
+            formControlName="frmStk"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">To Branch</label></div>
+        <div class="p-col-5 p-md-5">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt" optionValue="val"
+            formControlName="toStk"></p-dropdown>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12">
+          <h4 style="margin-top: 0; margin-bottom: 15px;">Item Details</h4>
+        </div>
+      </div>
+      <div formGroupName="createTransferItem" class="repeatedForm">
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-1 p-md-1"><label for="">Item</label></div>
+          <div class="p-col-5 p-md-5">
+            <p-dropdown appendTo="body" placeholder="Select Item" [options]="items" optionLabel="cItemNm" formControlName="nItemid"
+              optionValue="nItemid"></p-dropdown>
+          </div>
+          <div class="p-col-1 p-md-1"><label for="">Serial NO</label></div>
+          <div class="p-col-5 p-md-5">
+            <input type="text" pInputText placeholder="Autocomplete" formControlName="cSerialNo">
+          </div>
+          <div class="p-col-1 p-md-1"><label for="">Qunatity</label></div>
+          <div class="p-col-5 p-md-5">
+            <input type="text" pInputText formControlName="nQty">
+          </div>
+          <div class="p-col-1 p-md-1"><label for="">Amount</label></div>
+          <div class="p-col-5 p-md-5">
+            <input type="text" pInputText formControlName="nRate">
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+
+        <div class="p-col-12 p-md-12 p-text-right">
+          <button pButton type="button" (click)="addTransferDetails()" label="Add more"></button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showTranTable" class="p-col-12 p-md-12">
+      <p-table [value]="transferTable" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th>SNO</th>
+            <th>Items</th>
+            <th>Serial No</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-transfer let-i="rowIndex">
+          <tr>
+            <td>
+              {{i+1}}
+            </td>
+            <td>{{transfer?.nItemid}}</td>
+            <td>{{transfer?.cSerialNo}}</td>
+            <td>{{transfer?.nQty}}</td>
+            <td>{{transfer?.nRate}}</td>
+            <td>
+              <p-button icon="pi pi-pencil" class="p-button-raised editIcon"></p-button>
+              <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="p-col-12 p-md-6">
+      <button pButton type="submit" label="Save"></button>
+    </div>
+  </form>
+</p-dialog>
+

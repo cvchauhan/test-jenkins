@@ -1,0 +1,200 @@
+<p-toast  [baseZIndex]="100000"></p-toast>
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12 p-md-4">
+      <form [formGroup]="formsGroup" (ngSubmit)="submitServiceSkillsPriceF(formsGroup)">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="first">Service<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown placeholder="SELECT" [options]="serviceData" optionLabel="txt"
+                  formControlName="nSrvid"  (onChange)="serviceChange($event)"></p-dropdown>
+                <div *ngIf="formControls.nSrvid.invalid && (formControls.nSrvid.touched || formControls.nSrvid.dirty)">
+                  <p class="danger" *ngIf="formControls.nSrvid.errors.required">Service Is Required</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="middle">Services Skills<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8" *ngIf="skills">
+                <p-dropdown placeholder="SELECT" (onChange)="serviceSkillChange($event)" class="emp-ddown" [options]="sSkills" optionLabel="name"
+                  formControlName="nSrvSkillid"></p-dropdown>
+                <p-button class="btn-add emp-addp" icon="pi pi-plus"
+                  (click)="showComboDialog('Service Skills');sParrentNoF()"></p-button>
+                <p class="danger"
+                  *ngIf="formControls.nSrvSkillid.invalid && (formControls.nSrvSkillid.touched || formControls.nSrvSkillid.dirty)">
+                  Service Skills Is Required
+                </p>
+              </div>
+
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="last">Branch/Location<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-multiSelect placeholder="SELECT" [options]="branchData" optionLabel="txt"
+                  formControlName="cBranchid"></p-multiSelect>
+                <p class="danger"
+                  *ngIf="formControls.cBranchid.invalid && (formControls.cBranchid.touched || formControls.cBranchid.dirty)">
+                  Branch/Location Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="last">Effective From<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-calendar [disabledDates]="invalidDates"
+                  placeholder="Select Date"  formControlName="dDoe" dateFormat="dd-mm-yy"></p-calendar>
+                <p class="danger"
+                  *ngIf="formControls.dDoe.invalid && (formControls.dDoe.touched || formControls.dDoe.dirty)">
+                  Effective From Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="last">Price/Unit<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <div class="p-grid p-nogutter">
+                  <div class="p-col-12 p-md-6">
+                    <p-inputNumber placeholder="SELECT" id="last" type="text" pInputText class="unit p-mr-2" formControlName="nRate">
+                    </p-inputNumber>
+                    <p class="danger"
+                      *ngIf="formControls.nRate.invalid && (formControls.nRate.touched || formControls.nRate.dirty)">
+                      Price/Unit Is Required
+                    </p>
+                  </div>
+                  <div class="p-col-12 p-md-6 p-p-0" *ngIf="pUnit">
+                    <p-dropdown placeholder="SELECT" [options]="priceUnit" optionLabel="name"
+                      formControlName="nUnit">
+                    </p-dropdown>
+                    <!-- <p-button class="btn-add emp-addp" icon="pi pi-plus"
+                      (click)="showComboDialog('Skills Price Unit');"></p-button> -->
+                    <p class="danger"
+                      *ngIf="formControls.nUnit.invalid && (formControls.nUnit.touched || formControls.nUnit.dirty)">
+                      This Is Required
+                    </p>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            
+          </div>
+          <div class="p-col-12 p-md-8 p-md-offset-4 p-text-left">
+            <button type="submit" [disabled]="!formsGroup.valid" class="p-mr-2" label="{{editSPrice? 'Update': 'Save'}}" pButton></button>
+            <button (click)="resetServicePoint()" *ngIf="editCancelButton" pButton
+              type="button" label="Cancel"></button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+    <div class="p-col-12 p-md-8">
+      
+      <p-table #skill [value]="tData" class="p-mt-4" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+        [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,20,40,80,120]" [globalFilterFields]="['cSrvName','srvSkill','branchName','nRate']" [autoLayout]="true">
+        <ng-template pTemplate="caption">
+          <div class="p-grid p-jc-end">
+            <div class="p-col-9 p-md-5">
+              <div class="search">
+                <input placeholder="Search" id="search" type="text" (input)="skill.filterGlobal($event.target.value, 'contains')" pInputText>
+                <!-- <input placeholder="Search" id="search" type="text" pInputText (keyup)="serviceSkillsPriceFilterF()" [(ngModel)]="searchBoxVal" [ngModelOptions]="{standalone: true}"> -->
+                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>SNo</th>
+            <th pSortableColumn="dDoe">Start Date<p-sortIcon field="dDoe"></p-sortIcon></th>
+            <th pSortableColumn="cSrvName">Sevice<p-sortIcon field="cSrvName"></p-sortIcon></th>
+            <th pSortableColumn="srvSkill">Skill<p-sortIcon field="srvSkill"></p-sortIcon></th>
+            <th pSortableColumn="branchName">Branch<p-sortIcon field="branchName"></p-sortIcon></th>
+            <th pSortableColumn="nRate">Price(Rs)<p-sortIcon field="nRate"></p-sortIcon></th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-i="rowIndex">
+          <tr>
+            <td>{{i+1}}</td>
+            <td>{{data.dDoe | dateFormat}}</td>
+            <td>{{data.cSrvName | uppercase}}</td>
+            <td>{{data.srvSkill}}</td>
+            <td>{{data.branchName}}</td>
+            <td>{{data.nRate}}</td>
+            <td>
+              <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editServiceSkillsPriceF(data.nSrvrid)"></p-button>
+              <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"
+                (click)="delServiceSkillPriceF(data.nSrvrid)"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <!-- <ng-template pTemplate="footer">
+          <div>Data Not Found</div>
+        </ng-template> -->
+      </p-table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add new Service Category dailog box -->
+<p-dialog header="Add {{currentAddData}}" [(visible)]="displayBasic" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="serviceSkilPricePopupForm">
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-3">
+        <label for="ctype">{{categoryName}}</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <input id="other" type="text" pInputText formControlName="cCodeName">
+        <p class="danger"
+          *ngIf="contorlForm.cCodeName.invalid && (contorlForm.cCodeName.dirty || contorlForm.cCodeName.touched)">
+          {{categoryName}} Is Required</p>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter" *ngIf="showParentDropdown">
+      <div class="p-col-12 p-md-3">
+        <label for="parent">{{currentCatLabel}}</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <p-dropdown appendTo="body" id="parent" formControlName="nParentSerialNo" [options]="sParrentNoRes" optionLabel="txt"
+          [filter]="true" filterBy="txt"></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-3">
+        <label for="other">Description</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <input id="other" type="text" pInputText formControlName="description">
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <p-button (click)="submitComboPopupF(serviceSkilPricePopupForm);displayBasic=false" type="submit" label="Add"></p-button>
+    </div>
+  </form>
+</p-dialog>
+<!-- Add new Service Categroy dailog box end-->

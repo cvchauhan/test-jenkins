@@ -1,0 +1,97 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-no-gutter">
+    <div class="p-md-12">
+      <form>
+        <div class="p-grid">
+          <div class="p-col-3">
+            <div class="p-field p-grid">
+              <div class="p-col-3">
+                <label>Date</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select Start Date" dateFormat="dd-mm-yy" [(ngModel)]="formDate"
+                  [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-3">
+            <div class="p-field p-grid">
+              <div class="p-col-2">
+                <label>To</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select End Date" dateFormat="dd-mm-yy" [(ngModel)]="toDate" [showIcon]="true"
+                  inputId="to" [ngModelOptions]="{standalone: true}">
+                </p-calendar>
+              </div>
+            </div>
+          </div>
+         
+          <div class="p-col-2">
+            <button type="button" label="View" (click)="filterManageItem()" pButton></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="itemdeposit">
+    <p-table #stock [value]="stockItemTableRes" [globalFilterFields]="['cTrType','cPonumber','nJobid','accName']" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+      <ng-template pTemplate="caption">
+        <div class="p-grid">
+          <div class="p-col-9 p-md-5">
+            <div class="search">
+              <input placeholder="Search" id="search" (input)="stock.filterGlobal($event.target.value,'contains')" type="text" pInputText>
+              <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+            </div>
+          </div>
+          <div class="p-col-3 p-md-7">
+            <div class=" p-text-right toggleMenu">
+              <button pButton type="button" icon="pi pi-plus" (click)="addPopup()" iconPos="left"></button>
+              <!-- <p-menu #menu [popup]="true" [model]="menuOptions" [styleClass]="toggleMenu"></p-menu> -->
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th>SrNo</th>
+          <th pSortableColumn="dStkDate">Stock Date<p-sortIcon field="dStkDate"></p-sortIcon></th>
+          <th pSortableColumn="cTrType">Tr Type<p-sortIcon field="cTrType"></p-sortIcon></th>
+          <th pSortableColumn="cPonumber">cPonumber No<p-sortIcon field="cPonumber"></p-sortIcon></th>
+          <th pSortableColumn="nJobid">Job Id<p-sortIcon field="nJobid"></p-sortIcon></th>
+          <th pSortableColumn="accName">Acc No<p-sortIcon field="accName"></p-sortIcon></th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td>{{i+1}}</td>
+          <td>{{item?.dStkDate | dateFormat}}</td>
+          <td>{{item?.cTrType}}</td>
+          <td>{{item?.cPonumber}}</td>
+          <td>{{item?.nJobid}}</td>
+          <td>{{item?.accName}}</td>
+          <td>
+
+            <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editStockTrans(item.nStkid)"></p-button>
+            <button icon="pi pi-trash"   pButton (click)="delStock(item.nStkid)"
+              class="p-button-raised p-button-danger p-ml-2"></button>
+
+
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- For Sales -->
+<p-dialog header="Add Transaction: Sales" [(visible)]="salesDialog" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="10000" (onHide)="onHide()">
+  <div class="p-col-12 p-md-12 MTP">
+    <h4>Coming Soon</h4>
+  </div>
+</p-dialog>

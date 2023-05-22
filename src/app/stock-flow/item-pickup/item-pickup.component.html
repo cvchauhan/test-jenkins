@@ -1,0 +1,170 @@
+<p-toast></p-toast>
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-md-3">
+            <div class="p-grid">
+                <label class="p-col-fixed">Branch</label>
+                <div class="p-col">
+                    <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt" optionValue="val"
+                        inputId="priority" [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-3">
+            <div class="p-grid">
+                <label class="p-col-fixed">Status</label>
+                <div class="p-col">
+                    <p-dropdown placeholder="Select" [options]="statusData" optionLabel="name" optionValue="code"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="statusId">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-2">
+            <button type="button" label="View" (click)="viewData()" pButton></button>
+        </div>
+
+    </div>
+    <div class="p-grid p-no-gutter">
+        <div class="p-col-12">
+            <p-table #clouser [value]="pickupData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [showCurrentPageReport]="true" responsiveLayout="scroll" [resizableColumns]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [rowsPerPageOptions]="[15,25,40,80,120]"
+                [globalFilterFields]="['branchId','cJobNo','srvCategory','billMode','cCustNm','cMobile']"
+                scrollHeight="350px">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid p-mt-3">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search" type="text"
+                                    (input)="clouser.filterGlobal($event.target.value,'contains')" pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+                        <div class="p-col-3 p-md-7 p-text-right">
+                            <!-- <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showDialog()"
+                                class="btn-plus"></button> -->
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SNo</th>
+                        <th pResizableColumn pSortableColumn="cJobNo">Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="njCloseid">Closure Id<p-sortIcon field="njCloseid">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="closedby">Request By<p-sortIcon field="closedby">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="requestDate">Request Date<p-sortIcon field="dCreateDate">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="accountName">Customer/Employee<p-sortIcon
+                                field="accountName"></p-sortIcon>
+                        </th>
+                        <th pResizableColumn>Emp Mobile<p-sortIcon field=""></p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="skillName">Service Component<p-sortIcon field="skillName">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="cSerialNo">Serial No<p-sortIcon field="cSerialNo">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="pickedByName">Picked By<p-sortIcon field="pickedByName">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="dPickupdueDate">Picked Due Date<p-sortIcon
+                                field="dPickupdueDate"></p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="cRemarks">Remark<p-sortIcon field="cRemarks"></p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="approverName">Approved By<p-sortIcon field="approverName">
+                            </p-sortIcon>
+                        </th>
+                        <th pResizableColumn pSortableColumn="cStatus">Status<p-sortIcon field="cStatus"></p-sortIcon>
+                        </th>
+                        <th pResizableColumn>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowIndex="rowIndex" let-jobdata>
+                    <tr>
+                        <td>{{rowIndex + 1}}</td>
+                        <td>{{jobdata.cJobNo}}</td>
+                        <td>{{jobdata.njCloseid}}</td>
+                        <td>{{jobdata.closedby}}</td>
+                        <td>{{jobdata.requestDate | dateFormat}}</td>
+                        <td>{{jobdata.accountName}}</td>
+                        <td></td>
+                        <td>{{jobdata.skillName}}{{jobdata.itemName}}</td>
+                        <td>{{jobdata.cSerialNo}}</td>
+                        <td>{{jobdata.pickedByName}}</td>
+                        <td>{{jobdata.dPickupdueDate | dateFormat}}</td>
+                        <td>{{jobdata.cRemarks}}</td>
+                        <td>{{jobdata.approverName}}</td>
+                        <td>{{jobdata.cStatus}}</td>
+                        <td><button type="button" [disabled]="jobdata.cStatus == 'Pickedup'" icon="pi pi-send"
+                                (click)="approvedJob(jobdata)" pButton></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr *ngIf="manageJobData > 0">
+                        <td colspan="9">There Is No Data Found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Job Approved" [modal]="true" [(visible)]="viewDisplay" [style]="{width: '60vw'}">
+    <p-table [value]="itemPickupApprove" [autoLayout]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Job No</th>
+                <th>Closure Id</th>
+                <th>Remark</th>
+                <th>Serial No</th>
+                <th>Item Name</th>
+                <th>Item Image</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{item.cJobNo}}</td>
+                <td>{{item.njCloseid}}</td>
+                <td>{{item.cRemarks}}</td>
+                <td>{{item.cSerialNo}}</td>
+                <td>{{item.itemName}}</td>
+                <td><img [src]="item.cImageName" alt=""></td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="p-grid" style="margin-top: 5px;">
+        <div class="p-md-4">
+            <div class="p-grid">
+                <label class="p-col-fixed">Item Category</label>
+                <div class="p-col">
+                    <p-dropdown placeholder="Select" [options]="itemCategoryData" optionLabel="name" optionValue="code"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="itemCategoryId">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-md-12">
+            <div class="p-grid">
+                <!-- <div class="p-md-1">
+                    <button type="submit" label="Save" class="p-mt-2" (click)="jobApproved()" pButton></button>
+                </div> -->
+                <div class="p-md-1">
+                    <button type="submit" label="Approve" (click)="ApproveItemPickup()" class="p-mt-2" pButton></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</p-dialog>

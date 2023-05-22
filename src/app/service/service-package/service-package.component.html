@@ -1,0 +1,407 @@
+<div class="job-manage">
+    <div class="step-box">
+        <ul class="step-form">
+            <li [ngClass]="{'active': stepForm >= 1 }"><span>1</span> Package Info</li>
+            <li [ngClass]="{'active': stepForm >= 2}"><span>2</span> Service Skills</li>
+            <li [ngClass]="{'active': stepForm >= 3}"><span>3</span> Clinical Procedures</li>
+            <li [ngClass]="{'active': stepForm >= 4}"><span>4</span> Equipment</li>
+            <li [ngClass]="{'active': stepForm >= 5}"><span>5</span> Package Summary</li>
+        </ul>
+    </div>
+
+
+        <div class="main-box" *ngIf="stepForm === 1">
+            <form [formGroup]="jobManageForm" (ngSubmit)="onSubmitJobManage()">
+                <div class="p-grid p-nogutter">
+
+
+                    <div class="p-md-4 p-pt-3">
+                        <label>Package<sup>*</sup></label>
+                        <input type="text" class="nDiscRatePer"  formControlName="package" [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-md-4 p-pt-3">
+                        <label>Services<sup>*</sup></label>
+                        <p-dropdown appendTo="body" #nSrvId placeholder="Select Service" [options]="serviceData"
+                                optionLabel="txt" formControlName="nSrvid" optionValue="val" (onChange)="selectService($event, nSrvId)"></p-dropdown>
+                    </div>
+                    <div class="p-md-4 p-pt-3">
+                        <label>Billing Mode<sup>*</sup></label>
+                        <p-dropdown appendTo="body" #bm placeholder="Select Billing Mode" [options]="billingModeFilterData"
+                        [disabled]="billingModeDisable"
+                                optionLabel="codeName" formControlName="nBillMode" optionValue="serialNo" (onChange)="selectBillMode($event, bm)"></p-dropdown>
+                    </div>
+                    <div class="p-md-3  p-pt-3">
+                        <label>MRP</label>
+                        <input type="text" class="nDiscRatePer"  formControlName="mrp" [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <div class="p-md-3  p-pt-3">
+                        <label>Security Deposit</label>
+                        <input type="text" class="nDiscRatePer"  formControlName="security" [ngModelOptions]="{standalone: true}" pInputText>
+                    </div>
+                    <!-- <div class="p-md-4 p-pt-3">
+                        <label>Customer(if any)<sup>*</sup></label>
+                        <p-dropdown appendTo="body" #dd [filter]="true" [showClear]="true" class="emp-ddown"
+                        [placeholder]="jobManageForm.get('cCustNm').value ? jobManageForm.get('cCustNm').value :'Select Customer'"
+                                 (onChange)="selectCustomer($event, dd)"
+                                [options]="filteredCustomers" optionLabel="cDisplayNm"
+                                formControlName="cCustNm" optionValue="cDisplayNm" (onChange)="selectCustomer($event, patientSelect)"></p-dropdown>
+
+                            <p-button class="btn-add emp-addp cust-add" (click)="addCustomer()" icon="pi pi-plus">
+                            </p-button>
+                    </div> -->
+
+
+                </div>
+            </form>
+        </div>
+        <div class="main-box" *ngIf="stepForm === 2">
+            <form [formGroup]="serviceSkillsForm" (ngSubmit)="onSubmitServiceSkills()">
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-4">
+                        <label>Service Skills<sup>*</sup></label>
+                        <p-dropdown appendTo="body" [disabled]="isDisableProcesurItem && formData.srvSkills.length ==1" #srvSkillItem placeholder="Select Service Skill" [options]="srvSkillsData"
+                                optionLabel="srvSkillName" optionValue="srvSkillName" (onChange)="selectServiceSkill($event, srvSkillItem)" formControlName="srvSkill"></p-dropdown>
+                    </div>
+
+
+                    <div class="p-md-4">
+                        <label>Frequency<sup>*</sup></label>
+                        <p-dropdown appendTo="body" #frequencyName placeholder="Select Frequency" [options]="manageService"
+                                        formControlName="nJobFrq" (onChange)="selectFrequency($event, frequencyName)" optionLabel="name" optionValue="code" inputId="frquncy">
+                                    </p-dropdown>
+                    </div>
+                    <div class="p-md-2">
+                        <label>Repeats on every</label>
+                        <input type="text" formControlName="nFrqQty" class="reptfrq" pInputText>
+                    </div>
+                    <div class="p-md-3">
+                        <label>Scheduled Mode<sup>*</sup></label>
+                        <p-dropdown appendTo="body" formControlName="timeType" #timeType (onChange)="selectScheduledMode($event, timeType)" placeholder="Select Start Time" [options]="StartTimeddl" optionLabel="name" optionValue="name" inputId="frquncy"
+                            [ngModelOptions]="{standalone: true}">
+                        </p-dropdown>
+                    </div>
+                    <div class="p-md-2">
+                        <label>Start time</label>
+                        <input type="time" [attr.disabled]="serviceSkillsForm.get('timeType').value != 'Custom'?true:null " formControlName="dStartTm" class="form-control-number" pInputText>
+                        <!-- <p-calendar [timeOnly]="true" [disabled]="serviceSkillsForm.get('timeType').value != 'Custom' "
+                            inputId="timeonly" formControlName="dStartTm" timeFormat="HH:mm" [ngModelOptions]="{standalone: true}">
+                        </p-calendar> -->
+                    </div>
+                    <div class="p-md-2">
+                        <label>Working hours</label>
+                        <input type="text"  formControlName="nHour" class="reptfrq" pInputText>
+                    </div>
+                    <div class="p-md-1">
+                        <label>&nbsp;</label>
+                        <ng-container>
+                            <button pButton [disabled]="serviceSkillsForm.invalid" type="submit" label="Add"></button>
+                        </ng-container>
+
+                    </div>
+                </div>
+            </form>
+            <div class="p-grid p-nogutter" >
+                <div class="p-md-12">
+                    <p-table [value]="formData.srvSkills">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SNo.</th>
+                                <th>Service Skill</th>
+                                <th>Frequency</th>
+                                <th>FrqQty</th>
+                                <th>StartTime</th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                            <tr>
+                                <td>{{rowIndex+1}}</td>
+                                <td>{{item.srvSkill}}</td>
+
+                                <td>{{matchFrequency(item.nJobFrq)?.name}}</td>
+                                <td>{{item.nFrqQty}}</td>
+                                <td>{{item.dStartTm}}</td>
+                                <td><p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                    (click)="deleteServiceSkills(rowIndex)"></p-button></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="footer" >
+                            <tr *ngIf="isSkillItemMinOne">
+                                <td style="text-align: center;" colspan="9">Add minimum one skill</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="main-box service-points" *ngIf="stepForm === 3">
+            <form [formGroup]="servicePointsForm" (ngSubmit)="onSubmitKitPoint()">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-3">
+                        <label>Select Procedure(s)<sup>*</sup></label>
+                        <p-dropdown [disabled]="jobManageForm.get('nBillMode').value != 125" appendTo="body" #servPoint placeholder="Select Service"
+                        [options]="servicePointList" (onChange)="selectServivePoints($event, servPoint)"
+                        optionLabel="srvPointName" optionValue="srvPointName" formControlName="cSrvPointNm"></p-dropdown>
+                    </div>
+
+                    <div class="p-md-1">
+                        <label>&nbsp;</label>
+                        <button pButton [disabled]="jobManageForm.get('nBillMode').value != 125" type="submit" label="Add"></button>
+                    </div>
+                </div>
+            </form>
+            <div class="p-grid p-nogutter" >
+                <div class="p-md-12">
+                    <p-table [value]="formData.srvPoints">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SNo.</th>
+                                <th>Type</th>
+                                <th>Item/Service Point</th>
+
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                            <tr>
+                                <td>{{rowIndex+1}}</td>
+                                <td>{{item.cSrvType}}</td>
+                                <td>{{item.cSrvPointNm}}</td>
+
+                               <td>
+                                    <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                    (click)="deleteServicePoint(rowIndex)"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="footer" >
+                            <tr *ngIf="jobManageForm.get('nBillMode').value != 125">
+                                <td style="text-align: center;" colspan="7">This is not required</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+        <div class="main-box" *ngIf="stepForm === 4">
+            <form [formGroup]="serviceItemForm" (ngSubmit)="onSubmitServiceItem()">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-3">
+                        <label>Select Item(s)<sup>*</sup></label>
+                        <p-dropdown appendTo="body" #srvSkill placeholder="Select Service"
+                            [options]="serviceTypeList" (onChange)="selectServiveItem($event, srvSkill)"
+                            optionLabel="itemName" optionValue="itemName" formControlName="srvSkill">
+                        </p-dropdown>
+                    </div>
+
+                    <div class="p-md-1">
+                        <label>&nbsp;</label>
+                        <button pButton [disabled]="serviceItemForm.invalid" type="submit" label="Add"></button>
+                    </div>
+                </div>
+            </form>
+            <div class="p-grid p-nogutter" >
+                <div class="p-md-12">
+                    <p-table [value]="formData.srvItems">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>SNo.</th>
+                                <th>Item/Service Point</th>
+
+                                <th>Inst. Charges</th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.item}}</td>
+
+                                    <td><input type="text" [(ngModel)]="item.nInstallationCharge" class="reptfrq" pInputText></td>
+                                    <td>
+                                        <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                        (click)="deleteServiceItem(rowIndex, item)"></p-button>
+                                    </td>
+                                </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+            <!-- <ng-container *ngIf="formData?.consumableItems?.length > 0">
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Supporting Item</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-12">
+                        <p-table [value]="formData.consumableItems">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>SNo.</th>
+                                    <th>Item name</th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.item}}</td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-container> -->
+        </div>
+        <div class="main-box service-points" *ngIf="stepForm === 5 && jobApprovalView">
+            <ng-container>
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Package Info</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-3">
+                        <span class="d-block">Package</span>
+                        <span class="d-block"><strong>{{jobManageForm.get('package').value}}</strong></span>
+                    </div>
+                    <div class="p-md-3">
+                        <span class="d-block">Services</span>
+                        <span class="d-block"><strong>{{jobManageForm.get('srvName').value}}</strong></span>
+                    </div>
+                    <div class="p-md-3">
+                        <span class="d-block">Billing Mode</span>
+                        <span class="d-block"><strong>{{jobManageForm.get('nBillModeName').value}}</strong></span>
+                    </div>
+                    <div class="p-md-3">
+                        <span class="d-block">MRP</span>
+                        <span class="d-block"><strong>{{jobManageForm.get('mrp').value}}</strong></span>
+                    </div>
+                    <div class="p-md-3">
+                        <span class="d-block">Security Deposit</span>
+                        <span class="d-block"><strong>{{jobManageForm.get('security').value}}</strong></span>
+                    </div>
+
+                </div>
+            </ng-container>
+            <ng-container *ngIf="formData.srvSkills.length > 0">
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Service Skills</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-12">
+                        <p-table [value]="formData.srvSkills">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 70px;">SNo.</th>
+                                    <th>Service Skill</th>
+                                    <th>Frequency</th>
+                                    <th>FrqQty</th>
+                                    <th>StartTime</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.srvSkill}}</td>
+                                    <td>{{matchFrequency(item.nJobFrq)?.name}}</td>
+                                    <td>{{item.nFrqQty}}</td>
+                                    <td>{{item.dStartTm}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="formData.srvPoints.length > 0">
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Clinical Procedures</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-12">
+                        <p-table [value]="formData.srvPoints">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 70px;">SNo.</th>
+                                    <th style="width: 200px;">Item/Service Point</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.cSrvPointNm}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="formData.srvItems.length > 0">
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Equipment</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-12">
+                        <p-table [value]="formData.srvItems">
+
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 70px;">SNo.</th>
+                                    <th style="width: 200px;">Item/Service Point</th>
+                                    <th>Inst. Charges</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                    <tr>
+                                        <td>{{rowIndex+1}}</td>
+                                        <td>{{item.item}}</td>
+                                        <td>{{item.nInstallationCharge}}</td>
+                                    </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- <ng-container *ngIf="formData?.consumableItems?.length > 0">
+                <p style="margin-bottom: 0px; padding-left: 8px;"><strong>Consumable</strong></p>
+                <div class="p-grid p-nogutter" >
+                    <div class="p-md-12">
+                        <p-table [value]="formData.consumableItems">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 70px;">SNo.</th>
+                                    <th style="width: 200px;">Item name</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                <tr>
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.item}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </ng-container> -->
+        </div>
+
+
+        <div class="button-section" *ngIf="!jobView">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-6 p-pt-3">
+                    <ng-container *ngIf="stepForm < 5">
+                        <button [disabled]="stepForm === 1" pButton type="button" (click)="backForm()" label="Back"></button>
+                    </ng-container>
+                    <ng-container *ngIf="stepForm === 5">
+                        <button [disabled]="stepForm === 1" pButton type="button" (click)="editJob()" label="Edit"></button>
+                    </ng-container>
+                </div>
+                <div class="p-md-6 p-text-right p-pt-3">
+                    <button *ngIf="stepForm === 1" pButton type="button" [disabled]="jobManageForm.invalid" (click)="nextForm(2); onSubmitJobManage()" label="Next"></button>
+                    <button *ngIf="stepForm === 2" pButton type="button" [disabled]="isSkillItemMinOne" (click)="nextForm(3)" label="Next"></button>
+                    <button *ngIf="stepForm === 3" pButton type="button" (click)="nextForm(4)" label="Next"></button>
+                    <ng-container *ngIf="stepForm === 5">
+                        <button *ngIf="stepForm === 5" pButton type="button" (click)="submitForm()" label="Save"></button>
+                    </ng-container>
+                    <ng-container *ngIf="stepForm === 4 && jobApprovalView">
+                        <button *ngIf="stepForm === 4" pButton type="button" (click)="nextForm(5)" label="Next"></button>
+                    </ng-container>
+
+                    <!-- <ng-container *ngIf="stepForm === 5 && jobApprovalView">
+                        <button class="p-mr-2" *ngIf="stepForm === 5" pButton type="button" (click)="submitApprove()" label="Approve"></button>
+                        <button *ngIf="stepForm === 5" pButton type="button" (click)="submitReject()" label="Reject"></button>
+                    </ng-container> -->
+                </div>
+            </div>
+            </div>
+        </div>

@@ -1,0 +1,282 @@
+.topnav {
+  width: 100%;
+  float: left;
+  padding: 0;
+  position: relative;
+}
+
+.topnav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  float: left;
+}
+
+.topnav ul .dropdown {
+  width: 100%;
+  float: left;
+  padding: 0px;
+  position: relative;
+  border-bottom: 1px solid #474747;
+}
+
+.topnav ul .dropdown a {
+  font-size: 11px;
+  line-height: 20px;
+  text-align: left;
+  display: block;
+  color: #f2f2f2;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 3px;
+  width: 100%;
+  float: left;
+}
+
+.topnav ul .dropdown a:hover {
+  background-color: #3f566c;
+}
+
+.topnav ul .dropdown a.active {
+  background-color: #445c72;
+  color: #fff;
+}
+
+.topnav ul .dropdown a .navLogo {
+  float: left;
+  margin-right: 10px;
+}
+
+.topnav ul .dropdown a .navLogo .pi {
+  vertical-align: text-bottom;
+}
+
+.topnav ul .dropdown .dropbtn {
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 12px;
+  padding: 0;
+}
+
+.topnav ul .dropdown .dropbtn .pi {
+  vertical-align: bottom;
+}
+
+.topnav ul .dropdown .dropdown-content {
+  position: relative;
+  background-color: #6d767f;
+  min-width: 100%;
+  z-index: 0;
+  top: 0px;
+  float: left;
+}
+
+.topnav ul .dropdown .dropdown-content a {
+  float: left;
+  color: #fff;
+  padding: 5px 16px;
+  text-decoration: none;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.topnav ul .dropdown .dropdown-content a:hover {
+  background-color: #3f566c;
+  color: #fff;
+}
+
+.topnav ul .dropdown .dropdown-content a.active {
+  background-color: #445c72;
+  color: #fff;
+}
+
+.topnav ul .dropdown .dropdown-content.submenu_collapse {
+  position: absolute;
+  background-color: #3a4248;
+  top: 4px;
+  left: 55px;
+  z-index: 9;
+  width: 175px;
+}
+
+.topnav ul .dropdown .dropdown-content.submenu_collapse::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -10px;
+  border-right: 10px solid #3a4248;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.topnav ul .dropdown .dropdown-content.multi-lebel-dropdow {
+  background-color: #445c72;
+  padding-left: 10px;
+}
+
+.showNav {
+  display: inline-block;
+}
+
+.hideNav {
+  display: none;
+}
+
+.down,
+.right {
+  position: relative;
+  float: right;
+  width: 22px;
+  height: 22px;
+}
+
+.right:after,
+.down:after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.right:after {
+  background-image: url(../../assets/images/right-arrow.png);
+}
+
+.down:after {
+  background-image: url(../../assets/images/down-arrow.png);
+}
+
+a .hideNav + .dropdown-content {
+  position: absolute;
+}
+
+.sidebar_nav {
+  min-height: 100vh;
+  float: left;
+  position: relative;
+  background-color: #566878;
+  -webkit-box-shadow: 3px 0px 7px #344c62;
+          box-shadow: 3px 0px 7px #344c62;
+}
+
+.sidebar_nav.expand {
+  width: 200px;
+}
+
+.sidebar_nav.expand .topnav {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.sidebar_nav.expand .topnav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar_nav.expand .topnav::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px #E3F2FD;
+          box-shadow: inset 0 0 6px #E3F2FD;
+}
+
+.sidebar_nav.expand .topnav::-webkit-scrollbar-thumb {
+  background-color: #445c72;
+  outline: 1px solid #445c72;
+}
+
+.sidebar_nav.noexpand {
+  width: 50px;
+}
+
+.sidebar_nav .togglebtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 25px;
+  background-color: #fff;
+  border: 0;
+  outline: none;
+  position: absolute;
+  top: 40px;
+  right: -16px;
+  padding: 0;
+  -webkit-box-shadow: 1px 0px 4px #868585;
+          box-shadow: 1px 0px 4px #868585;
+  cursor: pointer;
+}
+
+.sidebar_nav .togglebtn .pi {
+  font-size: 18px;
+  color: #455c71;
+}
+
+.sidebar_nav .togglebtn .angle-right,
+.sidebar_nav .togglebtn .angle-left {
+  float: left;
+  width: 100%;
+  padding: 3px 0 0;
+}
+
+.sidebar_nav .togglebtn .angle-left {
+  padding-right: 2px;
+}
+
+.sidebar_nav .togglebtn .angle-right {
+  padding-left: 2px;
+}
+
+.sidebar_nav .admin {
+  width: 100%;
+  float: left;
+  padding: 7px 15px 0;
+  border-bottom: 1px solid #c9c9c9;
+  margin-bottom: 20px;
+  background-color: #445c72;
+  text-align: center;
+}
+
+.sidebar_nav .admin h3 {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: normal;
+  color: #fff;
+  margin: 0;
+}
+
+.sidebar_nav .admin h3 .navLogo {
+  font-size: 26px;
+  font-weight: bold;
+  margin-right: 0px;
+  padding: 5px 0 11px;
+}
+
+.sidebar_nav .logo_warraper {
+  float: left;
+  width: 100%;
+  height: 100px;
+  text-align: center;
+}
+
+.sidebar_nav .logo_warraper .logo {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 100px;
+}
+
+.sidebar_nav .logo_warraper .logo.logocols {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.sidebar_nav .logo_warraper .logo img {
+  width: 100%;
+}
+/*# sourceMappingURL=sidebar.component.css.map */

@@ -1,0 +1,770 @@
+
+<div class="dashboard">
+    <p-toast [baseZIndex]="100000"></p-toast>
+    <p-tabView [(activeIndex)]="index" class="emptab">
+        
+        <p-tabPanel header="Search">
+            <app-emp-search (tabIndexSearch)="updateIndex($event)" (buttonClicked)="parentEventHandlerFunction()"  [isTabUpdated]="isTabUpdated" (empDataUpdated)="getEmpDataU($event)">
+            </app-emp-search>
+        </p-tabPanel>
+
+        <p-tabPanel header="Employee Info">
+            <form [formGroup]="employeeInfoForm" (ngSubmit)="onSubmit()">
+                <div class="employeeinfo">
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-8 p-pb-0">
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4"><label for="first">First Name<sup>*</sup></label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="first" type="text" formControlName="firstName" pInputText>
+                                            <div
+                                                *ngIf="(f.firstName.invalid) && (f.firstName.touched || f.firstName.dirty)">
+                                                <p class="danger" *ngIf="f.firstName.errors.required">Name is Required
+                                                </p>
+                                                <p class="danger"
+                                                    *ngIf="!f.firstName.hasError('invalidName') && f.firstName.errors.minlength">
+                                                    Minimum 4 char only</p>
+                                                <p class="danger" *ngIf="f.firstName.errors.maxlength">Maximum 20 char
+                                                    only</p>
+                                                <p class="danger" *ngIf="f.firstName.hasError('invalidName')">Enter only
+                                                    alphabets</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="middle">Middle Name</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="middle" type="text" formControlName="middleName" pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="last">Last Name</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="last" type="text" formControlName="lastName" pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="relation">Relationship</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+
+                                            <p-dropdown id="relation" [options]="typesOfRelationsData"
+                                                placeholder="Select Relation Type" optionLabel="name"
+                                                formControlName="relathinc" (onChange)="onChangeRelation($event)">
+                                            </p-dropdown>
+                                            <p class="danger"
+                                                *ngIf="(f.relathinc.invalid) && (f.relathinc.touched || f.relathinc.dirty)">
+                                                Relationship is required
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="fname">{{relationLabel}}<sup>*</sup></label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="fname" type="text" formControlName="fatherName" pInputText>
+                                            <div
+                                                *ngIf="(f.fatherName.invalid) && (f.fatherName.touched || f.fatherName.dirty)">
+                                                <p class="danger" *ngIf="f.fatherName.errors.required">Name is Required
+                                                </p>
+                                                <p class="danger"
+                                                    *ngIf="!f.fatherName.hasError('invalidName') && f.fatherName.errors.minlength">
+                                                    Minimum 4 char only</p>
+                                                <p class="danger" *ngIf="f.fatherName.errors.maxlength">Maximum 20 char
+                                                    only</p>
+                                                <p class="danger" *ngIf="f.fatherName.hasError('invalidName')">Enter
+                                                    only alphabets</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="relationType" class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="middle">Mother Name</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="middle" type="text" formControlName="motherName" pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input id="empcode" formControlName="empCode" type="hidden" pInputText>
+                                <input id="nEmpid" formControlName="nEmpid" type="hidden" pInputText>
+
+                            </div>
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nname">Nominee Name<sup>*</sup></label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="nname" type="text" formControlName="cNomineeName" pInputText>
+                                            <div
+                                                *ngIf="(f.cNomineeName.invalid) && (f.cNomineeName.touched || f.cNomineeName.dirty)">
+                                                <p class="danger" *ngIf="f.cNomineeName.errors.required">Name is
+                                                    Required</p>
+                                                <p class="danger"
+                                                    *ngIf="!f.cNomineeName.hasError('invalidName') && f.cNomineeName.errors.minlength">
+                                                    Minimum 4 char only</p>
+                                                <p class="danger" *ngIf="f.cNomineeName.errors.maxlength">Maximum 20
+                                                    char only</p>
+                                                <p class="danger" *ngIf="f.cNomineeName.hasError('invalidName')">Enter
+                                                    only alphabets</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nrelation">Relation</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+
+                                            <p-dropdown id="CNomRelation" class="emp-ddown" [options]="nomineeRelations"
+                                                placeholder="Select Nominee Relation Type"
+                                                formControlName="CNomRelation" optionLabel="codeName"
+                                                (onChange)="onNomineeRelationChange($event)"></p-dropdown>
+
+                                            <p-button class="btn-add emp-addp" (click)="addRelation()"
+                                                icon="pi pi-plus">
+                                            </p-button>
+                                            <p class="danger"
+                                                *ngIf="(f.CNomRelation.invalid) && (f.CNomRelation.touched || f.CNomRelation.dirty)">
+                                                Nominee Relationship is required
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                    <!-- Add relation dailog box -->
+                                    <p-dialog header="Add Nominee Relation" [(visible)]="relationDialog" [modal]="true"
+                                        [style]="{width: '30vw'}" [baseZIndex]="10000" appendTo="body"
+                                        (onHide)="hide (dd)">
+                                        <div class="p-grid p-nogutter p-mb-3">
+                                            <div class="p-col-12 p-md-3">
+                                                <label for="name">Name</label>
+                                            </div>
+                                            <div class="p-col-12 p-md-9">
+                                                <input id="name" #nomineeRelationName type="text"
+                                                    (keypress)="updateNomineeRelationButton($event)" pInputText>
+                                            </div>
+                                        </div>
+                                        <ng-template pTemplate="footer">
+                                            <p-button label="Add" [disabled]="disabledNomineeAdd"
+                                                (click)="addNomineeRelation(nomineeRelationName.value)"></p-button>
+                                        </ng-template>
+                                    </p-dialog>
+                                    <!-- Add new address dailog box end-->
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nage">Age</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <input id="nage" type="text" formControlName="nNomAge" pInputText>
+
+                                            <p class="danger"
+                                                *ngIf="(f.CNomRelation.invalid) && (f.CNomRelation.touched || f.CNomRelation.dirty)">
+                                                Age is required
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input id="empcode" formControlName="empCode" type="hidden" pInputText>
+                            </div>
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nname">EPS Start Date</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-calendar [showIcon]="true" formControlName="epsStartDate"  dateFormat="dd-mm-yy" >
+                                            </p-calendar>
+                                            <p *ngIf="epsDateCheck" class="danger">Date should greater than Joining</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nname">EPS Parent</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-dropdown placeholder="Select parent" formControlName="epsParent" [options]="epsParentData" optionLabel="txt">
+                                            </p-dropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="nname">EPS End Date</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-calendar [monthNavigator]="true" formControlName="epsEndDate" [yearNavigator]="true"
+                                                yearRange="1950:2020" [showIcon]="true" dateFormat="dd-mm-yy">
+                                            </p-calendar>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter">
+                                <div class="p-md-6 p-p-0">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-12 p-pt-1 p-pb-2">
+                                            <div style="padding: 6px 0 0;" class="remember">
+                                                <h5 class="p-p-0">Permanent Address</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div formGroupName="permanentAddressGroup">
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="paddress">Permanent Address<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <input id="paddress" type="text" formControlName="permanentAddress"
+                                                    pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.permanentAddress').invalid) && (employeeInfoForm.get('permanentAddressGroup.permanentAddress').touched || employeeInfoForm.get('permanentAddressGroup.permanentAddress').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.permanentAddress').errors.required">
+                                                        Address is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pin">Pincode<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <input id="pin" type="text" formControlName="pincode" pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.pincode').invalid) && (employeeInfoForm.get('permanentAddressGroup.pincode').touched || employeeInfoForm.get('permanentAddressGroup.pincode').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.pincode').errors.required">
+                                                        Pincode is Required</p>
+                                                    <p class="danger"
+                                                        *ngIf="!employeeInfoForm.get('permanentAddressGroup.pincode').errors.pattern && employeeInfoForm.get('permanentAddressGroup.pincode').errors.minlength">
+                                                        Minimum 6 char only</p>
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.pincode').errors.maxlength">
+                                                        Maximum 6 char only</p>
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.pincode').errors.pattern">
+                                                        Enter only number</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="state">State<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown id="state" [options]="states" optionLabel="name" placeholder="Select State" formControlName="state" (onChange)="onStateChange($event,'permanent')" [filter]="true" filterBy="name">
+                                                </p-dropdown> -->
+
+                                                <p-autoComplete id="state" [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'states')" field="name"
+                                                    (onSelect)="onStateChange($event, 'permanent')" [minLength]="1"
+                                                    placeholder="Select state" formControlName="state"
+                                                    [dropdown]="true"></p-autoComplete>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.state').invalid) && (employeeInfoForm.get('permanentAddressGroup.state').touched || employeeInfoForm.get('permanentAddressGroup.state').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.state').errors.required">
+                                                        State is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="district">District<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown id="district" class="emp-ddown" [options]="cities" placeholder="Select District" optionLabel="name" formControlName="district" (onChange)="getBlocksBasedOnDist($event, 'permanent')" [filter]="true" filterBy="name">
+                                                </p-dropdown> -->
+                                                <p-autoComplete id="district" [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'cities','permanent')" field="name"
+                                                    (onSelect)="getBlocksBasedOnDist($event, 'permanent')"
+                                                    [minLength]="1" placeholder="Select District"
+                                                    formControlName="district" [dropdown]="true" class="emp-ddown">
+                                                </p-autoComplete>
+                                                <p-button class="btn-addp emp-addp p-text-left"
+                                                    (click)="showBasicDialog('District')" icon="pi pi-plus">
+                                                </p-button>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.district').invalid) && (employeeInfoForm.get('permanentAddressGroup.district').touched || employeeInfoForm.get('permanentAddressGroup.district').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.district').errors.required">
+                                                        District is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="city">City/Tehsil<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-10 p-md-8">
+                                                <!-- <p-dropdown class="emp-ddown" [filter]="true" filterBy="name" placeholder="Select City" id="city" [options]="blocks" optionLabel="name" formControlName="city" (onChange)="onBlockChange($event,'permanent')">
+                                                </p-dropdown> -->
+                                                <p-autoComplete id="city" class="emp-ddown"
+                                                    [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'blocks')" field="name"
+                                                    (onSelect)="onBlockChange($event, 'autopermanent')" [minLength]="1"
+                                                    placeholder="Select City" formControlName="city" [dropdown]="true">
+                                                </p-autoComplete>
+                                                <p-button class="btn-addp emp-addp p-text-left"
+                                                    (click)="showBasicDialog('Tehsil')" icon="pi pi-plus">
+                                                </p-button>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.city').invalid) && (employeeInfoForm.get('permanentAddressGroup.city').touched || employeeInfoForm.get('permanentAddressGroup.city').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.city').errors.required">
+                                                        City is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="village">Village</label>
+                                            </div>
+                                            <div class="p-col-10 p-md-8">
+                                                <!-- <p-dropdown class="emp-ddown" id="village" [options]="villages" placeholder="Select Village" optionLabel="name" formControlName="village">
+                                                </p-dropdown> -->
+                                                <p-autoComplete id="village" class="emp-ddown"
+                                                    [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'villages')" field="name"
+                                                    [minLength]="1" placeholder="Select Village"
+                                                    formControlName="village" [dropdown]="true"></p-autoComplete>
+                                                <!-- <p-autoComplete [suggestions]="filteredGroups" (completeMethod)="filterGroup($event, 'villages')" field="name" [minLength]="1" placeholder="Select District" formControlName="group" [dropdown]="true"></p-autoComplete> -->
+
+                                                <p-button class="btn-addp p-text-left emp-addp"
+                                                    (click)="showBasicDialog('Village')" icon="pi pi-plus">
+                                                </p-button>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('permanentAddressGroup.village').invalid) && (employeeInfoForm.get('permanentAddressGroup.village').touched || employeeInfoForm.get('permanentAddressGroup.village').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('permanentAddressGroup.village').errors.required">
+                                                        Village is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Add new address dailog box -->
+                                        <p-dialog header="Add {{currentAddData}}" [(visible)]="displayBasic"
+                                            [modal]="true" [style]="{width: '30vw'}" [baseZIndex]="10000"
+                                            appendTo="body" (onHide)="hide (dd)">
+                                            <div class="p-grid p-nogutter p-mb-3">
+                                                <div class="p-col-12 p-md-3">
+                                                    <label for="parent">{{parentType}}</label>
+                                                </div>
+                                                <div class="p-col-12 p-md-9">
+                                                    <p-dropdown #dd id="parent" (onChange)="getParentSerialNo($event)"
+                                                        placeholder="Select" [options]="parentData" optionLabel="name"
+                                                        [filter]="true" filterBy="name">
+                                                    </p-dropdown>
+                                                </div>
+                                            </div>
+                                            <div class="p-grid p-nogutter p-mb-3">
+                                                <div class="p-col-12 p-md-3">
+                                                    <label for="other">Name</label>
+                                                </div>
+                                                <div class="p-col-12 p-md-9">
+                                                    <input id="other" type="text" #codeNamePopUp pInputText
+                                                        (input)="checkNameVal($event)">
+                                                </div>
+                                            </div>
+                                            <ng-template pTemplate="footer">
+                                                <p-button (click)="addCatData(codeNamePopUp.value)"
+                                                    [disabled]="!isParentCategory" label="Add">
+                                                </p-button>
+                                            </ng-template>
+                                        </p-dialog>
+                                        <!-- Add new address dailog box end-->
+                                    </div>
+                                </div>
+                                <div class="p-md-6 p-p-0">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-12 p-pt-1 p-pb-2">
+                                            <div class="remember">
+                                                <label class="container-checkbox">
+                                                    <input type="checkbox" (change)="sameAddress($event)">
+                                                    <span class="check-mark"></span>
+                                                </label>
+                                                <h5>Current Address same as Permanent</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div formGroupName="currentAddressGroup">
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="prmadd">Current Address<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <input id="prmadd" formControlName="currentAddress" type="text"
+                                                    pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.currentAddress').invalid) && (employeeInfoForm.get('currentAddressGroup.currentAddress').touched || employeeInfoForm.get('currentAddressGroup.currentAddress').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.currentAddress').errors.required">
+                                                        Current address is Required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pincode">Pincode<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <input id="pincode" formControlName="pincodec" type="text" pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.pincodec').invalid) && (employeeInfoForm.get('currentAddressGroup.pincodec').touched || employeeInfoForm.get('currentAddressGroup.pincodec').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.pincodec').errors.required">
+                                                        Pincode is Required</p>
+                                                    <p class="danger"
+                                                        *ngIf="!employeeInfoForm.get('currentAddressGroup.pincodec').errors.pattern && employeeInfoForm.get('currentAddressGroup.pincodec').errors.minlength">
+                                                        Minimum 6 char only</p>
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.pincodec').errors.maxlength">
+                                                        Maximum 6 char only</p>
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.pincodec').errors.pattern">
+                                                        Enter only number</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="showStates" class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pstate">State<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown id="pstate" placeholder="Select State" (onChange)="getState($event,'current')" [options]="states" formControlName="statec" optionLabel="name" [filter]="true" filterBy="name"></p-dropdown> -->
+                                                <p-autoComplete id="pstate" [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'states')" field="name"
+                                                    placeholder="Select State"  (onSelect)="onStateChange($event, 'current')" (onChange)="getState($event,'current')"
+                                                    formControlName="statec" optionLabel="name" [filter]="true"
+                                                    filterBy="name" [dropdown]="true"></p-autoComplete>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.statec').invalid) && (employeeInfoForm.get('currentAddressGroup.statec').touched || employeeInfoForm.get('currentAddressGroup.statec').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.statec').errors.required">
+                                                        State is Required</p>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="p-col-12 p-md-8" *ngIf="!currChecked">
+                                                <input formControlName="statec" type="text" pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.statec').invalid) && (employeeInfoForm.get('currentAddressGroup.statec').touched || employeeInfoForm.get('currentAddressGroup.statec').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.statec').errors.required">
+                                                        State is Required</p>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pdist">District<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown (onChange)="getBlocksBasedOnDist($event,'current')" placeholder="Select District" id="pdist" [options]="currentCities" [filter]="true" filterBy="name" optionLabel="name" formControlName="districtc">
+                                                </p-dropdown> -->
+
+                                                <p-autoComplete [suggestions]="filteredGroups" (onSelect)="onDistChange($event, 'current')"
+                                                    (completeMethod)="filterGroup($event, 'cities', 'current')" field="name"
+                                                    (onChange)="getBlocksBasedOnDist($event,'current')"
+                                                    placeholder="Select District" id="pdist" [options]="currentCities"
+                                                    [filter]="true" filterBy="name" optionLabel="name"
+                                                    formControlName="districtc" [dropdown]="true">
+                                                </p-autoComplete>
+                                                <!-- <p-button class="btn-add emp-addp" (click)="showBasicDialog('District')" icon="pi pi-plus">
+                                                </p-button> -->
+
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.districtc').invalid) && (employeeInfoForm.get('currentAddressGroup.districtc').touched || employeeInfoForm.get('currentAddressGroup.districtc').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.districtc').errors.required">
+                                                        District is Required</p>
+                                                </div>
+                                            </div>
+                              
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pcity">City/Tehsil<sup>*</sup></label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown id="pcity" (onChange)="onBlockChange($event,'current')" placeholder="Select City" [filter]="true" filterBy="name" [options]="currentBlocks" optionLabel="name" formControlName="cityc" [filter]="true" filterBy="name">
+                                                </p-dropdown> -->
+
+                                                <p-autoComplete id="pcity" [suggestions]="filteredGroups" (onSelect)="onBlockChange($event, 'current')"
+                                                    (completeMethod)="filterGroup($event, 'blocks','current')" field="name"
+                                                    (onChange)="onBlockChange($event,'current')"
+                                                    placeholder="Select City" [filter]="true" filterBy="name"
+                                                    [options]="currentBlocks" optionLabel="name" formControlName="cityc"
+                                                    [filter]="true" filterBy="name" [dropdown]="true">
+                                                </p-autoComplete>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.cityc').invalid) && (employeeInfoForm.get('currentAddressGroup.cityc').touched || employeeInfoForm.get('currentAddressGroup.cityc').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.cityc').errors.required">
+                                                        City is Required</p>
+                                                </div>
+
+                                            </div>
+                                            <!-- <div class="p-col-12 p-md-8" *ngIf="!currChecked">
+                                                <input formControlName="cityc" type="text" pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.cityc').invalid) && (employeeInfoForm.get('currentAddressGroup.cityc').touched || employeeInfoForm.get('currentAddressGroup.cityc').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.cityc').errors.required">
+                                                        City is Required</p>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        <div class="p-grid p-nogutter grid-gutter">
+                                            <div class="p-col-12 p-md-4">
+                                                <label for="pvillage">Village</label>
+                                            </div>
+                                            <div class="p-col-12 p-md-8">
+                                                <!-- <p-dropdown id="pvillage" [options]="currentVillages" placeholder="Select Village" optionLabel="name" formControlName="villagec">
+                                                </p-dropdown> -->
+                                                <p-autoComplete id="pvillage" [suggestions]="filteredGroups"
+                                                    (completeMethod)="filterGroup($event, 'villages','current')" field="name"
+                                                    [options]="currentVillages" placeholder="Select Village"
+                                                    optionLabel="name" formControlName="villagec" [dropdown]="true">
+                                                </p-autoComplete>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.villagec').invalid) && (employeeInfoForm.get('currentAddressGroup.villagec').touched || employeeInfoForm.get('currentAddressGroup.villagec').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.villagec').errors.required">
+                                                        Village is Required</p>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="p-col-12 p-md-8" *ngIf="!currChecked">
+                                                <input formControlName="villagec" type="text" pInputText>
+                                                <div
+                                                    *ngIf="(employeeInfoForm.get('currentAddressGroup.villagec').invalid) && (employeeInfoForm.get('currentAddressGroup.villagec').touched || employeeInfoForm.get('currentAddressGroup.villagec').dirty)">
+                                                    <p class="danger"
+                                                        *ngIf="employeeInfoForm.get('currentAddressGroup.villagec').errors.required">
+                                                        Village is Required</p>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-pb-0">
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label>Gender</label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <p-dropdown [options]="genderDropdown" placeholder="Select gender"
+                                        formControlName="gender" optionLabel="name" optionValue="code"></p-dropdown>
+                                    <p class="danger"
+                                        *ngIf="(f.gender.invalid) && (f.gender.touched || f.gender.dirty)">
+                                        Gender is required
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label>Date of Birth<sup>*</sup></label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <p-calendar formControlName="dob" [monthNavigator]="true" [yearNavigator]="true"
+                                        yearRange="1950:2020" [showIcon]="true" dateFormat="dd-mm-yy"></p-calendar>
+                                    <p class="danger" *ngIf="(f.dob.invalid) && (f.dob.touched || f.dob.dirty)">
+                                        Birth date is required
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label>Joining Date<sup>*</sup></label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <p-calendar formControlName="jdate" [showIcon]="true" (onSelect)="checkTwoDates($event)" dateFormat="dd-mm-yy">
+                                    </p-calendar>
+                                    <p class="danger" *ngIf="(f.jdate.invalid) && (f.jdate.touched || f.jdate.dirty)">
+                                        Joining Date is required
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label for="mb">Mobile 1<sup>*</sup></label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <input id="mb" #phone type="text" formControlName="mobile1" pInputText
+                                        (keyup)="checkMbNumber($event)" (keydown)="onKey($event)">
+                                    <div *ngIf="(f.mobile1.invalid) && (f.mobile1.touched || f.mobile1.dirty)">
+                                        <p class="danger" *ngIf="f.mobile1.errors.required">Mobile no is Required</p>
+                                        <p class="danger"
+                                            *ngIf="!f.mobile1.errors.pattern && f.mobile1.errors.minlength">Minimum 10
+                                            char only
+                                        </p>
+                                        <p class="danger" *ngIf="f.mobile1.errors.maxlength">Maximum 10 char only</p>
+                                        <p class="danger" *ngIf="f.mobile1.errors.pattern">Enter only number</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label for="mobile">Mobile 2</label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <input id="mobile" type="text" formControlName="mobile2" pInputText
+                                        (keyup)="checkMbNumber($event)">
+
+                                    <p class="danger" *ngIf="mobilenoAlreadyError">
+                                        Mobile number already exist
+                                    </p>
+
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label for="email">Email</label>
+                                </div>
+
+                                <!-- [ngClass]="isEmailDisable?'emaildisable':''" -->
+                                <div class="p-col-12 p-md-8">
+                                    <input id="email" type="text" pInputEmail formControlName="email"
+                                        (keyup)="checkEmail($event)">
+                                    <div *ngIf="(f.email.invalid) && (f.email.touched || f.email.dirty)">
+                                        <p class="danger" *ngIf="f.email.errors.required">Email is Required</p>
+                                        <p class="danger" *ngIf="f.email.errors.pattern">Enter valid email</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label>Registration Number</label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <input type="text" formControlName="cRegNo" pInputText>
+                                    <p class="danger"
+                                        *ngIf="(f.cRegNo.invalid) && (f.cRegNo.touched || f.cRegNo.dirty)">
+                                        Registration no is required
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-4">
+                                    <label>Validity Date</label>
+                                </div>
+                                <div class="p-col-12 p-md-8">
+                                    <p-calendar formControlName="valDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                    </p-calendar>
+                                    <p class="danger"
+                                        *ngIf="(f.valDate.invalid) && (f.valDate.touched || f.valDate.dirty)">
+                                        Validity Date is required
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col-12 p-md-12" *ngIf="showBloodGroups">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="bgrup">Blood Group<sup>*</sup></label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-dropdown id="bgrup" placeholder="Select Blood Group"
+                                                [options]="bloodGroups" optionLabel="name" formControlName="bloodGroup">
+                                            </p-dropdown>
+                                            <p class="danger"
+                                                *ngIf="(f.bloodGroup.invalid) && (f.bloodGroup.touched || f.bloodGroup.dirty)">
+                                                Blood Group is required
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-12" *ngIf="showMartialStatus">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="mstatus">Marital Status</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-dropdown id="mstatus" placeholder="Select Marital Status"
+                                                [options]="martialStatusD" optionLabel="name"
+                                                formControlName="maritialStatus"></p-dropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-12">
+                                    <div class="p-grid p-nogutter grid-gutter">
+                                        <div class="p-col-12 p-md-4">
+                                            <label for="religion">Religion</label>
+                                        </div>
+                                        <div class="p-col-12 p-md-8">
+                                            <p-dropdown id="religion" placeholder="Select Religion"
+                                                [options]="religionsData" optionLabel="name" formControlName="religion">
+                                            </p-dropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="p-col-12 p-md-8">
+                            <div class="p-grid p-nogutter grid-gutter">
+                                <div class="p-col-12 p-md-2">
+                                </div>
+                                <div class="p-col-12 p-md-10">
+                                    <!-- <button pButton type="submit" label="Next"  class="p-button" [disabled]="employeeInfoForm.invalid"></button> -->
+
+                                    <button pButton type="submit" label="Next" class="p-button"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </p-tabPanel>
+
+        <p-tabPanel header="Access Info" *ngIf="departmentsData.length > 0">
+
+            <app-access-info [fTabData]="firstTabData" (tabIndex)="updateIndex($event)"
+                [departMentData]="departmentsData"   [editEmpData]="editedEmpData"></app-access-info>
+
+        </p-tabPanel>
+
+        <p-tabPanel header="KYC">
+            <app-kyc [editEmpData]="editedEmpData"  (updateSearchEvent)="updateTabData($event)"></app-kyc>
+        </p-tabPanel>
+
+
+    </p-tabView>
+    <!-- <button pButton label="{{labelName}}" (click)="openNext()"></button> -->
+</div>

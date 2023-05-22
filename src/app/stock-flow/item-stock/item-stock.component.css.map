@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AACE,AAAA,KAAK,CAAC;EAAC,SAAS,EAAE,IAAI;CAAG;;AACzB,AAAA,YAAY,EAAC,AAAA,KAAC,EAAO,QAAQ,AAAf,CAAgB,IAAK,CAAA,YAAY,EAAC;EAAC,OAAO,EAAE,YAAY;CAAG;;AACzE,AAAA,SAAS,CAAA;EACP,KAAK,EAAC,GAAG;CACV",
+    "sources": [
+        "item-stock.component.scss"
+    ],
+    "names": [],
+    "file": "item-stock.component.css"
+}

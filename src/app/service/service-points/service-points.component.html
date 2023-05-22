@@ -1,0 +1,166 @@
+<p-toast  [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12 p-md-3">
+      <form [formGroup]="servicePointFormGroup" (ngSubmit)="submitServicePointF(servicePointFormGroup)">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="service">Service<sup>* </sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown [options]="serviceData" optionLabel="txt" formControlName="nSrvid" placeholder="Select Service"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControls.nSrvid.invalid) && (formControls.nSrvid.touched || formControls.nSrvid.dirty)">
+                  Service Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="middle">Clinical Procedure<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <input type="text" pInputText formControlName="cSrvPointNm">
+                <p class="danger"
+                  *ngIf="(formControls.cSrvPointNm.invalid) && (formControls.cSrvPointNm.touched || formControls.cSrvPointNm.dirty)">
+                  Clinical Procedure Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <h4>Requirement Mapping:</h4>
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="last">Service Skills<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-multiSelect class="emp-ddown" formControlName="cSrvSkill" [options]="sSkills"
+                  optionLabel="name" maxSelectedLabels="1" defaultLabel="SELECT" [(ngModel)]="selectedOptions"
+                  [ngModelOptions]="{standalone: true}" styleClass="multiselect-mobileregulation-width">
+                </p-multiSelect>
+                <p-button class="btn-add emp-addp" icon="pi pi-plus"
+                  (click)="showComboDialog(catgId);sParrentNoF(catgId)">
+                </p-button>
+                <p class="danger"
+                  *ngIf="(formControls.cSrvSkill.invalid) && (formControls.cSrvSkill.touched || formControls.cSrvSkill.dirty)">
+                  Service Skills Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="last">Equipment</label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-multiSelect formControlName="cItems" [options]="equipData" optionLabel="txt"
+                  maxSelectedLabels="1" defaultLabel="SELECT EQUIPMENT" [(ngModel)]="selectedScopes"
+                  [ngModelOptions]="{standalone: true}" styleClass="multiselect-mobileregulation-width">
+                </p-multiSelect>
+
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-8 p-md-offset-4 p-text-left">
+            <button type="submit" [disabled]="!servicePointFormGroup.valid" label="{{editButton? 'UPDATE': 'SAVE'}}" pButton></button>
+            <button style="margin-left: 5px;" (click)="resetServicePoint()" *ngIf="editCancelButton" pButton
+              type="button" label="Cancel"></button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="p-col-12 p-md-9">
+
+      <p-table #svpoint [value]="tData" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+        [autoLayout]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,20,40,80,120]" [globalFilterFields]="['cSrvName','cSrvPointNm','cSrvName','items']">
+        <ng-template pTemplate="caption">
+          <div class="p-grid p-jc-end">
+            <div class="p-col-9 p-md-5">
+              <div class="search">
+                <input placeholder="Search" id="search" type="text" (input)="svpoint.filterGlobal($event.target.value,'contains')" pInputText>
+                <!-- <input placeholder="Search" id="search" type="text" pInputText (keyup)="servicePointFilterF()" [(ngModel)]="searchBoxVal" [ngModelOptions]="{standalone: true}"> -->
+                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>SNo</th>
+            <th pSortableColumn="cSrvName">Service<p-sortIcon field="cSrvName"></p-sortIcon></th>
+            <th pSortableColumn="cSrvPointNm">Clinical Procedure<p-sortIcon field="cSrvPointNm"></p-sortIcon></th>
+            <th pSortableColumn="cSrvName">Sevices Mapped<p-sortIcon field="cSrvName"></p-sortIcon></th>
+            <th pSortableColumn="items">Equipment Mapped<p-sortIcon field="items"></p-sortIcon></th>
+            <th style="width: 70px;">Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-i="rowIndex">
+          <tr>
+            <td>{{i+1}}</td>
+            <td>{{data.cSrvName}}</td>
+            <td>{{data.cSrvPointNm}}</td>
+            <td>{{data.cSrvName}}</td>
+            <td>{{data.items}}</td>
+            <td style="width: 70px;"> 
+              <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editServicePointF(data.nSrvPointid)"></p-button>
+              <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"
+                (click)="delServicePointF(data.nSrvPointid)"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Add new Service Category dailog box -->
+<p-dialog class="dialog" header="Add Service Skills" [(visible)]="displayBasic" [modal]="true" [style]="{width: '35vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="comboFormGroup">
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-3">
+        <label for="ctype">Service Skills</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <input id="other" type="text" pInputText formControlName="cCodeName">
+        <p class="danger"
+          *ngIf="contorlForm.cCodeName.invalid && (contorlForm.cCodeName.dirty || contorlForm.cCodeName.touched)">
+          Service Skills Is Required</p>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-3">
+        <label for="parent">Serial Parent No</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <p-dropdown appendTo="body" id="parent" formControlName="nParentSerialNo" [options]="sParrentNoRes" optionLabel="txt"
+          [filter]="true" filterBy="txt"></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-3">
+        <label for="other">Description</label>
+      </div>
+      <div class="p-col-12 p-md-9">
+        <!-- <textarea rows="3" cols="63" pInputTextarea autoResize="autoResize"></textarea> -->
+        <input id="other" type="text" pInputText formControlName="description">
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <p-button (click)="submitComboPopupF(comboFormGroup);displayBasic=false" type="submit" label="Add"></p-button>
+    </div>
+  </form>
+</p-dialog>
+<!-- Add new Service Categroy dailog box end-->

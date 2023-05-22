@@ -1,0 +1,76 @@
+<div class="dashboard p-pt-0 p-pr-0">
+  <div class="p-grid p-nogutter">
+    <div class="p-md-9 p-p-0">
+<!--
+      <iframe id="pdfViewer" [src]="pdfSrc" style="width: 100%; height: 450px;"
+ zindex="100" ></iframe> -->
+
+      <pdf-viewer
+        [src]="pdfSrc"
+        [render-text]="true"
+        [original-size]="false"
+        style="width: 100%; height: 600px"
+      ></pdf-viewer>
+    </div>
+    <div class="p-md-3 p-p-0">
+        <div class="newreport-filter">
+            <div class="report-filter">
+                <div class="p-grid p-m-0">
+                  <ng-container *ngIf="dateRange['active']">
+                    <div class="p-md-12">
+                        <label for="fdate">{{dateRange['from']}}</label>
+                        <p-calendar [showIcon]="true" id="fdate" (onSelect)="onSelectFromDate($event)"></p-calendar>
+                    </div>
+                    <div class="p-md-12">
+                        <label for="tdate">{{dateRange['to']}}</label>
+                        <p-calendar [showIcon]="true" id="tdate" (onSelect)="onSelectToDate($event)"></p-calendar>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="dateObj['active']">
+                    <div class="p-md-12">
+                        <label for="fdate">{{dateObj['label']}}</label>
+                        <p-calendar [showIcon]="true" id="fdate" (onSelect)="onSelectDate($event)"></p-calendar>
+                    </div>
+
+                  </ng-container>
+
+                  <div class="p-col-12">
+                  <ng-container *ngIf="menuData.length">
+                    <div class="p-grid p-nogutter" *ngFor="let drop of menuData">
+                      <ng-container *ngIf="drop['inputType'] === 'dropdown'">
+                          <div class="p-md-12 p-px-0">
+                            <label>{{drop['label']}}</label>
+                              <p-dropdown placeholder="{{drop['label']}}" [options]="drop['datafill_list']" (onChange)="onChangeDropDown($event,drop['label'])" optionLabel="cName"
+                                  optionValue="cValue"></p-dropdown>
+                          </div>
+                        </ng-container>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="underData?.length">
+                    <div class="p-grid p-nogutter" *ngFor="let drop of menuData">
+                      <ng-container *ngIf="drop['inputType'] === 'autocomplete'">
+                        <div class="p-col-12 p-px-0">
+                          <label>{{drop['label']}}</label>
+                            <!-- <p-dropdown [filter]="true" filterBy="txt" placeholder="Select Under Group" [options]="underData" optionLabel="txt" formControlName="nSchid"></p-dropdown> -->
+                            <p-autoComplete [(ngModel)]="selectedAuto" [suggestions]="filteredGroups" field="cName"  (completeMethod)="filterGroup($event)" placeholder="{{drop['label']}}" [dropdown]="true" (onSelect)="onSelectAutoComplete(evt,drop['label'])"></p-autoComplete>
+
+                            <!-- <p-autoComplete  [suggestions]="underData" (completeMethod)="filterGroup($event)"></p-autoComplete> -->
+
+                        </div>
+                    </ng-container>
+                    </div>
+                  </ng-container>
+                </div>
+
+                    <div class="p-md-12">
+                        <button type="button" label="View" class="p-mr-2" pButton (click)="viewReport()"></button>
+                        <button type="submit" label="Export" pButton></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

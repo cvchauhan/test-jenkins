@@ -1,0 +1,91 @@
+<div class="dashboard">
+    <div class="p-grid p-col-12 p-md-12">
+        <!-- <div class="p-grid p-md-3">
+            <div class="p-md-2 ">
+                <label>Service</label>
+            </div>
+            <div class="p-md-10 ">
+                <p-dropdown placeholder="Select Service" [options]="serviceArr" [(ngModel)]="selectedService"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid p-md-2">
+            <div class="p-md-3">
+                <label>Status</label>
+            </div>
+            <div class="p-md-8">
+                <p-dropdown placeholder="Pending/Punched" [options]="StatusData" (onChange)="change($event)"></p-dropdown>
+            </div>
+        </div> -->
+        <div class="p-grid p-md-2">
+            <div class="p-md-2">
+                <label>Date</label>
+            </div>
+            <div class="p-md-8">
+                <p-calendar placeholder="Select Date" [(ngModel)]="fromDate" (onSelect)="fromDate" [showIcon]="true" [ngModelOptions]="{standalone: true}" dateFormat="dd-mm-yy">
+                </p-calendar>
+            </div>
+            <div class="p-md-2">
+                <label>To</label>
+            </div>
+        </div>
+        <div class="p-grid p-md-2">
+            <div class="p-md-8">
+                <p-calendar placeholder="Select Date" [(ngModel)]="toDate" (onSelect)="toDate" [showIcon]="true" dateFormat="dd-mm-yy" [ngModelOptions]="{standalone: true}">
+                </p-calendar>
+            </div>
+            <div class="p-md-2">
+                <label>Branch</label>
+            </div>
+        </div>
+        <div class="p-md-2">
+            <!-- <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt" [showClear]="true" (onChange)="changeBranch()" [ngModelOptions]="{standalone: true}">
+            </p-dropdown> -->
+            <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt" [showClear]="true"  [(ngModel)]="branchId">
+            </p-dropdown>
+        </div>
+        <div class="p-md-1">
+            <button pButton type="submit" label="View" (click)="getStatus()"></button>
+        </div>
+       
+    </div>
+    <div class="p-col-12">
+        <p-table #summary [value]="userData" [globalFilterFields]="['cJobNo','srvName','cCustNm','assigned_to','data_status']" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+            <ng-template pTemplate="caption">
+                <div class="p-grid p-jc-end">
+                    <div class="p-col-5">
+                        <div class="search">
+                            <input type="text" (input)="summary.filterGlobal($event.target.value,'contains')" placeholder="Search" pInputText>
+                            <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SNo</th>
+                    <th pSortableColumn="cJobNo">Job No <p-sortIcon field="cJobNo"></p-sortIcon></th>
+                    <th pSortableColumn="dJobDate">Job Start Date <p-sortIcon field="dJobDate"></p-sortIcon></th>
+                    <th pSortableColumn="srvName">Service<p-sortIcon field="srvName"></p-sortIcon></th>
+                    <th pSortableColumn="cCustNm">Customer<p-sortIcon field="cCustNm"></p-sortIcon></th>
+                    <th pSortableColumn="assigned_to">Assigned To<p-sortIcon field="assigned_to"></p-sortIcon></th>
+                    <th pSortableColumn="data_status">Data Status<p-sortIcon field="data_status"></p-sortIcon></th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-tValue let-user let-i="rowIndex">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td>{{user.cJobNo}}</td>
+                    <td>{{user.dJobDate}}</td>
+                    <td>{{user.srvName}}</td>
+                    <td>{{user.cCustNm}}</td>
+                    <td>{{user.assigned_to}}</td>
+                    <td>{{user.data_status}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" (click)="summaryData(user)" class="p-button-raised p-button-primary p-ml-2"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

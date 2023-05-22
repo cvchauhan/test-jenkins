@@ -1,0 +1,95 @@
+<div class="dashboard">
+    <div class="p-col-12 p-md-8">
+        <strong>Service</strong>
+        <p-table [value]="service" [autoLayout]="true" [scrollable]="true" scrollHeight="250px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>S.No</th>
+                    <th>Service</th>
+                    <th>Service Skills</th>
+                    <th>Service Point</th>
+                    <th>Duration</th>
+                    <th>Price</th>
+                    <th>Frequency</th>
+                    <th>Repeats On</th>
+                    <th>Schedule Time</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-point>
+                <tr>
+                    <td>{{point.s_no}}</td>
+                    <td>{{point.service}}</td>
+                    <td>{{point.skills}}</td>
+                    <td>{{point.point}}</td>
+                    <td>{{point.duration}}</td>
+                    <td>{{point.price}}</td>
+                    <td>
+                        <p-dropdown [options]="serviceArr" [(ngModel)]="selectedService" optionLabel="name"></p-dropdown>
+                    </td>
+                    <td><input type="text" pInputText>
+                    </td>
+                    <td><input type="text" pInputText>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div class="p-col-12 p-md-5">
+        <strong>
+        Equipment
+      </strong>
+        <p-table [value]="equipment" [autoLayout]="true" [scrollable]="true" scrollHeight="250px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>S.No</th>
+                    <th>Description</th>
+                    <th>Security Deposit</th>
+                    <th>Price</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-equipment>
+                <tr>
+                    <td>{{equipment.s_no}}</td>
+                    <td>{{equipment.description}}</td>
+                    <td>{{equipment.security}}</td>
+                    <td>{{equipment.price}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div class="p-col-12 p-md-5">
+        <strong>
+      Medicine
+      </strong>
+        <p-table [value]="medicine" [autoLayout]="true" [scrollable]="true" scrollHeight="250px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>S.No</th>
+                    <th>Medicine</th>
+                    <th>Type</th>
+                    <th>Qty</th>
+                    <th>Price(Unit)</th>
+                    <th>Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-medicine>
+                <tr>
+                    <td>{{medicine.s_no}}</td>
+                    <td>{{medicine.medicine}}</td>
+                    <td>{{medicine.type}}</td>
+                    <td>{{medicine.qty}}</td>
+                    <td>{{medicine.price}}</td>
+                    <td>{{medicine.action}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div>
+        <strong class="p-md-1">Job Start Date</strong>
+        <input type=" text " pInputText>
+    </div>
+    <br>
+    <div>
+        <button class="template p-ml-1" pButton type="button" label="Create Service Job"></button>
+    </div>
+</div>

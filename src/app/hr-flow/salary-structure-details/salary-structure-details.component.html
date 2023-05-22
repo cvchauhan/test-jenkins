@@ -1,0 +1,336 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<div class="dashboard">
+    <div class="p-grid">
+        <label class="p-col-fixed">Salary Structure</label>
+        <div class="p-md-4">
+            <p-dropdown [options]="salaryStructureData" optionLabel="cSalStructure" placeholder="Select" (onChange)="salaryStructureChange($event)"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-12">
+            <h5 class="p-my-2">Add Pay Heads</h5>
+        </div>
+    </div>
+    <form [formGroup]="payHeadForm">
+        <div class="p-grid">
+            <div class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Effective From</label>
+                    <div class="p-md-12 p-py-0">
+                        <p-calendar [showIcon]="true" formControlName="eFrom" inputId="icon"></p-calendar>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Pay Head</label>
+                    <div class="p-md-12 p-py-0">
+                        <p-dropdown [options]="payHeadData" optionLabel="cPayHead" formControlName="ePayHead"
+                            placeholder="Select"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Display Name</label>
+                    <div class="p-md-12 p-py-0">
+                        <input type="text" formControlName="eDisplayName" pInputText>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Calculation Frequency</label>
+                    <div class="p-md-12 p-py-0">
+                        <p-dropdown [options]="calFrequency" optionLabel="name" formControlName="eCalFreq"
+                            placeholder="Select"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-1">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">On Attendance</label>
+                    <div class="p-md-12 p-py-0">
+                        <p-dropdown [options]="attendance" optionLabel="name" formControlName="eOnAttendance"
+                            placeholder="Select"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Calculation Method</label>
+                    <div class="p-md-12 p-py-0">
+                        <p-dropdown [options]="calMethod" optionLabel="name" formControlName="eCalMethod"
+                            [(ngModel)]="calMethodType" [ngModelOptions]="{standalone: true}"
+                            (onChange)="checkCalMethod()" placeholder="Select"></p-dropdown>
+                    </div>
+                    
+                </div>
+            </div>
+            <div *ngIf="isFixedValue" class="p-md-2">
+                <div class="p-grid">
+                    <label class="p-md-12 p-py-0">Value</label>
+                    <div class="p-md-12 p-py-0">
+                        <input type="text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}">
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-1">
+                <button type="submit" label="{{isEdit ? 'Update':'Add'}}" (click)="addPayHead()" style="margin-top: 18px" pButton></button>
+            </div>
+        </div>
+    </form>
+    <div class="p-grid">
+        <div class="p-md-12" *ngIf="payHeadList && payHeadList.length">
+            <p-table [value]="payHeadList" responsiveLayout="scroll">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        <div class="p-col-9 p-md-5 p-px-0">
+                            <div class="search">
+                                <input placeholder="Search" id="search" type="text"
+                                    (input)="payHeadList.filterGlobal($event.target.value,'contains')" pInputText>
+                                <!-- <input placeholder="Search" id="search" type="text" pInputText [(ngModel)]="searchBox"> -->
+                                <!-- <button pButton type="button" icon="pi pi-search" iconPos="left" (click)="filterLedgerTableF()"></button> -->
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" >
+                    <tr>
+                        <th>SNo</th>
+                        <th>Cal Seq</th>
+                        <th>Display Name</th>
+                        <th>Calculation Method</th>
+                        <th>Calculation Formula</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data let-index="rowIndex">
+                    <tr>
+                        <td>{{index+1}}</td>
+                        <td>{{data.nCalSeq}}</td>
+                        <td>{{data.cDisplayNm}}</td>
+                        <td>{{data.cCalMethod}}</td>
+                        <td>{{data.cCalFreq}}</td>
+                        <td>
+                            <button type="button" icon="pi pi-pencil" class="p-button-raised"  pButton (click)="editPayHead(data,i)"></button>
+                            <button icon="pi pi-trash" class="p-button-danger p-ml-2" (click)="delRec(i,data)" pButton>
+                            </button>
+
+                            <button icon="pi pi-pencil"  *ngIf="data.cCalMethod == 'C'" class="p-button-danger p-ml-2" (click)="editFormulaData(i,data)" pButton>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <p-dialog header="Computation for - Conveyance Allowance" [(visible)]="displayCmpValue" [modal]="true"
+        [style]="{width: '70vw'}">
+
+        <div class="p-grid">
+            <div class="p-md-4">
+                <div *ngIf="isCompFormula">
+                    <h3 class="p-m-0">Pay Heads Pre Condition</h3>
+                    <p-table *ngIf="payHeadComponents && payHeadComponents.length" [value]="payHeadComponents">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Components</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-heads>
+                            <tr>
+                                <td>{{heads.cPayHead}}</td>
+                                <td class="p-text-right">
+                                    <button type="button" icon="pi pi-plus" class="p-button-raised" pButton
+                                        (click)="onClickPlusPre(heads)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div *ngIf="showBaseFormula">
+                    <h3 class="p-m-0">Pay Heads</h3>
+                    <p-table *ngIf="payHeadComponents && payHeadComponents.length" [value]="payHeadComponents">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Components</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-heads>
+                            <tr>
+                                <td>{{heads.cPayHead}}</td>
+                                <td class="p-text-right">
+                                    <button type="button" icon="pi pi-plus" class="p-button-raised" pButton
+                                        (click)="onClickPlus(heads)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                
+            </div>
+            <div class="p-md-8" >
+                <div class="field-checkbox p-d-block">
+                    <p-checkbox class="formula" (onChange)="preCondFormula($event)" [binary]="true"
+                        [(ngModel)]="isCompFormula" [ngModelOptions]="{standalone: true}" inputId="binary"></p-checkbox>
+                    <label for="binary">Pre-condition Formula</label>
+                </div>
+                <div *ngIf="isCompFormula" class="p-grid">
+                    <div class="p-md-12 p-mt-3">
+                        <input type="text" class="w-100" placeholder="(#PayHead# + #PayHead#)"
+                            [(ngModel)]="basePreFormulaString" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="p-md-12 p-mb-4">
+
+                        <form class="p-mb-3" [formGroup]="basePreFormulaForm"
+                            (ngSubmit)="submitBasePreFormulaForm(basePreFormulaForm)">
+                            <div class="p-grid">
+                                <div class="p-md-12">
+                                    <h3 class="p-m-0">Base Computation Formula</h3>
+                                </div>
+
+                                <div class="p-md-2 p-py-0">
+                                    <label>Minimum</label>
+                                    <input type="text" formControlName="min" pInputText>
+                                </div>
+                                <div class="p-md-2 p-py-0">
+                                    <label>Maximum</label>
+                                    <input type="text" formControlName="max" pInputText>
+                                </div>
+
+                                <div class="p-md-3 p-py-0 p-mt-2">
+                                    <button type="submit" label="Add Formula"
+                                        style="margin-top: 20px;width: auto;padding: 10px;" pButton></button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <p-table *ngIf="basePreCamFormula.length" [value]="basePreCamFormula" [autoLayout]="true">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-base let-i="rowIndex">
+                                <tr>
+                                    <td>{{base.min}}</td>
+                                    <td>{{base.max}}</td>
+                                    <td>
+
+                                        <button icon="pi pi-trash" pButton (click)="delPreFormula(i)"
+                                            class="p-button-raised p-button-danger p-ml-2"></button>
+
+                                            |
+
+                                            <button icon="pi pi-plus" pButton (click)="addBaseFormula(i)"
+                                            class="p-button-raised p-button-danger p-ml-2"></button>
+
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+
+                        <!-- <p-table [value]="computationFormula" [autoLayout]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Min</th>
+                                        <th>Max</th>
+                                        <th>Base Computation Formula</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-base>
+                                    <tr>
+                                        <td><input type="text" pInputText></td>
+                                        <td><input type="text" pInputText></td>
+                                        <td><button pButton type="button" label="Add Formula" class="p-button-text sp-add"></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" pInputText></td>
+                                        <td><input type="text" pInputText></td>
+                                        <td><button pButton type="button" label="Add Formula" class="p-button-text sp-add"></button></td>
+                                    </tr>
+                                </ng-template>
+                            </p-table> -->
+                    </div>
+                </div>
+                <form [formGroup]="baseFormulaForm" (ngSubmit)="submitBaseFormulaForm(baseFormulaForm)">
+                    <div class="p-grid">
+                        <div class="p-md-12">
+                            <h3 class="p-m-0">Base Computation Formula</h3>
+                        </div>
+                        <div class="p-md-12 p-py-0">
+                            <input type="text" class="w-100"
+                                placeholder="(#PayHead# + #PayHead#)" pInputText [(ngModel)]="baseFormulaString" [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="p-md-2 p-py-0">
+                            <label>Minimum</label>
+                            <input type="text" formControlName="min" pInputText>
+                        </div>
+                        <div class="p-md-2 p-py-0">
+                            <label>Maximum</label>
+                            <input type="text" formControlName="max" pInputText>
+                        </div>
+                        <div class="p-md-2 p-py-0">
+                            <label>Value</label>
+                            <input type="text" formControlName="val" pInputText>
+                        </div>
+                        <div class="p-md-2 p-py-0">
+                            <label>Type</label>
+                            <p-dropdown [options]="typeDatas" formControlName="type" optionLabel="name"
+                                optionValue="value" placeholder="Select Type"></p-dropdown>
+                        </div>
+                        <div class="p-md-3 p-pt-4 p-pb-0">
+                            <p-checkbox inputId="binary" (onChange)="applyCapping($event)"></p-checkbox>
+                            <label class="p-pt-1">Apply Capping</label>
+                            <input *ngIf="isCappingApplied" type="text" formControlName="capping" pInputText>
+                        </div>
+                        <div class="p-md-1 p-py-0">
+                            <button type="submit" label="Add" style="margin-top: 28px;width: auto;padding:10px"
+                                pButton></button>
+                        </div>
+                    </div>
+                </form>
+                <div *ngIf="showBaseFormula">
+                    <p-table *ngIf="baseCamFormula.length" [value]="baseCamFormula" [autoLayout]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Min</th>
+                                <th>Max</th>
+                                <th>Value</th>
+                                <th>Type</th>
+                                <th>Max Capping</th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-base let-i="rowIndex">
+                            <tr>
+                                <td>{{base.min}}</td>
+                                <td>{{base.max}}</td>
+                                <td>{{base.val}}</td>
+                                <td>{{base.type}}</td>
+                                <td>{{base.capping}}</td>
+                                <td>
+
+                                    <button icon="pi pi-trash" pButton (click)="delFormula(i)"
+                                        class="p-button-raised p-button-danger p-ml-2"></button>
+
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <button type="button" label="{{isEdit ? 'Update':'Add'}}" (click)="addPayHead()" class="p-mt-2" pButton></button>
+                </div>
+            </div>
+
+        </div>
+
+    </p-dialog>
+</div>

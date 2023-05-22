@@ -1,0 +1,572 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12 p-md-4">
+      <form [formGroup]="servicePointCareForm" (ngSubmit)="savePointCplanF(servicePointCareForm)">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label>Service<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown placeholder="Select Service" [options]="serviceD" optionLabel="txt"
+                  (onChange)="servicePointF($event)" formControlName="nService"></p-dropdown>
+                <small class="danger"
+                  *ngIf=" (formControl.nService.invalid) && (formControl.nService.touched || formControl.nService.dirty)">
+                  Service Is Required</small>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4"><label>Clinical Procedure<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown placeholder="Select Service Point" (onChange)="searchPointCareF($event)"
+                  [options]="servicePoint" optionLabel="txt" formControlName="nSrvPointid"></p-dropdown>
+                <small class="danger"
+                  *ngIf="(formControl.nSrvPointid.invalid) && (formControl.nSrvPointid.dirty || formControl.nSrvPointid.touched)">
+                  Clinical Procedure Is Required</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-12 pmb-3">
+            <strong>Care Task</strong>
+          </div>
+
+
+
+          <div class="p-col-12 p-md-12" *ngIf="showIsTaskDependant">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="middle">Task List<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown placeholder="Select Task " [options]="servicePointTaskData" optionLabel="cTaskNm"
+                  optionValue="nTaskid" formControlName="servicePointTaskControl">
+                </p-dropdown>
+                <small class="danger"
+                  *ngIf="(formControl.servicePointTaskControl.invalid) && (formControl.servicePointTaskControl.dirty || formControl.servicePointTaskControl.touched)">
+                  Task Is Required</small>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4"><label>Images</label></div>
+              <div class="p-col-12 p-md-8">
+                <p-fileUpload url="http://saylussapitest.bancplus.in/api/FileUpload?fileName=spcp_{{fileUuid}}"
+                  name="filePath" (onUpload)="onBasicUpload($event, 'spcp')" accept="image/*" maxFileSize="500000">
+                  <ng-template pTemplate="content">
+                    <ul *ngIf="uploadedFiles.length">
+                      <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                    </ul>
+                  </ng-template>
+                </p-fileUpload>
+
+
+              </div>
+              <div *ngIf="spcpFile?.length > 0" class="p-col-12 p-md-8 p-md-offset-4">
+                <img [src]="spcpFile" height="80" width="100" />
+
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="middle">Task Status<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown placeholder="Select Task Status" [options]="taskS" optionLabel="name"
+                  formControlName="cStatus">
+                </p-dropdown>
+                <small class="danger"
+                  *ngIf="(formControl.cStatus.invalid) && (formControl.cStatus.dirty || formControl.cStatus.touched)">
+                  Task Status Is Required</small>
+
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-checkbox [(ngModel)]="isTaskDependencyChecked" [ngModelOptions]="{standalone: true}" binary="true"
+                  label="Task Dependency" (onChange)="changeCheck($event)"></p-checkbox>
+                <p-button *ngIf="detailChecked" label="Details" class="p-ml-1" (click)="showTaskDependency()">
+                </p-button>
+                <p-button *ngIf="!detailChecked" label="Details" class="p-ml-1" [disabled]="true"></p-button>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="">Task Title</label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <input placeholder="Enter Task Title" type="text" pInputText formControlName="cTaskNm">
+                <small class="danger"
+                  *ngIf="(formControl.cTaskNm.invalid) && (formControl.cTaskNm.dirty || formControl.cTaskNm.touched)">
+                  Task Title Is Required</small>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="">Data Type<sup>*</sup></label>
+              </div>
+              <div class="p-col-12" [ngClass]="separetedValue?'p-md-4':'p-md-8'">
+                <p-dropdown [options]="dataType" optionLabel="name" placeholder="Select Data Type"
+                  formControlName="cDataType" (onChange)="data_TypeF($event)"></p-dropdown>
+                <small class="danger"
+                  *ngIf=" (formControl.cDataType.invalid) && (formControl.cDataType.touched || formControl.cDataType.dirty)">
+                  Data Type Is Required</small>
+              </div>
+              <!-- comma Separeted Value -->
+              <div class="p-col-12 p-md-4" *ngIf="separetedValue">
+                <input placeholder="Comma Separeted Value" type="text" pInputText [(ngModel)]="commaSVal"
+                  formControlName="cLovval" (blur)="populateServicePointMappingDr()">
+              </div>
+
+              <input type="hidden" formControlName="nTaskid">
+            </div>
+          </div>
+          <div *ngIf="includeAnalysis" class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4">
+                <label for="">Include in Analysis</label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <!-- <p-radioButton name="analytic" value="yes" [(ngModel)]="analytic" inputId="analytic1"></p-radioButton>
+                <p-radioButton name="analytic" value="no" [(ngModel)]="analytic" inputId="analytic1"></p-radioButton> -->
+                <p-radioButton value="Chicago" label="Yes" class="p-mr-2" formControlName="cAnalysisType">
+                </p-radioButton>
+                <p-radioButton value="Los Angeles" label="No" formControlName="cAnalysisType"></p-radioButton>
+
+                <!-- <small class="danger"
+                  *ngIf=" (formControl.cDataType.invalid) && (formControl.cDataType.touched || formControl.cDataType.dirty)">
+                  Data Type Is Required</small> -->
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12 p-mt-2 p-mb-2">
+            <div class="p-grid p-nogutter">
+              <div class="p-col-12 p-md-4">
+                <label for="camera">Camera Requirement</label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <div class="p-field-checkbox">
+                  <p-checkbox value="chk" inputId="camera" formControlName="cCamera" binary="true"></p-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hide part start -->
+          <div class="p-col-12">
+            <div class="p-grid p-nogutter">
+              <div class="p-col-12" *ngIf="dataValidation">
+                <div class="p-grid">
+                  <div class="p-col-12 p-md-12">
+                    <label>Data Validation</label>
+                  </div>
+                  <div class="p-col-12 p-md-12" *ngIf="minToMax">
+                    <div class="p-grid p-nogutter">
+                      <div class="p-col-12 p-md-4">
+                        <label for="">Range</label>
+                      </div>
+                      <div class="p-col-12 p-md-8">
+                        <div class="p-grid">
+                          <div class="p-col-12 p-md-5">
+                            <input type="text" placeholder="Min" pInputText formControlName="cRangeMin">
+                          </div>
+                          <div class="p-col-12 p-md-7">
+                            <div class="p-grid p-nogutter grid-gutter">
+                              <div class="p-col-12 p-md-3">
+                                <label for="last">To</label>
+                              </div>
+                              <div class="p-col-12 p-md-9">
+                                <input type="text" placeholder="Max" pInputText formControlName="cRangeMax">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-12 p-md-12" *ngIf="maxLength">
+                    <div class="p-grid p-nogutter grid-gutter">
+                      <div class="p-col-12 p-md-4">
+                        <label for="last">Max Length</label>
+                      </div>
+                      <div class="p-col-12 p-md-8">
+                        <input placeholder="Enter Max Length" type="text" pInputText formControlName="nMaxLen">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-mb-2" *ngIf="showServicePointMappingCheckbox">
+                <div class="p-grid p-nogutter">
+                  <div class="p-col-12 p-md-4">
+                    <label>Service Point Mapping</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <p-checkbox binary="true" formControlName="cDataMap" [(ngModel)]="pointMapping"
+                      [ngModelOptions]="{standalone: true}" (onChange)="handleServicePointMapping($event)">
+                    </p-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12" *ngIf="alertParameter">
+                <div class="p-grid">
+                  <div class="p-col-12 p-md-4">
+                    <label for="parameter">Alert Parameter</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <div class="p-field-checkbox">
+                      <p-checkbox binary="true" inputId="" (onChange)="handleAlertParam($event)"></p-checkbox>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="p-grid p-nogutter" *ngIf="showAlertMappingRanges">
+                  <div class="p-col-12 p-md-4">
+                    <label>Normal Range</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <div class="p-grid">
+                      <div class="p-col-12 p-md-5">
+                        <input type="text" placeholder="Min" formControlName="cAlertMin" pInputText>
+                      </div>
+                      <div class="p-col-12 p-md-7">
+                        <div class="p-grid p-nogutter grid-gutter">
+                          <div class="p-col-12 p-md-3">
+                            <label for="last">To</label>
+                          </div>
+                          <div class="p-col-12 p-md-9">
+                            <input type="text" placeholder="Max" formControlName="cAlertMax" pInputText>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12" *ngIf="showServicePointMappingDropdown">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label>Service Point Mapping</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <p-dropdown placeholder="Select Service Point Mapping" (onChange)="changeSV($event)" id="id" #id
+                      placeholder="SELECT" formControlName="lovValue" [options]="commaSValue" optionLabel="name">
+                    </p-dropdown>
+                    <!-- <p-dropdown #id placeholder="SELECT" formControlName="lovValue" [options]="commaSValue" optionLabel="name"></p-dropdown> -->
+                  </div>
+                </div>
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4"></div>
+                  <div class="p-col-12 p-md-6">
+                    <p-multiSelect id="mapData" #mapData formControlName="mapData" defaultLabel="SELECT"
+                      [options]="servicePointMappingData" optionLabel="txt"></p-multiSelect>
+                  </div>
+                  <div class="p-col-12 p-md-2">
+                    <button pButton label="Add" type="button" class="sp-add" (click)="onAddF(id, mapData)"></button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-8 p-md-offset-4 p-mb-2 care-accord" *ngIf="servicePointFinallArr.length > 0">
+            <p-accordion>
+              <p-accordionTab *ngFor="let item of servicePointFinallArr;let i = index;">
+                <ng-template pTemplate="header">{{item['name']}} <span class="count">{{item['serviceArr'].length}}</span></ng-template>
+                <ng-template pTemplate="content">
+                  <div class="p-d-inline-block p-ai-center p-mb-2" *ngFor="let acc of item['serviceArr'];let in = index;">
+                    <p-chip label="{{acc['nSrvpointName'] ? acc['nSrvpointName']: acc['srvWithSrvPoint']}}" styleClass="p-mr-2" (onRemove)="onRemoveChip(i,in,acc['spmIndex'])" [removable]="true"></p-chip>
+                    
+                  </div>
+           
+                </ng-template>
+              </p-accordionTab>
+            
+            </p-accordion>
+          </div>
+          <div class="p-col-12 p-md-8 p-md-offset-4 care-plan ">
+            <button type="submit" [disabled]="!servicePointCareForm.valid" label="{{editButton? 'Update': 'Save'}}"
+              pButton>
+            </button>
+            <button [disabled]="currentServicePointId ==0" (click)="showPreviewDialog()" label="Preview"
+              class="p-ml-2 p-mr-2" pButton type="button"></button>
+            <button (click)="onCancel()" pButton type="button" label="Cancel"></button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="p-col-6 p-md-8">
+      
+      <p-table #mangejob [value]="manageJobData" filter="true" [filters]="searchAll" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" [(first)]="first" [globalFilterFields]="['cTaskNm','cDataType','cSrvPnt','cCamera','cSrvName','cTaskNm']"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,20,40,80,120]" [autoLayout]="true">
+        <ng-template pTemplate="caption">
+          <div class="p-grid p-jc-end">
+            <div class="p-col-5">
+              <div class="search">
+                <input placeholder="Search" id="search" (input)="mangejob.filterGlobal($event.target.value,'contains')" type="text" pInputText>
+                <button (click)="onKeypressFilterF()" pButton type="button" icon="pi pi-search" iconPos="left"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>SNo</th>
+            <th pSortableColumn="cTaskNm">Title<p-sortIcon field="cTaskNm"></p-sortIcon></th>
+            <th pSortableColumn="cDataType">Type<p-sortIcon field="cDataType"></p-sortIcon></th>
+            <th pSortableColumn="cSrvPnt">Clinical Procedure<p-sortIcon field="cSrvPnt"></p-sortIcon></th>
+            <th pSortableColumn="cCamera">Camera<p-sortIcon field="cCamera"></p-sortIcon></th>
+            <th pSortableColumn="">Skill<p-sortIcon field=""></p-sortIcon></th>
+            <th pSortableColumn="cSrvName">Services Mapped<p-sortIcon field="cSrvName"></p-sortIcon></th>
+            <th pSortableColumn="cTaskNm">Equipment Mapped<p-sortIcon field="cTaskNm"></p-sortIcon></th>
+            <th style="width: 65px;">Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-i="rowIndex">
+          <tr>
+            <td>{{i+1}}</td>
+            <td>{{data?.cTaskNm}}</td>
+            <td>{{data?.cDataType}}</td>
+            <td>{{data?.cSrvPnt}}</td>
+            <td *ngIf="data?.cCamera == 't'">Yes</td>
+            <td *ngIf="data?.cCamera == 'f'">No</td>
+            <td>-</td>
+            <td>{{data?.cSrvName}}</td>
+            <td>{{data?.cTaskNm}}</td>
+            <td>
+              <p-button (click)="editServicePointCarePlan(data.nTaskid, data)" icon="pi pi-pencil" class="p-button-raised">
+              </p-button>
+              <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"
+                (click)="deleteCare(data.nTaskid,i)"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <h1 *ngIf="manageJobData?.length==0">No Data Found</h1>
+        </ng-template>
+      </p-table>
+
+      <div class="p-grid p-mt-4" *ngIf="servicePointTable">
+        <div class="p-col-12">
+          <h3 class="p-mb-0">Service point mapping</h3>
+        </div>
+        <div class="p-col-12">
+          <p-table [value]="addPointMap" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>SNo</th>
+                <th>YES/NO</th>
+                <th>Service Point</th>
+                <th>Remove</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data let-i="rowIndex">
+              <tr>
+                <td>{{i+1}}</td>
+                <td>{{data.id}}</td>
+                <td>{{data.mapData}}</td>
+                <td>
+                  <p-button (click)="onDelF(i)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2">
+                  </p-button>
+                </td>
+              </tr>
+            </ng-template>
+
+
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Preview dialog box -->
+
+<p-dialog header="{{previewHeader}}" class="preview_header" [(visible)]="displayPreviewBasic" [modal]="true"
+  [style]="{width: '50vw',height:'300px'}" [baseZIndex]="10000">
+  <div class="p-grid" *ngFor="let pr of prevArr">
+    <div class="p-col-12 p-md-3"><label>{{pr.cTaskNm}}</label></div>
+    <div class="p-col-12 p-md-9" *ngIf="pr['cDataType'].trim() == 'TXT'">
+      <input type="text" class="form-control" />
+    </div>
+    <div class="p-col-12 p-md-9" *ngIf="pr['cDataType'].trim() == 'LOV'">
+
+      <select class="form-control">
+        <option *ngFor="let opt of pr['cLovval'].split(',')">{{opt}}</option>
+      </select>
+      <!-- <p-dropdown [options]="ServiceData" optionLabel="txt" >
+        </p-dropdown> -->
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button (click)="previewDialog()" label="Ok"></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- 
+  when Alert parameter open active Alert range -> Num or DEC
+2. lov -> on service point checkbox  , on service point mapping, comma separeted value = response value
+off renge and max length
+3. num ,dec -> on range off max legth
+4 dat-> off range, maxlenght alert mapping , service point map checkbox
+5. 
+ -->
+
+<!-- Task dependency popup -->
+<p-dialog header="Task Dependency" [(visible)]="taskDependency" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="10000">
+  <form>
+    <div class="p-grid p-nogutter">
+      <div class="p-md-7">
+        <h2>On Task</h2>
+        <p-table class="p-mt-2" [value]="onTaskDataList">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 50px;"></th>
+              <th style="width: 50px;">SN</th>
+              <th>Task</th>
+              <th>Data Type</th>
+              <th>Vaues</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-task let-i="rowIndex">
+            <tr [class.disabled]="task.id == 1">
+              <td style="width: 50px;">
+                <p-radioButton name="group1" inputId="radio_{{i}}" [(ngModel)]="selectedCheckbox" [value]="task" (onClick)="selectData(task)"></p-radioButton>
+              </td>
+              <!-- <td>
+                <input type="radio" name="taskdpen" (onFocus)="selectData(task)">
+              </td> -->
+              <td style="width: 50px;">{{i+1}}</td>
+              <td>{{task.cTaskNm}}</td>
+              <td>{{task.cDataType}}</td>
+              <td>
+                <ng-container *ngIf="task.cDataType.trim() == 'LOV'">
+                  {{task.cLovval}}
+                </ng-container>
+
+                <ng-container *ngIf="task.cDataType.trim() == 'NUM'">
+                  {{task.cRangeMin}} - {{task.cRangeMax}}
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+      </div>
+      <div class="p-md-5">
+        <h2>Task Value Range</h2>
+        <div class="p-grid p-nogutter">
+          <div class="p-md-12" *ngIf="isLovData">
+            <p-dropdown appendTo="body" [options]="lovValues" [(ngModel)]="lovDataModel" optionLabel="name" optionValue="val"
+              (onChange)="setLovValues()" placeholder="Select Data Type" [ngModelOptions]="{standalone: true}">
+            </p-dropdown>
+            <!-- <p-dropdown [options]="cities" [(ngModel)]="selectedCity" optionLabel="name"></p-dropdown> -->
+          </div>
+          <div class="p-md-6" *ngIf="isNumData">
+            <div class="p-grid p-nogutter">
+              <label class="p-md-3">From</label>
+              <div class="p-md-8">
+                <input placeholder="Enter From " type="text" pInputText [(ngModel)]="taskDFrom"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+          </div>
+          <div class="p-md-6" *ngIf="isNumData">
+            <div class="p-grid p-nogutter">
+              <label class="p-md-4 p-text-right">To</label>
+              <div class="p-md-8">
+                <input placeholder="Enter To " type="text" pInputText [(ngModel)]="taskDTo"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-12">
+            <p-button label="Add" (click)="addDependency()" type="button"></p-button>
+            <!-- <p-button label="Save" type="button" class="p-ml-2"></p-button> -->
+          </div>
+
+        </div>
+      </div>
+      <div class="p-md-12">
+        <p-table class="p-mt-2" [value]="servicePntTaskDependencies">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>SN</th>
+              <th>Task</th>
+              <th>Data Type</th>
+              <th>Task Value Range</th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-task let-i="rowIndex">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{task.taskNm}}</td>
+              <td>{{task.cDataType}}</td>
+              <td>{{task.cFromVal}} - {{task.cToVal}}</td>
+              <td>
+                <p-button (click)="deleteRow(i)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2">
+                </p-button>
+              </td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+
+<!-- Details dialog box -->
+
+<p-dialog header="Task Details" class="preview_header" [(visible)]="taskDetailDialog" [modal]="true"
+  [style]="{width: '30vw',height:'300px'}" [baseZIndex]="10000">
+  <div class="p-grid" *ngFor="let item of servicePntTaskDependencies">
+    <div class="p-col-12 p-md-3"><label>{{item['taskNm']}}</label></div>
+    <div class="p-col-12 p-md-9">
+      <ng-container *ngIf="item['cDataType'].trim() == 'NUM'">
+        <input type="text" class="form-control" />
+      </ng-container>
+      <ng-container *ngIf="item['cDataType'].trim() == 'LOV'">
+        <p-dropdown appendTo="body" [options]="commaSValue" [(ngModel)]="lovDataModel" optionLabel="name" optionValue="val"
+          (onChange)="setLovValues()" placeholder="Select Data Type" [ngModelOptions]="{standalone: true}"></p-dropdown>
+      </ng-container>
+    </div>
+    <!-- <div class="p-col-12 p-md-9" *ngIf="pr['cDataType'].trim() == 'LOV'">
+
+      <select class="form-control">
+        <option *ngFor="let opt of pr['cLovval'].split(',')">{{opt}}</option>
+      </select>
+      
+    </div> -->
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Ok"></p-button>
+  </ng-template>
+</p-dialog>

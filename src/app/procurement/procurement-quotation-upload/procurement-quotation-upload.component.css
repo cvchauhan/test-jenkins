@@ -1,0 +1,26 @@
+.procuement-req{
+    width: 100%;
+    float: left;
+    padding: 20px;
+  }
+  .grid-gutter [class*="p-col-"]:not(:first-child){padding: 0 15px 8px 0;}
+ #drop{
+  padding-top: 8px;
+ }
+ input[type=text]{
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: normal;
+  padding: 10px;
+  /* box-shadow: 0 0 0 0.2rem #a6d5fa;    */
+}
+label{
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  line-height: 17px;
+  height: 40px;
+  vertical-align: middle; 
+}

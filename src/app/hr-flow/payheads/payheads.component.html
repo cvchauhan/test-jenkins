@@ -1,0 +1,132 @@
+<!-- toaster -->
+<p-toast  [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<!-- End Toaster -->
+
+<div class="dashboard">
+  <div class="p-grid">
+    <div class="p-col-12 p-md-4">
+      <form [formGroup]="payheadForms" (ngSubmit)="addPayHeadF(payheadForms)">
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-4"><label>Pay Head Type<sup>*</sup></label></div>
+          <div class="p-col-12 p-md-8">
+            <p-dropdown placeholder="Select Pay Head Type" [options]="payHeadType" optionLabel="name" formControlName="nHeadTypeid"></p-dropdown>
+            <p class="danger"
+              *ngIf="(formControl.nHeadTypeid.invalid) && (formControl.nHeadTypeid.touched || formControl.nHeadTypeid.dirty)">
+              Pay Head Type Is Required
+            </p>
+          </div>
+        </div>
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-4">
+            <label>Pay Head<sup>*</sup></label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input placeholder="Enter Pay Head" type="text" pInputText formControlName="cPayHead">
+            <p class="danger"
+              *ngIf="(formControl.cPayHead.invalid) && (formControl.cPayHead.touched || formControl.cPayHead.dirty)">
+              Pay Head Is Required
+            </p>
+          </div>
+        </div>
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-4">
+            <label>Ledger Mapping<sup>*</sup></label>
+          </div>
+          <div class="p-col-12 p-md-8">
+              <!-- <input placeholder="Enter Ledger Mapping" type="text" pInputText formControlName="cAccCode"> -->
+              <p-dropdown appendTo="body" #patientSelect [autoDisplayFirst]="false" [filter]="true" [showClear]="true" 
+                  class=""  [options]="ledgerList" 
+                  optionLabel="empName" optionValue="nEmpId" formControlName="cAccCode" 
+                  (onChange)="selectLedger($event, patientSelect)">
+              </p-dropdown>
+              <!-- <p-autoComplete [suggestions]="filteredGroups" formControlName="cAccCode" class="p-w-100 emptab" field="cDisplayNm" [(ngModel)]="selectedLedger" (completeMethod)="filterGroup($event)" placeholder="Search" [filter]="true" [showClear]="true"
+                                [dropdown]="true">
+                                <ng-template pTemplate="selectedItem">
+                                    <div class="customer-item customer-item-value" *ngIf="selectedLedger">
+                                        <div>{{selectedLedger.cDisplayNm}}</div>
+                                    </div>
+                                </ng-template>
+                              </p-autoComplete> -->
+              <p class="danger"
+                *ngIf="(formControl.cAccCode.invalid) && (formControl.cAccCode.touched || formControl.cAccCode.dirty)">
+                Ledger Mapping Is Required
+              </p>
+          </div>
+        </div>
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-4">
+            <label for="middle">Branch-wise</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <p-checkbox binary="true" value="Y" inputId="cBrMap" formControlName="cBrMap"></p-checkbox>
+            <!-- <p-checkbox binary="true" formControlName="cBrMap"></p-checkbox> -->
+          </div>
+        </div>
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-8 p-md-offset-4">
+            <button pButton type="submit" label="{{editButton? 'UPDATE': 'SAVE'}}" [disabled]="payheadForms.invalid"></button>
+            <button (click)="resetPayheadF()" id="bt" pButton type="button" class="p-ml-1" label="CANCEL"></button>
+          </div>
+          
+        </div>
+      </form>
+    </div>
+    <div class="p-col-12 p-md-8">
+      
+
+      <p-table #pahead [value]="tableData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+      [showCurrentPageReport]="true" [(first)]="first" [globalFilterFields]="['cPayHead','headType','cAccCode']"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,20,40,80,120]" [scrollable]="true" scrollHeight="400px">
+      <ng-template pTemplate="caption">
+        <div class="p-grid p-jc-end">
+          <div class="p-col-9 p-md-5">
+            <div class="search">
+              <input placeholder="Search" id="search" type="text" (input)="pahead.filterGlobal($event.target.value,'contains')" pInputText>
+              <!-- <input [(ngModel)]="search" placeholder="Search" id="search" type="text" pInputText> -->
+              <button (click)="filterPayF()" pButton type="button" icon="pi pi-search" iconPos="left"></button>
+            </div>
+          </div>
+          <!-- <div class="p-col-3 p-md-7 p-text-right">
+            <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showDialog()"
+              class="btn-plus"></button>
+          </div> -->
+        </div>
+      </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>SNo</th>
+            <th pSortableColumn="cPayHead">Pay Head<p-sortIcon field="cPayHead"></p-sortIcon></th>
+            <th pSortableColumn="headType">Type<p-sortIcon field="headType"></p-sortIcon></th>
+            <th pSortableColumn="cAccCode" pSortableColumn="">Ledger<p-sortIcon field="cAccCode"></p-sortIcon></th>
+            <th pSortableColumn="cBrMap">Branch wise<p-sortIcon field="cBrMap"></p-sortIcon></th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-tData let-i="rowIndex">
+          <tr>
+            <td>{{i+1}}</td>
+            <td>{{tData.cPayHead}}</td>
+            <td>{{tData.headType}}</td>
+            <td>{{tData.cAccCode | uppercase}}</td>
+            <td *ngIf="tData.cBrMap=='y'">YES</td>
+            <td *ngIf="tData?.cBrMap==='N'">NO</td>
+
+            <td>
+              <p-button (click)="editPayHeadF(tData.nPayhid)" icon="pi pi-pencil" class="p-button-raised p-button-default"></p-button>
+              <p-button (click)="deletePayHeadsF(tData.nPayhid)" icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+</div>
+<!-- add popup -->
+<p-dialog header="Add New" [(visible)]="addDialog" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000">
+  
+</p-dialog>

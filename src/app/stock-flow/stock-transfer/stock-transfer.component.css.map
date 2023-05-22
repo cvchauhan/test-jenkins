@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "stock-transfer.component.scss"
+    ],
+    "names": [],
+    "file": "stock-transfer.component.css"
+}

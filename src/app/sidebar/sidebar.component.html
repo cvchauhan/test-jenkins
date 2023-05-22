@@ -1,0 +1,59 @@
+<div class="sidebar_nav" [ngClass]="{'expand': showMenu, 'noexpand': !showMenu}">
+    <button (click)="toogleNav()" type="button" class="togglebtn">
+      <span *ngIf="showMenu" [class.angle-left]="showMenu"><i class="pi pi-angle-left"></i></span>
+      <span *ngIf="!showMenu" [class.angle-right]="!showMenu"><i class="pi pi-angle-right"></i></span>
+    </button>
+  
+    <div class="admin">
+      
+      <h3>
+        <span [ngClass]="showMenu? 'hideNav':'showNav'" class="navLogo">
+          <i class="pi pi-bars"></i>
+        </span>
+        <span [ngClass]="showMenu? 'showNav':'hideNav'">
+          <img src="../../assets/images/top-logo.png" width="40" alt="logo">
+        </span>
+      </h3>
+    </div>
+  
+    <div class="topnav" id="myTopnav">
+      <ul>
+        <li class="dropdown">
+          <a href="javascript:void(0)" [routerLink]="['/dashboard']" [routerLinkActive]="['active']">
+            <span class="navLogo"><i class="pi pi-th-large"></i></span>
+            <span [ngClass]="showMenu? 'showNav':'hideNav'">Dashboard</span>
+          </a>
+        </li>
+        <li class="dropdown" *ngFor="let nav of navData; let i=index">
+          <a (click)="navClick(i)"  href="javascript:void(0)">
+            <span class="navLogo">
+              <img src="../../assets/sidebar-icon/{{nav.icon}}.png" alt="">
+            </span>
+            <span [ngClass]="showMenu? 'showNav':'hideNav'">{{nav.title}} </span>
+            <span [class.right]="!nav.isMenuOpen" [class.down]="nav.isMenuOpen" [ngClass]="showMenu? 'showNav':'hideNav'"></span>
+          </a>
+            <div *ngIf="nav.isMenuOpen" class="dropdown-content" [ngClass]="showMenu? '':'submenu_collapse'">
+              <li class="dropdown" *ngFor="let submenus of nav.submenu;let ci = index">
+                <a [routerLink]="submenus.path" (click)="mobileMenu(i,ci)" [routerLinkActive]="['active']">{{submenus.title}}
+                </a>
+                <div class="dropdown-content multi-lebel-dropdow">
+                  <a *ngFor="let multisubmenus of submenus.submenu;let ci = index" [routerLink]="multisubmenus.path" [routerLinkActive]="['active']">{{multisubmenus.title}}{{(submenus.submenu).length}}</a>
+                </div>
+              </li>
+            </div>
+            
+        </li>
+        <li class="dropdown">
+          <a href="javascript:void(0)" [routerLink]="['/reports']" [routerLinkActive]="['active']">
+            <span class="navLogo"><img src="../../assets/sidebar-icon/report.png" alt=""></span>
+            <span [ngClass]="showMenu? 'showNav':'hideNav'">REPORTS</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="logo_warraper">
+      <div class="logo" [ngClass]="showMenu? 'logoexp':'logocols'">
+        <img src="../../assets/images/logo16x16.png" alt="">
+      </div>
+    </div>
+  </div>

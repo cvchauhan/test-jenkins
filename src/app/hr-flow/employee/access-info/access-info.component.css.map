@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,YAAY,EAAC,AAAA,KAAC,EAAO,QAAQ,AAAf,CAAgB,IAAK,CAAA,YAAY,EAAE;EAC/C,OAAO,EAAE,YAAY;CACtB;;AAED,AAAA,iBAAiB,CAAC;EAChB,OAAO,EAAE,uBAAuB;EAChC,MAAM,EAAE,OAAO;CAOhB;;AATD,AAIE,iBAJe,CAIf,KAAK,CAAC;EACJ,WAAW,EAAE,IAAI;CAClB",
+    "sources": [
+        "access-info.component.scss"
+    ],
+    "names": [],
+    "file": "access-info.component.css"
+}

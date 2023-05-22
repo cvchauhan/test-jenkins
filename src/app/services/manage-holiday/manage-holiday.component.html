@@ -1,0 +1,109 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+  <h3>Job Assignment</h3>
+  <div class="manage-job">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12">
+        <form>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3">
+              <div class="p-grid">
+                <div class="p-col-5">
+                  <label for="Date">Financial Year</label>
+                </div>
+                <div class="p-col-7">
+                  <p-calendar [(ngModel)]="fromDate" [showIcon]="true" inputId="Date" [ngModelOptions]="{standalone: true}"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-2">
+              <div class="p-grid">
+                <div class="p-col-3">
+                  <label for="to">To</label>
+                </div>
+                <div class="p-col-9">
+                  <p-calendar [(ngModel)]="toDate" [showIcon]="true" inputId="to" [ngModelOptions]="{standalone: true}" (onSelect)="getDates()"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-12">
+              <input type="file" class="btn btn-import p-mr-2" label="Import" (change)="readExcel($event)" />
+              <button type="button" class="btn btn-import" label="Template" pButton (click)="downloadMyFile()"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+    <div class="p-grid p-no-gutter">
+      <div class="p-col-12">
+        <p-table [value]="holidatTable" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+          <ng-template pTemplate="caption">
+            <div class="p-grid  p-jc-end p-mt-3">
+              <div class="p-col-9 p-md-5">
+                <!-- <div class="search">
+                  <input placeholder="Search" id="search" type="text" pInputText>
+                  <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                </div> -->
+                
+              </div>
+              <div class="p-col-3 p-md-7 p-text-right">
+                <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="addHolidayDialog()" class="btn-plus"></button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>SNo</th>
+              <th>Holiday Name</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-holiday let-rowIndex="rowIndex">
+            <tr>
+              <td>{{rowIndex + 1}}</td>
+              <td>{{holiday.cHolidayName}}</td>
+              <td>{{holiday.dDate | dateFormat}}</td>
+              <td>
+                <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editHoliday(holiday)"></p-button>
+                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger" (click)="deleteHoliday(holiday.nHolidayId)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+      </div>
+    </div>
+  </div> 
+</div>
+
+<!-- Popup -->
+<p-dialog class="jobalert" header="Add Holiday" [modal]="true" [(visible)]="holidayDialog" [style]="{width: '40vw'}" [baseZIndex]="10000">
+  <form [formGroup]="holidayFormsGroup" (ngSubmit)="submitHoliday(holidayFormsGroup.value)">
+    <div class="p-grid">
+      <div class="p-md-4">
+        <label for="group">Name<sup>*</sup></label>
+      </div>
+      <div class="p-md-8">
+        <input type="text" pInputText formControlName="cHolidayName"/>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-md-4">
+        <label>Date<sup>*</sup></label>
+      </div>
+      <div class="p-md-8">
+        <p-calendar  [showIcon]="true" inputId="Date" formControlName="dDate"></p-calendar>
+      </div>
+    </div>
+    <div class="p-grid p-mb-3">
+      <div class="p-md-4">
+        <p-button type="submit" [disabled]="!holidayFormsGroup.valid">{{isEdit? 'Update': 'Save'}}</p-button>
+        <!-- <button type="submit" pButton label="!isEdit ? 'Add':'Update'"></button> -->
+        </div>
+        </div>
+  </form>
+</p-dialog>

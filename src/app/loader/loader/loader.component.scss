@@ -1,0 +1,20 @@
+/* my-loader.component.css */
+.loading-spinner{    
+  background-color: rgba(#000,0.8);
+  position: fixed;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  display: grid;
+  img{
+    align-self: end;
+  }
+}
+
+.loading-message{
+  text-align: center;
+  align-self: start;
+}

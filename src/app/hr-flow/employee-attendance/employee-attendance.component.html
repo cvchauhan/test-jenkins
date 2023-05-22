@@ -1,0 +1,66 @@
+<p-toast></p-toast>
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-col-1 p-md-1">
+            <label>Month/Year</label>
+        </div>
+        <div class="p-col-2 p-md-3">
+            <p-calendar [(ngModel)]="date" view="month" dateFormat="mm-yy" [showIcon]="true" [yearNavigator]="true"
+                yearRange="2000:2030" [readonlyInput]="true"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1">
+            <label>Branch</label>
+        </div>
+        <div class="p-col-3 p-md-3">
+            <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt"
+                [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId"></p-dropdown>
+        </div>
+        <div class="p-md-1">
+            <button type="button" label="View" (click)="ViewEmployeeAttendance()" pButton></button>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-12 p-md-12">
+            <p-table #inhand [value]="EmployeeAttendanceData"
+                [globalFilterFields]="['EmployeeName','cMobile1','SkillName','cShiftName']"
+                responsiveLayout="scroll" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search"
+                                    (input)="inhand.filterGlobal($event.target.value,'contains')" type="text"
+                                    pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+                        <div class="p-col-3 p-md-5">
+                            <button type="button" *ngIf="isExcelButton"  pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"></button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SNo</th>
+                        <th>Employee Name</th>
+                        <th>Mobile</th>
+                        <th>SkillName</th>
+                        <th>ShiftName</th>
+                        <th>Days</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data let-index="rowIndex">
+                    <tr>
+                        <td>{{index + 1}}</td>
+                        <td>{{data.EmployeeName}}</td>
+                        <td>{{data.cMobile1}}</td>
+                        <td>{{data.SkillName}}</td>
+                        <td>{{data.cShiftName}}</td>
+                        <td>{{data.Days}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

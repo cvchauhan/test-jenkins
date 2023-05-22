@@ -1,0 +1,25 @@
+  
+  .errMsg {
+    color: red;
+    font-size: 13px;
+    padding-top: 20px;
+    display: block;
+  }
+
+  /*Red text in confirm dialog*/
+.ui-confirm-dialog .ui-dialog-content h1 { color: red; }
+.fc {
+  height: 500px !important;
+}
+
+.fc-event-time, .fc-event-title {
+  padding: 0 1px;
+  white-space: nowrap;
+}
+
+.fc-title {
+  white-space: normal;
+}
+.fc-daygrid-block-event .fc-event-title {
+  white-space: normal !important;
+}

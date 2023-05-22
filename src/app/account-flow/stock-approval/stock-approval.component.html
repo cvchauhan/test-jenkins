@@ -1,0 +1,326 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <div class="p-grid p-no-gutter">
+    <div class="p-md-12">
+      <form>
+        <div class="p-grid">
+          <div class="p-col-2">
+            <div class="p-field p-grid">
+              <div class="p-col-3">
+                <label>Date</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select Start Date" dateFormat="dd-mm-yy" [(ngModel)]="formDate"
+                  [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-2">
+            <div class="p-field p-grid">
+              <div class="p-col-2">
+                <label>To</label>
+              </div>
+              <div class="p-col-9">
+                <p-calendar placeholder="Select End Date" dateFormat="dd-mm-yy" [(ngModel)]="toDate" [showIcon]="true"
+                  inputId="to" [ngModelOptions]="{standalone: true}">
+                </p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-2 p-md-3">
+            <div class="p-grid">
+              <div class="p-col-3">
+                <label for="priority">Status</label>
+              </div>
+              <div class="p-col-8">
+                <p-dropdown placeholder="Select Status" [options]="statusData" optionLabel="name" inputId="priority"
+                  [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedStatus">
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-2 p-md-3">
+            <div class="p-grid">
+              <div class="p-col-3">
+                <label for="priority">Branch</label>
+              </div>
+              <div class="p-col-8">
+                <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt" inputId="priority"
+                  [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBranch">
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-2">
+            <button type="button" label="View" (click)="filterManageItem()" pButton></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="itemdeposit">
+    <p-table #stock [value]="stockApprovalItemTableRes"
+      [globalFilterFields]="['DStkDate','CTrType','Entrymode','CInvoiceNo','CChallanNo','dInstDate','AccName','CJobNo','VeriftyStatus','DCreateDate']"
+      [autoLayout]="true" [scrollable]="true" scrollHeight="350px" responsiveLayout="scroll" [paginator]="true"
+      [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,20,40,80,120]">
+      <ng-template pTemplate="caption">
+        <div class="p-grid">
+          <div class="p-col-9 p-md-5">
+            <div class="search">
+              <input placeholder="Search" id="search" (input)="stock.filterGlobal($event.target.value,'contains')"
+                type="text" pInputText>
+              <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th [ngStyle]="{'width':'50px'}">SrNo</th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="DStkDate">Stock Date<p-sortIcon field="DStkDate">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="CTrType">Type<p-sortIcon field="CTrType"></p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="Entrymode">Mode<p-sortIcon field="Entrymode"></p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="CInvoiceNo">Invoice No<p-sortIcon field="CInvoiceNo">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="CChallanNo">Challan No<p-sortIcon field="CChallanNo">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="dInstDate">Inst Date<p-sortIcon field="dInstDate">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'150px'}" pSortableColumn="AccName">Acc Name / Emp Name<p-sortIcon field="AccName">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="CJobNo">Job No<p-sortIcon field="CJobNo"></p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="VeriftyStatus">Verify Status<p-sortIcon
+              field="VeriftyStatus"></p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'100px'}" pSortableColumn="DCreateDate">Create Date<p-sortIcon field="DCreateDate">
+            </p-sortIcon>
+          </th>
+          <th [ngStyle]="{'width':'50px'}">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td [ngStyle]="{'width':'50px'}">{{i+1}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.DStkDate | dateFormat}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.CTrType}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.Entrymode}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.CInvoiceNo}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.CChallanNo}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.dInstDate | dateFormat}}</td>
+          <td [ngStyle]="{'width':'150px'}">{{item?.AccName}}{{item?.EmpName}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.CJobNo}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.VeriftyStatus}}</td>
+          <td [ngStyle]="{'width':'100px'}">{{item?.DCreateDate | dateFormat}}</td>
+          <td [ngStyle]="{'width':'50px'}">
+            <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editStockPurchaseJob(item.NStkid,item?.Entrymode)"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- For Purchase -->
+<p-dialog header="{{isEditStockPurchase ? 'Edit Transaction: Purchase': 'Add Transaction: Purchase'}} " [(visible)]="purchaseDialog" [modal]="true" [style]="{width: '70vw'}"
+  class="c-dialog-overflow" [baseZIndex]="10000" (onHide)="onHide()">
+  <form [formGroup]="purchaseForm">
+    <div class="p-col-12 p-md-12">
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-2">
+          <p-calendar placeholder="Select Date" formControlName="dStkDate" [(ngModel)]="defaultDate"
+            dateFormat="dd-mm-yy" [showIcon]="true">
+          </p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <!-- <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData"
+            [(ngModel)]="selectedBranchPopup.val" optionLabel="txt" (onChange)="ChangeBranch($event)" optionValue="val" formControlName="cTrType"></p-dropdown> -->
+            <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt" inputId="priority"
+                  [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedBranchPopup.val" optionValue="val"   formControlName="cTrType">
+                </p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Entry Mode</label></div>
+        <div class="p-col-2 p-md-2">
+
+          <p-dropdown appendTo="body" [options]="entryModeData" optionLabel="txt"
+           optionLabel="txt" optionValue="val"
+          formControlName="entryMode" [ngModel]="modeData.val"></p-dropdown>
+
+          <!-- <p-dropdown appendTo="body" placeholder="Select Mode" [options]="entryModeData"
+          optionLabel="txt" optionValue="val" formControlName="entryMode" (ngModel)="modeData"
+            [ngModelOptions]="{standalone: true}"></p-dropdown> -->
+        </div>
+        <div class="p-col-2 p-md-2">
+          <input type="text" formControlName="cInvoiceNo" pInputText required>
+        </div>
+        <!-- <div class="p-col-1 p-md-1"><label for="">Phone Number</label></div>
+        <div class="p-col-4 p-md-3">
+          <input type="text" formControlName="cPonumber" pInputText required>
+        </div> -->
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+
+        <div class="p-col-1 p-md-1"><label for="">Invoice Date</label></div>
+        <div class="p-col-4 p-md-2">
+          <p-calendar formControlName="dInvoiceDate" [showIcon]="true" [(ngModel)]="defaultInvoiceDate"
+            placeholder="Select Date" dateFormat="dd-mm-yy">
+          </p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Vendor</label></div>
+        <div class="p-col-4 p-md-8">
+          <!-- <input type="text" pInputText formControlName="userName" placeholder="Autocomplete, from Account Master where Group Type nodeid=4"> -->
+          <p-dropdown appendTo="body" id="state" [options]="vendorData" optionLabel="cLedgerNm" optionValue="nAcid"
+            formControlName="nAcid" [ngModel]="selectedVendorPopup.nAcid" placeholder="Search Customer" [filter]="true" filterBy="cLedgerNm">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter">
+
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12">
+          <h4 style="margin-top: 0; margin-bottom: 15px;">Item Details</h4>
+        </div>
+      </div>
+      <div formGroupName="purchaseStockDetail">
+        <div class="repeatedForm">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-md-6 p-p-0">
+              <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-p-0">
+                  <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-md-3 p-p-0"><label for="">Item</label></div>
+                    <div class="p-md-9 p-py-0">
+                      <p-dropdown appendTo="body" placeholder="Select" [options]="items" optionLabel="cItemNm"
+                        formControlName="nItemid" optionValue="nItemid">
+                      </p-dropdown>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-5 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-md-4"><label for="">Stock Type</label></div>
+                    <div class="p-md-8">
+                      <p-dropdown appendTo="body" placeholder="Select" [options]="stocksType"
+                        [(ngModel)]="selectedStock.val" optionLabel="name" optionValue="val" formControlName="cStkType">
+                      </p-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 p-p-0">
+              <div class="p-grid p-nogutter grid-gutter">
+                <label class="p-col-fixed p-px-2" for="">Rate</label>
+                <div class="p-col">
+                  <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col">
+                      <input type="text" pInputText formControlName="nRate">
+                    </div>
+                    <div class="p-col">
+                      <p-dropdown appendTo="body" id="ddlUnit" class="emp-ddown" formControlName="nUnit"
+                        [options]="stockUnitData" optionLabel="codeName" placeholder="Select Units"></p-dropdown>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col" *ngIf="showSn">
+                  <div class="p-grid p-nogutter">
+                    <label class="p-col-fixed p-px-2">S.N.</label>
+                    <div class="p-col p-p-0">
+                      <input type="text" formControlName="cSerialNo" pInputText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-md-5 p-p-0">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-md-2 p-p-0"><label>Quantity</label></div>
+                <div class="p-md-6 p-pt-0 p-pr-0 p-pb-0 p-pl-2">
+                  <input type="text" formControlName="nQty" class="p-w-100" pInputText>
+                </div>
+                <div class="p-md-4 p-p-0">
+                  <p-checkbox value="val1" class="p-ml-2" label="Including Tax"></p-checkbox>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 p-py-0">
+              <div class="p-grid p-nogutter grid-gutter">
+                <label class="p-col-fixed p-px-2" for="">GST(%)</label>
+                <div class="p-col">
+                  <ul class="commonForm gstbox">
+                    <li><input type="text" class="gst" formControlName="ncgst" pInputText placeholder="CGST"></li>
+                    <li><input type="text" class="gst" formControlName="nsgst" pInputText placeholder="SGST"></li>
+                    <li><input type="text" class="gst" formControlName="nigst" pInputText placeholder="IGST"></li>
+                    <li><input type="text" class="gst" formControlName="nCess" pInputText placeholder="CESS"></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="p-md-1 p-p-0 p-text-right">
+              <button pButton type="button" (click)="addItemDetails()" label="Add"></button>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div *ngIf="sowPurchaseTable" class="p-col-12 p-md-12">
+          <p-table [value]="purchaseTableQty" [autoLayout]="true" [paginator]="true" [rows]="rows">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>#</th>
+                <th>Items</th>
+                <th>Rate (Unit)</th>
+                <th>Stock Type</th>
+                <th>Sr.No.</th>
+                <th>Quantity</th>
+                <th>GST</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-purchase let-i="rowIndex">
+              <tr>
+                <td>
+                  {{i+1}}
+                </td>
+                <td>{{purchase?.itemName}}</td>
+                <td>{{purchase?.nRate}}</td>
+                <td>{{purchase?.cStkType}}</td>
+                <td>{{purchase?.cSerialNo}}</td>
+                <td>{{purchase?.nQty}}</td>
+                <td>{{purchase?.gst}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      <!-- <div class="p-col-12 p-md-12 MTP"></div> -->
+    </div>
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-12 p-md-12">
+        <button pButton type="button" label="Approve" (click)="statusUpdate('V')"></button>
+        <button class="ml-3" pButton type="button" label="Sent Back" (click)="statusUpdate('P')"></button>
+        <!-- <button (click)="resetFormArray()" pButton type="buttom" class="p-ml-2" label="Clear"></button> -->
+      </div>
+    </div>
+  </form>
+</p-dialog>

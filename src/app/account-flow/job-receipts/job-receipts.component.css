@@ -1,0 +1,12 @@
+.redText{
+    color:red;
+    font-size: 12px;
+}
+.moreAMount{
+    float: left;
+    width: 100%;
+}
+::ng-deep .manage-ledger .p-component .p-dropdown-label {
+    color: #495057;
+    border-radius: 0;
+}

@@ -1,0 +1,131 @@
+<p-toast  [baseZIndex]="100000"></p-toast>
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+    <div class="p-grid p-nogutter">
+        <div class="p-col-12 p-md-4">
+            <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-4" id="drop"><label for="first">Service<sup>*</sup></label></div>
+                            <div class="p-col-12 p-md-8">
+                                <p-dropdown placeholder="Select Service" [options]="serviceD" optionValue="val" optionLabel="txt"
+                                    formControlName="nService"  (onChange)="servicePointF($event)"></p-dropdown>
+                                <small class="danger"
+                                    *ngIf=" (formControl.nService.invalid) && (formControl.nService.touched || formControl.nService.dirty)">
+                                    Service Is Required</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-4" id="drop"><label for="">Clinical Procedure<sup>*</sup></label></div>
+                            <div class="p-col-12 p-md-8">
+                                <p-dropdown placeholder="Select Service Point" (onChange)="searchPointCareF($event)"
+                                    [options]="servicePoint" optionValue="val" optionLabel="txt" formControlName="nSrvPointid">
+                                </p-dropdown>
+                                <small class="danger"
+                                    *ngIf="(formControl.nSrvPointid.invalid) && (formControl.nSrvPointid.dirty || formControl.nSrvPointid.touched)">
+                                    Clinical Procedure Is Required</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-4" id="drop"><label for="">Branch<sup>*</sup></label></div>
+                            <div class="p-col-12 p-md-8">
+                                <p-multiSelect placeholder="SELECT" [options]="branchData" optionLabel="txt"
+                                    formControlName="cBranchid" optionValue="val" [(ngModel)]="selectedBranch"></p-multiSelect>
+                                <!-- <p-dropdown [options]="branchData" placeholder="Select" optionLabel="txt" optionValue="val" [(ngModel)]="selectedBranch" formControlName="cBranchid"></p-dropdown> -->
+                                <small class="danger"
+                                    *ngIf="(formControl.cBranchid.invalid) && (formControl.cBranchid.dirty || formControl.cBranchid.touched)">
+                                    Branch Is Required</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-4" id="drop"><label for="">Effective From<sup>*</sup></label></div>
+                            <div class="p-col-12 p-md-8">
+                                <p-calendar formControlName="dDoe" dateFormat="dd-mm-yy"></p-calendar>
+                                <small class="danger"
+                                    *ngIf="(formControl.dDoe.invalid) && (formControl.dDoe.dirty || formControl.dDoe.touched)">
+                                    Date is Required</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12">
+                        <div class="p-grid p-nogutter grid-gutter">
+                            <div class="p-col-12 p-md-4" id=""><label for="">Rate<sup>*</sup></label></div>
+                            <div class="p-col-12 p-md-3">
+                                <input type="text" formControlName="nrate" pInputText>
+                                <!-- <small class="danger"
+                                    *ngIf="(formControl.rate1.invalid) && (formControl.rate1.dirty || formControl.rate1.touched)">
+                                    Date is Required</small> -->
+                            </div>
+                            <div class="p-col-12 p-md-5">
+                                <p-dropdown id="ddlSupplier" placeholder="Select" [options]="rate" optionLabel="codeName" optionValue="serialNo" formControlName="nRateUnit"></p-dropdown>
+                                <!-- <small class="danger"
+                                    *ngIf="(formControl.rate1.invalid) && (formControl.rate1.dirty || formControl.rate1.touched)">
+                                    Date is Required</small> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-8 p-md-offset-4">
+                        <button pButton type="submit" label="{{isEdit ? 'Update' :'Save'}}"></button>
+                        <button pButton type="button" class="p-ml-1" label="Import"></button>
+                        <button class="template p-ml-1" pButton type="button" label="Download Template"></button>
+                        <button *ngIf="isEdit" class="p-ml-1" (click)="onCancel()" type="button" pButton label="Cancel"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-col-12 p-md-8">
+            
+            <p-table #pointprice [value]="tableList" [autoLayout]="true" [globalFilterFields]="['unitName','cSrvName','srvPoint','branchName']" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]">
+            <ng-template pTemplate="caption">
+                <div class="p-grid p-jc-end">
+                    <div class="p-col-5">
+                        <div class="search">
+                            <input type="text" (input)="pointprice.filterGlobal($event.target.value,'contains')" pInputText>
+                            <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>SNo.</th>
+                        
+                        <th pSortableColumn="cSrvName">Service<p-sortIcon field="cSrvName"></p-sortIcon></th>
+                        <th pSortableColumn="srvPoint">Clinical Procedure<p-sortIcon field="srvPoint"></p-sortIcon></th>
+                        <th pSortableColumn="branchName">Branch Name<p-sortIcon field="branchName"></p-sortIcon></th>
+                        <th pSortableColumn="dDoe">Date<p-sortIcon field="dDoe"></p-sortIcon></th>
+                        <th pSortableColumn="nRate">Rate<p-sortIcon field="nRate"></p-sortIcon></th>
+                        <th pSortableColumn="unitName">Unit<p-sortIcon field="unitName"></p-sortIcon></th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-list let-i="rowIndex">
+                    <tr>
+                        <td>{{i+1}}</td>
+                        
+                        <td>{{list.cSrvName}}</td>
+                        <td>{{list.srvPoint}}</td>
+                        <td>{{list.branchName}}</td>
+                        <td>{{list.dDoe | dateFormat}}</td>
+                        <td>{{list.nRate}}</td>
+                        <td>{{list.unitName}}</td>
+                        <td>
+                            <p-button icon="pi pi-pencil" (click)="editServicePointPrice(list)" class="p-button-raised"></p-button>
+                            <p-button icon="pi pi-trash" (click)="deleteServicePrice(list.nSrvrid)" class="p-button-raised p-button-danger p-ml-2"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>

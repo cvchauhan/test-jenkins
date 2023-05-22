@@ -1,0 +1,156 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<p-confirmDialog key="positionDialog" [position]="position"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+                <form>
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-12 p-md-2 p-pr-2">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="Date">Date</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-calendar placeholder="Select Date" (onSelect)="onSelectMethod($event,'fromD')"
+                                        [(ngModel)]="formDate" [showIcon]="true" [ngModelOptions]="{standalone: true}"
+                                        dateFormat="dd-mm-yy"></p-calendar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="shift">Branch</label>
+                                </div>
+                                <div class="p-col-8">
+                                    <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+                                        [showClear]="true" inputId="priority" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="branchId">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-1">
+                            <button type="button" label="View" (click)="searchJobRenewal()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+                <p-table #jobrenewal [value]="JobRenewalData"
+                    [globalFilterFields]="['cBranchName','cJobNo','JobStartDate','JobEndDate','cSrvName','nSrvSkillid'
+                    ,'SkillName','CustomerName','cMobile','Unbilleddays','totalservicedays','LastInvoiceDate','LastInvoiceNo']"
+                    [autoLayout]="true" [scrollable]="true" scrollHeight="350px" responsiveLayout="scroll"
+                    [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10,20,40,80,120]">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search"
+                                        (input)="jobrenewal.filterGlobal($event.target.value,'contains')" type="text"
+                                        pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="cBranchName">Branch Name<p-sortIcon field="cBranchName">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'80px'}" pSortableColumn="cJobNo">JobNo<p-sortIcon
+                                    field="cJobNo">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="JobStartDate">JobStartDate<p-sortIcon
+                                    field="JobStartDate"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="JobEndDate">JobEndDate<p-sortIcon
+                                    field="JobEndDate"></p-sortIcon>
+                            </th>
+                            <!-- <th [ngStyle]="{'width':'80px'}" pSortableColumn="nsrvId">Service Id<p-sortIcon
+                                    field="nsrvId"></p-sortIcon>
+                            </th> -->
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="cSrvName">Service Name<p-sortIcon
+                                    field="cSrvName"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'130px'}" pSortableColumn="nSrvSkillid">Service Skill id<p-sortIcon
+                                    field="nSrvSkillid"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="SkillName">Skill Name<p-sortIcon
+                                    field="SkillName"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="CustomerName">Customer Name<p-sortIcon
+                                    field="CustomerName"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="cMobile">Mobile<p-sortIcon
+                                    field="cMobile"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="Unbilleddays">Unbilled days<p-sortIcon
+                                    field="Unbilleddays"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="totalservicedays">Total service Days<p-sortIcon
+                                    field="totalservicedays"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="LastInvoiceDate">Last Invoice Date<p-sortIcon
+                                    field="LastInvoiceDate"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="LastInvoiceNo">Last Invoice No<p-sortIcon
+                                    field="LastInvoiceNo"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-i="rowIndex">
+                        <tr>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.cBranchName}}</td>
+                            <td [ngStyle]="{'width':'80px'}">{{item?.cJobNo}}</td>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.JobStartDate | dateFormat}}</td>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.JobEndDate | dateFormat }}</td>
+                            <!-- <td [ngStyle]="{'width':'80px'}">{{item?.nsrvId}}</td> -->
+                            <td [ngStyle]="{'width':'150px'}">{{item?.cSrvName}}</td>
+                            <td [ngStyle]="{'width':'130px'}">{{item?.nSrvSkillid }}</td>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.SkillName}}</td>
+                            <td [ngStyle]="{'width':'150px'}">{{item?.CustomerName}}</td>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.cMobile}}</td>
+                            <td [ngStyle]="{'width':'100px'}">{{item?.Unbilleddays}}</td>
+                            <td [ngStyle]="{'width':'150px'}">{{item?.totalservicedays}}</td>
+                            <td [ngStyle]="{'width':'150px'}">{{item?.LastInvoiceDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+                            <td [ngStyle]="{'width':'150px'}">{{item?.LastInvoiceNo}}</td>
+                            <td [ngStyle]="{'width':'100px'}">
+                                <p-button icon="pi pi-pencil"  class="p-button-raised"
+                                    (click)="OpenJobRenewal(item)">
+                                </p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Renewarl Popup -->
+<p-dialog header="Job Renewal" [modal]="true" [(visible)]="viewJobRenewal"
+    [style]="{width: '40vw', height: '15vw'}">
+    <form [formGroup]="JobRenewalForm" (ngSubmit)="addAJobRenewal(JobRenewalForm.value)">
+        <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-2"><label for="">Date</label></div>
+            <div class="p-col-4 p-md-3">
+                <p-calendar showButtonBar="true" formControlName="jobSrvDate" [(ngModel)]="jobSrvDate"
+                [minDate]="minimumDate"  appendTo="body" [showIcon]="true" placeholder="Select Date" dateFormat="dd-mm-yy">
+                </p-calendar>
+            </div>
+        </div>
+        <div class="p-grid p-nogutter grid-gutter p-mt-2">
+            <div class="p-col-12 p-md-12 p-p-0">
+                <button pButton type="submit" label="Save" [disabled]="JobRenewalForm.invalid"></button>&nbsp;
+            </div>
+        </div>
+    </form>
+</p-dialog>

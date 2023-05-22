@@ -1,0 +1,433 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+  <p-tabView>
+    <p-tabPanel header="Issue Pending">
+      <app-item-issue-pending></app-item-issue-pending>
+    </p-tabPanel>
+    <p-tabPanel header="Issued">
+      <div class="p-grid p-no-gutter">
+        <div class="p-md-12">
+          <form>
+            <div class="p-grid">
+              <div class="p-col-3">
+                <div class="p-field p-grid">
+                  <div class="p-col-3">
+                    <label>Date</label>
+                  </div>
+                  <div class="p-col-9">
+                    <p-calendar placeholder="Select Start Date" dateFormat="dd-mm-yy" [(ngModel)]="formDate"
+                      [showIcon]="true" inputId="fromD" [ngModelOptions]="{standalone: true}"></p-calendar>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-3">
+                <div class="p-field p-grid">
+                  <div class="p-col-2">
+                    <label>To</label>
+                  </div>
+                  <div class="p-col-9">
+                    <p-calendar placeholder="Select End Date" dateFormat="dd-mm-yy" [(ngModel)]="toDate"
+                      [showIcon]="true" inputId="to" [ngModelOptions]="{standalone: true}">
+                    </p-calendar>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-2">
+                <button type="button" label="View" (click)="filterManageItem()" pButton></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="itemdeposit">
+        <p-table #stock [value]="stockItemTableRes" [globalFilterFields]="['accName','empName']" [autoLayout]="true"
+          [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+          [globalFilterFields]="['CJobNo','DCreateDate','AccName','CMobile','CItemDelivery','DDeliveryDueDate','DeliverByEmpName','EmpMobile']"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [rowsPerPageOptions]="[15,25,40,80,120]">
+          <ng-template pTemplate="caption">
+            <div class="p-grid">
+              <div class="p-col-9 p-md-5">
+                <div class="search">
+                  <input placeholder="Search" id="search" (input)="stock.filterGlobal($event.target.value,'contains')"
+                    type="text" pInputText>
+                  <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                </div>
+              </div>
+              <div class="p-col-3 p-md-7">
+                <div class=" p-text-right toggleMenu">
+                  <button pButton type="button" icon="pi pi-plus" (click)="addPopup()" iconPos="left"></button>
+                  <!-- <p-menu #menu [popup]="true" [model]="menuOptions" [styleClass]="toggleMenu"></p-menu> -->
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th>SrNo</th>
+              <th pSortableColumn="CJobNo">Job No<p-sortIcon field="CJobNo"></p-sortIcon>
+              </th>
+              <th pSortableColumn="DCreateDate">Issue Date<p-sortIcon field="DCreateDate"></p-sortIcon>
+              </th>
+              <th pSortableColumn="AccName">Customer Name<p-sortIcon field="AccName"></p-sortIcon>
+              </th>
+              <th pSortableColumn="CMobile">Mobile No<p-sortIcon field="CMobile"></p-sortIcon>
+              </th>
+              <th pSortableColumn="CItemDelivery">Item Delivery<p-sortIcon field="CItemDelivery"></p-sortIcon>
+              </th>
+              <th pSortableColumn="DDeliveryDueDate">Due Date<p-sortIcon field="DDeliveryDueDate"></p-sortIcon>
+              </th>
+              <th pSortableColumn="DeliverByEmpName">Delivered By<p-sortIcon field="DeliverByEmpName"></p-sortIcon>
+              </th>
+              <th pSortableColumn="EmpMobile">Emp Mobile No<p-sortIcon field="EmpMobile"></p-sortIcon>
+              </th>
+              <th>Actions</th>
+
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{item?.CJobNo}}</td>
+              <td>{{item?.DCreateDate | dateFormat}}</td>
+              <td>{{item?.AccName}}</td>
+              <td>{{item?.CMobile}}</td>
+              <td>{{item?.CItemDelivery}}</td>
+              <td>{{item?.StockDetail[0].DDeliveryDueDate | dateFormat}}</td>
+              <td>{{item?.StockDetail[0].DeliverByEmpName}}</td>
+              <td>{{item?.StockDetail[0].EmpMobile}}</td>
+              <td>
+
+                <button icon="pi pi-pencil" class="p-button-raised" (click)="editStockTrans(item.nStkid)"
+                  pButton></button>
+                <button icon="pi pi-file-pdf" (click)="issuePrint(item)" class="p-button-raised p-mx-2"
+                  pButton></button>
+                <button icon="pi pi-trash" pButton (click)="delStock(item.nStkid)"
+                  class="p-button-raised p-button-danger"></button>
+
+
+              </td>
+
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+
+<!-- for Item issue -->
+<p-dialog header="Add Transaction: Issue" class="stock-issue" [(visible)]="issueDialog" [modal]="true"
+  [style]="{width: '70vw'}" [baseZIndex]="1000" (onHide)="onHide()">
+
+  <div class="p-col-12 p-md-12">
+    <form [formGroup]="issueForm" (ngSubmit)="addIssueItem()">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dStkDate"
+            (onSelect)="onSelectDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Issue To</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="issue" optionLabel="name" placeholder="Select" optionValue="valName"
+            (onChange)="onIssueChange($event)" formControlName="issueTo"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+            optionValue="val" formControlName="issueBranch" (onChange)="onIssueBranchChange($event)"></p-dropdown>
+        </div>
+
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Job Number</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <span class="p-w-100 p-input-icon-right">
+            <i class="pi pi-search"></i>
+            <p-autoComplete formControlName="nJobid" [(ngModel)]="jobModel" id="customer" [suggestions]="jobData"
+              (completeMethod)="searchJobIssueData($event)" placeholder="Search Jobs by Job Number" field="cJobNo"
+              [ngModelOptions]="{standalone: true}" (onSelect)="selectJob($event)">
+            </p-autoComplete>
+          </span>
+          <!-- <input type="text" pInputText placeholder="autocomplete" formControlName="nJobid"
+            (blur)="getIssueJobno($event)"> -->
+        </div>
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Customer</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <!-- <p-dropdown [options]="customerData" optionLabel="cDisplayNm" placeholder="Select Customer"
+            optionValue="nAcid" formControlName="nAcid"></p-dropdown> -->
+          <!-- <p-autoComplete [suggestions]="customerData" (completeMethod)="searchCustomerIssueData()" field="cDisplayNm" [minLength]="1" formControlName="nAcid" [dropdown]="true"
+                        ></p-autoComplete> -->
+
+          <input type="text" pInputText placeholder="Customer" formControlName="nAcid" disabled>
+        </div>
+        <div *ngIf="showEmployeeIssue" class="p-col-1 p-md-1"><label for="">Employee</label></div>
+        <div *ngIf="showEmployeeIssue" class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="employeeData" optionLabel="cEmpName" optionValue="nEmpid"
+            placeholder="Select Employee" formControlName="nEmpid"></p-dropdown>
+
+          <!-- <input type="text" pInputText placeholder="Autocomplete, from Account Master where Group Type nodeid=5"
+            formControlName="cCustomer"> -->
+        </div>
+      </div>
+      <div *ngIf="showIssueEmpItems">
+        <div formGroupName="createIssueItem" class="repeatedForm">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">Item</label></div>
+            <div class="p-col-5 p-md-5">
+              <p-dropdown appendTo="body" placeholder="Select Item" [options]="items" optionLabel="cItemNm"
+                formControlName="nItemid">
+              </p-dropdown>
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Serial NO</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText placeholder="Autocomplete" formControlName="cSerialNo">
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Quantity</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText formControlName="nQty">
+            </div>
+            <div class="p-col-6 p-md-6 p-text-right">
+              <button pButton type="button" (click)="addIssueDetails()" label="Add more"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="isCustDelivery" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Delivery Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Select Date" formControlName="dDeliDate"
+            (onSelect)="onSelectDeliveryDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Delivered By</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" #deliveredBy (onChange)="onChangeDeliverBy($event, deliveredBy)" [options]="employeeData"
+            optionLabel="cEmpName" optionValue="nEmpid" placeholder="Select Employee" formControlName="nDelivered">
+          </p-dropdown>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12" *ngIf="showGrid">
+          <p-table [value]="empTableQty" [autoLayout]="true" [scrollable]="true" scrollHeight="100px">
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>#</th>
+                <th>Items</th>
+
+                <th>Approved Quantity</th>
+                <th>Customer in Hand</th>
+                <th>Stock Balance</th>
+                <th>Qty</th>
+                <th>Serialize Added</th>
+                <th>Serialized</th>
+                <!-- <th>GST</th>
+
+            <th>Amount</th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td>
+                  {{i+1}}
+                </td>
+                <td>{{item?.itemName}}</td>
+                <td>{{item?.approveItemQty}}</td>
+                <td>{{item?.customerInHand}}</td>
+                <td>{{item?.stockBalance}}</td>
+                <td><input type="text" (keyup)="nQuanty(item,$event,i)" pInputText [value]="item?.nQty"
+                    [disabled]="item?.cSrlzd == 'True' || item.stockBalance < 1" />
+                  <p *ngIf="item?.qntyWrong" class="danger">Quantity is more than Approved Quantity</p>
+                </td>
+                <td></td>
+                <td>
+
+                  <ng-container *ngIf="item?.cSrlzd == 'True' && (item?.stockBalance >= item?.approveItemQty)">
+                    <!-- <p-chips  separator="," (onAdd)="addChips($event, item.nItemid,i,item?.approveItemQty)" (onRemove)="removeChips($event, item.nItemid,i,item?.approveItemQty)"></p-chips>
+                       -->
+                    <!-- <button  type="button" label="Add Serial Number" (click)="addSerialized(item,i)" pButton></button> -->
+                    <p-multiSelect appendTo="body" [options]="item.stockInHand"
+                      [disabled]="item.stockBalance < 1 || (item.approveItemQty - item.customerInHand < 1)"
+                      (onChange)="onChangeSerialized($event,item,i)" optionLabel="cSerialNo" optionValue="cSerialNo">
+                    </p-multiSelect>
+                    <span *ngIf="item?.isError" style="color:red;">You are selecting more than approved </span>
+
+                  </ng-container>
+
+                  <ng-container *ngIf="item?.cSrlzd == 'False' || (item?.approveItemQty > item?.stockBalance) ">
+                    <span>Serialization is not available</span>
+                  </ng-container>
+
+                </td>
+                <!-- <td>{{item?.gst}}</td>
+            <td>{{item?.amount}}</td> -->
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12 p-p-0">
+          <!-- <button pButton type="submit" label="Save"></button> -->
+          <span *ngIf="showSerializedErr" style="color: red;"> No of Serialization is more than Approved Quantity</span>
+          <button pButton type="button" (click)="showOTPDialog()" [disabled]="!saveButtonEnabled"
+            label="Save"></button>&nbsp;
+          <!-- <button pButton type="button" (click)="issuePrint()" label="Print"></button> -->
+        </div>
+      </div>
+
+    </form>
+  </div>
+</p-dialog>
+
+<!-- OTP dialog -->
+<p-dialog header="OTP" [(visible)]="otpDialog" [style]="{width: '20vw'}" [modal]="true" [baseZIndex]="10000">
+  <div class="p-grid p-nogutter grid-gutter">
+    <div class="p-col-1 p-md-5"><label for="">Enter OTP:</label></div>
+    <div class="p-col-4 p-md-7">
+      <input type="text" [(ngModel)]="otpValue" [ngModelOptions]="{standalone: true}" pInputText>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="p-text-right">
+      <p-button label="Confirm" styleClass="p-button-text" (click)="validateOtp()"></p-button>
+      <p-button (click)="otpDialog=false" label="Close" styleClass="p-button-text"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- for add serialized -->
+<!-- <p-dialog header="{{jobNumber}} - {{itemName}}" [(visible)]="serializedDialog" [style]="{width: '40vw'}" [modal]="true" [baseZIndex]="10000" >
+    <div class="p-grid">
+        <div class="p-md-3">
+            <label>Select Serial Number</label>
+        </div>
+        <div class="p-md-9">
+          <p-multiSelect appendTo="body" [options]="serialized" [(ngModel)]="serializedVal"
+          [ngModelOptions]="{standalone: true}" (onChange)="onChangeSerialized($event)" optionLabel="cSerialNo" optionValue="cSerialNo"></p-multiSelect>
+        </div>
+
+        <div class="p-md-4">
+          <span style="color:red;" *ngIf="showSerializedErrorMsg">You are selecting more than approved </span>
+        </div>
+    </div>
+
+    <div class="p-md-8">
+      <p-button (click)="AddSerializedValidation()" [disabled]="serializedVal.length < 1" label="Add" styleClass="p-button-text"></p-button>
+    </div>
+
+</p-dialog> -->
+
+<!-- Issue print preview dialog -->
+<p-dialog header="Print" [(visible)]="issuePrintDialog" [modal]="true" [style]="{width: '80vw'}" [baseZIndex]="10000"
+  (onHide)="onHide()">
+  <div class="p-grid p-nogutter">
+  </div>
+  <div class="p-md-12 contentToConvert" id="contentToConvert">
+    <table style="width: 100%;table-layout: fixed;margin: 0 auto;border-collapse: collapse;" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2">
+            <table>
+              <tr>
+                <td>
+                  <img src="../../../assets/images/logo.png" width="150" alt="logo" style="margin-left: 40px;">
+                </td>
+                <td width="77%" style="vertical-align:top;text-align: center !important;">
+                  <h3 style="font-size: 18px;line-height: 24px;margin-bottom: 10px;text-align: center !important;">
+                    Issue/Delivery
+                    Challan</h3>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+            <h3 style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">Regional Office</h3>
+            <h4 style="font-size: 16px;line-height: 20px;margin:0">SAYLUSS MEDICARE PVT LTD</h4>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">201,GOLDEN HEIGHTS, MOKSH MARG, ASHOK NAGAR, UDAIPUR
+            </h5>
+            <h6 style="font-size: 13px;line-height: 18px;margin:0">Phone: 9887744001</h6>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Website: WWW.SAYLUSSMEDICARE.COM E-Mail:
+              SAYLUSSMEDICARE@GMAIL.COM</h5>
+            <h6 style="font-size: 13px;line-height: 18px;margin:0">GSTIN: 08AARCS4660C1Z5</h6>
+          </td>
+          <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+            <h3 style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">Customer Name & Address</h3>
+            <h5 style="font-size: 16px;line-height: 20px;margin:0">Name: {{pdfData?.customerName}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Address: {{pdfData?.cAddress}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">City: {{pdfData?.city}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Phone No: {{pdfData?.cMobile}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Job No: {{pdfData?.cJobNo}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Delivered On: {{pdfData?.dDeliveredOn |
+              dateFormat}}</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">Delivered By: {{pdfData?.nDeliveredBy}}</h5>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center" style="font-size: 18px;line-height: 24px;margin-bottom: 10px;">DESCRIPTION OF
+            GOODS</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <table width="100%"
+              style="border-collapse: collapse;padding: 10px;border: 1px solid #000;margin-bottom: 30px;">
+              <thead>
+                <tr style="border-bottom: 1px solid #000;">
+                  <th width="10%" style="width: 10%;border-right: 1px solid #000;padding: 10px;">SNo.</th>
+                  <th width="50%" style="width: 50%;border-right: 1px solid #000;padding: 10px; text-align: left;">Item
+                  </th>
+                  <th width="15%" style="width: 15%;border-right: 1px solid #000;padding: 10px;">Serial No.</th>
+                  <th width="25%" style="width: 25%;padding: 10px;">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let stock of stockData; let i = index" style="border-bottom: 1px solid #000;">
+                  <td width="10%" style="width: 10%;border-right: 1px solid #000;padding: 10px;" align="center">
+                    <span style="width: 10%;padding: 10px;">{{i+1}}</span>
+                  </td>
+                  <td width="50%" style="width: 50%;border-right: 1px solid #000;padding: 10px;" align="left">
+                    <span style="width: 50%;padding: 10px; text-align: left;">
+                      {{stock.itemName}}</span>
+                  </td>
+                  <td width="15%" style="width: 15%;border-right: 1px solid #000;padding: 10px;" align="center">
+                    <span style="width: 15%;padding: 10px;">
+                      {{stock.cSerialNo}}</span>
+                  </td>
+                  <td width="25%" style="width: 25%;padding: 10px;" align="center"> <span
+                      style="width: 25%;padding: 10px;">{{stock.nQty}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr style="border-top: 1px solid #000;">
+          <td colspan="2">
+            <h5 style="font-size: 13px;line-height: 18px;margin:0 0 10px"><strong>Payment Mode: </strong> Cash / Cash On
+              Delivery</h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:0 0 20px">This is to Certify that </h5>
+          </td>
+        </tr>
+        <tr>
+          <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;">
+            <h5 style="font-size: 13px;line-height: 18px;margin:50px 0 0">Receiver's Name & Signature</h5>
+          </td>
+          <td width="50%" style="width: 50%;vertical-align: top;padding: 10px;text-align: right;">
+            <h5 style="font-size: 13px;line-height: 18px;margin:0">For SAYLUSS MEDICARE PVT LTD </h5>
+            <h5 style="font-size: 13px;line-height: 18px;margin:50px 0 0">Authorised Signature</h5>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="p-md-12 p-text-center">
+    <button type="button" label="Print" (click)="generatePDF()" pButton></button>
+  </div>
+</p-dialog>

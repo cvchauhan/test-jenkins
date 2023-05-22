@@ -1,0 +1,88 @@
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-3">
+                <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
+                    <div class="p-grid">
+                        <label class="p-col-3">Shift Name</label>
+                        <div class="p-col-9">
+                            <input type="text" formControlName="sName" pInputText/>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <label class="p-col-3">Start Time</label>
+                        <div class="p-col-9">
+                            <p-calendar [timeOnly]="true" [hourFormat]="24" [showIcon]="true" formControlName="sTime" [(ngModel)]="startTime" (onSelect)="onStartTime($event)" [ngModelOptions]="{standalone: true}"></p-calendar>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <label class="p-col-3">End Time</label>
+                        <div class="p-col-9">
+                            <p-calendar [timeOnly]="true" [hourFormat]="24" formControlName="eTime" [showIcon]="true" (onSelect)="onEndTime($event)" [(ngModel)]="endTime" [ngModelOptions]="{standalone: true}"></p-calendar>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <label class="p-col-3">Shift Hours</label>
+                        <div class="p-col-9">
+                            <input type="text" [(ngModel)]="workingHours" formControlName="sHours" pInputText/>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <label class="p-col-3">Shift Status</label>
+                        <div class="p-col-9">
+                            <p-dropdown placeholder="Select" [options]="shiftStatus" optionLabel="name" formControlName="sStatus"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <label class="p-col-3"></label>
+                        <div class="p-col-9">
+                            <button type="submit" label="{{isEdit?'Update':'Save'}}" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-col-9 p-pl-4">
+                <p-table #shift [value]="shiftData" [globalFilterFields]="['cShiftName','dStarttime','dEndTime','nHour']"
+                responsiveLayout="scroll" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-col-9 p-md-5">
+                            <div class="search">
+                                <input placeholder="Search" id="search"
+                                    (input)="shift.filterGlobal($event.target.value,'contains')" type="text"
+                                    pInputText>
+                                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th>Name</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Hours</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-shift let-index="rowIndex">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{shift.cShiftName}}</td>
+                            <td>{{shift.dStarttime}}</td>
+                            <td>{{shift.dEndTime}}</td>
+                            <td>{{shift.nHour}}</td>
+                            <td>
+                                <p-button icon="pi pi-pencil" (click)="editShift(shift.nShiftId)" class="p-button-raised p-button-default"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                
+            </div>
+        </div>
+    </div>
+</div>

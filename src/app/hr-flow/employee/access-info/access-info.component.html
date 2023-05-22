@@ -1,0 +1,424 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<div class="p-grid p-nogutter" id="acessInfo">
+  <div class="p-col-12 p-md-12" style="margin-bottom:10px;">
+    <form [formGroup]="reactForm" (ngSubmit)="saveAccess(reactForm)">
+      <div class="employeeinfo accessInfo">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4"><label>Service Skills</label></div>
+              <div class="p-col-12 p-md-8">
+                <p-multiSelect defaultLabel="SELECT" inputId="multiselect" [options]="serviceSkills" optionLabel="name"
+                  formControlName="sSkills" [filter]="false" placeholder="Select Service Skills"></p-multiSelect>
+                <p class="danger"
+                  *ngIf="(formControl.sSkills.invalid) && (formControl.sSkills.touched || formControl.sSkills.dirty)">
+                  Service Skills Is Required
+                </p>
+              </div>
+            </div>
+          </div>          
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="middle">Posting Branch<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-multiSelect [options]="branchData" optionLabel="txt" formControlName="pBranch" [filter]="false"
+                  placeholder="Select Branch" (onChange)="onPostBranchChange()"></p-multiSelect>
+
+                <p class="danger"
+                  *ngIf="(formControl.pBranch.invalid) && (formControl.pBranch.touched || formControl.pBranch.dirty)">
+                  Posting Branch Is Required
+                </p>
+              </div>
+            </div>
+          </div>          
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="last">Employment Type<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="employmentType" optionLabel="name" formControlName="empType"
+                  [(ngModel)]="employeeType" placeholder="Select Employment Type"
+                  (onChange)="onEmploymentChange($event)"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.empType.invalid) && (formControl.empType.touched || formControl.empType.dirty)">
+                  Employment Type Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="middle">Base Branch<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown [options]="baseBranchData" optionLabel="txt" formControlName="nBranchId" [filter]="false"
+                  placeholder="Select Branch"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.nBranchId.invalid) && (formControl.nBranchId.touched || formControl.nBranchId.dirty)">
+                  Base branch Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="isPermanent">
+            <div class="p-col-6">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4" id="drop">
+                  <label for="last">Work Type</label>
+                </div>
+                <div class="p-col-12 p-md-8">
+                  <p-dropdown id="skill" [options]="workType" optionLabel="name" formControlName="wrkType"
+                    placeholder="Select Work Type"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-6">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4" id="drop">
+                  <label for="last">Shift</label>
+                </div>
+                <div class="p-col-12 p-md-8">
+                  <p-dropdown id="skill" [options]="shift" optionLabel="cShiftName" formControlName="shifttype"
+                    placeholder="Select Shift"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-6">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4" id="drop">
+                  <label for="last">Salary Structure</label>
+                </div>
+                <div class="p-col-12 p-md-8">
+                  <p-dropdown id="skill" [options]="salaryStructure" optionLabel="cApplyDept"
+                    formControlName="salaryType" placeholder="Select Salary"></p-dropdown>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="first">Department<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="departMentData" optionLabel="name" formControlName="department"
+                  placeholder="Select Department" (onChange)="onDepartMentChange($event)"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.department.invalid) && (formControl.department.touched || formControl.department.dirty)">
+                  Department Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="first">Desingnation<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="desigtData" optionLabel="txt" formControlName="designation"
+                  placeholder="Select Designation" (onChange)="onDesignationChange($event)"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.designation.invalid) && (formControl.designation.touched || formControl.designation.dirty)">
+                  Desingnation Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="first">Shift</label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="reportingData" optionLabel="name" formControlName="shift"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.shift.invalid) && (formControl.shift.touched || formControl.shift.dirty)">
+                  Shift Is Required
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop"><label for="first">Reporting To<sup>*</sup></label></div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="reportingData" optionLabel="txt" placeholder="Select Reporting To"
+                  formControlName="reportTo"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.reportTo.invalid) && (formControl.reportTo.touched || formControl.reportTo.dirty)">
+                  Reporting To Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="last">Salary Stucture</label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-dropdown id="skill" [options]="salStructure" optionLabel="name" formControlName="sStructure"></p-dropdown>
+                <p class="danger"
+                  *ngIf="(formControl.sStructure.invalid) && (formControl.sStructure.touched || formControl.sStructure.dirty)">
+                  Salary Stucture Is Required
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="cScore">Criticality Score<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <input id="cScore" type="text" pInputText formControlName="cScore" disabled>
+                <p class="danger"
+                  *ngIf="(formControl.cScore.invalid) && (formControl.cScore.touched || formControl.cScore.dirty)">
+                  Criticality Score Is Required
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label>User Name<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <input type="text" pInputText formControlName="userName" (keyup)="checkUsername($event)" />
+                <p class="danger"
+                  *ngIf="(formControl.userName.invalid) && (formControl.userName.touched || formControl.userName.dirty)">
+                  User Name is Required
+                </p>
+                <p class="danger" *ngIf="showUsernameAlreadyError">
+                  User Name Already Exists
+                </p>
+
+              </div>
+            </div>
+          </div>
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="drop">
+                <label for="last">Access Permission Role<sup>*</sup></label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <div class="p-grid p-nogutter">
+                  <div class="p-col-12 p-md-12">
+                    <p-dropdown id="skill" [options]="accessPData" placeholder="Select Role"
+                      (onChange)="accessPerRole($event)" optionLabel="txt" formControlName="aPRole"></p-dropdown>
+                    <p class="danger"
+                      *ngIf="((formControl.aPRole.invalid) && (formControl.aPRole.touched || formControl.aPRole.dirty)) && empID==0">
+                      Access Permission Role Is Required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-6">
+            <div class="p-grid p-nogutter grid-gutter">
+              <div class="p-col-12 p-md-4" id="customize">
+                <label for="last">Customize
+                  <div class="p-field-checkbox customizecheck" id="customize">
+                  </div>
+                </label>
+              </div>
+              <div class="p-col-12 p-md-8">
+                <p-checkbox (onChange)="customizeCheck($event)" inputId="binary"></p-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-12 p-text-center">
+            <button pButton type="submit" class="p-button" label="Next"
+              [disabled]="reactForm.invalid && empID==0"></button>
+            <!-- <button pButton type="submit" class="p-button" [disabled]="reactForm.invalid"></button> -->
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="p-col-12 p-md-12">
+    <p-tabView [activeIndex]="index" (onChange)="onhandleChange($event)">
+      <p-tabPanel header="Portal">
+        <p-accordion>
+          <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList;let i=index;"
+            header="{{menu['cMenuTitle']}}" [ngClass]="showRoleTable ? '':'accord_disa'">
+            <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100" scrollHeight="100px"
+              [virtualScroll]="true" [virtualRowHeight]="34">
+              <ng-template pTemplate="header">
+                <tr *ngIf="accessPortalList?.length != 0">
+                  <th style="width: 60px;">SNo</th>
+                  <th>Screen Name</th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader($event, menu,'N' ,i)">
+                      </p-checkbox>
+                      <label for="new">New</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader($event, menu,'E',i)">
+                      </p-checkbox>
+                      <label for="edit">Edit</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader($event, menu,'D',i)">
+                      </p-checkbox>
+                      <label for="delete">Delete</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader($event, menu,'Q',i)">
+                      </p-checkbox>
+                      <label for="query">Query</label>
+                    </div>
+                  </th>
+                  <th>Url Path</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                <tr>
+                  <td style="width: 60px;">{{ri+1}}</td>
+                  <td>{{subm['pageTitle']}}</td>
+                  <td *ngFor="let chk of subm['mPermission']">
+                    <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                      <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                        (onChange)="changePerm($event, subm,chk)" binary="true"></p-checkbox>
+                      <label for="screen1">{{chk['permName']}}</label>
+                    </div>
+                  </td>
+                  <td>{{subm['urlPath']}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-accordionTab>
+        </p-accordion>
+      </p-tabPanel>
+      <p-tabPanel header="Report">
+        <p-accordion>
+          <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList2;let i=index;"
+            header="{{menu['cMenuTitle']}}" [ngClass]="showRoleTable2 ? '':'accord_disa'">
+            <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100" scrollHeight="100px"
+              [virtualScroll]="true" [virtualRowHeight]="34">
+              <ng-template pTemplate="header">
+                <tr *ngIf="accessPortalList2?.length != 0">
+                  <th style="width: 60px;">SNo</th>
+                  <th>Screen Name</th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader2($event, menu,'N' ,i)">
+                      </p-checkbox>
+                      <label for="new">New</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader2($event, menu,'E',i)">
+                      </p-checkbox>
+                      <label for="edit">Edit</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader2($event, menu,'D',i)">
+                      </p-checkbox>
+                      <label for="delete">Delete</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader2($event, menu,'Q',i)">
+                      </p-checkbox>
+                      <label for="query">Query</label>
+                    </div>
+                  </th>
+                  <th>Url Path</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                <tr>
+                  <td style="width: 60px;">{{ri+1}}</td>
+                  <td>{{subm['pageTitle']}}</td>
+                  <td *ngFor="let chk of subm['mPermission']">
+                    <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                      <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                        (onChange)="changePerm2($event, subm,chk)" binary="true"></p-checkbox>
+                      <label for="screen1">{{chk['permName']}}</label>
+                    </div>
+                  </td>
+                  <td>{{subm['urlPath']}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-accordionTab>
+        </p-accordion>
+      </p-tabPanel>
+      <p-tabPanel header="Mobile App">
+        <p-accordion>
+          <p-accordionTab class="infoaccordion" *ngFor="let menu of accessPortalList3;let i=index;"
+            header="{{menu['cMenuTitle']}}" [ngClass]="showRoleTable3 ? '':'accord_disa'">
+            <p-table [value]="menu['submenu']" [autoLayout]="true" [scrollable]="true" [rows]="100" scrollHeight="100px"
+              [virtualScroll]="true" [virtualRowHeight]="34">
+              <ng-template pTemplate="header">
+                <tr *ngIf="accessPortalList3?.length != 0">
+                  <th style="width: 60px;">SNo</th>
+                  <th>Screen Name</th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="new" (onChange)="changePermHeader3($event, menu,'N' ,i)">
+                      </p-checkbox>
+                      <label for="new">New</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="edit" (onChange)="changePermHeader3($event, menu,'E',i)">
+                      </p-checkbox>
+                      <label for="edit">Edit</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="delete" (onChange)="changePermHeader3($event, menu,'D',i)">
+                      </p-checkbox>
+                      <label for="delete">Delete</label>
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-field-checkbox">
+                      <p-checkbox value="menu" inputId="query" (onChange)="changePermHeader3($event, menu,'Q',i)">
+                      </p-checkbox>
+                      <label for="query">Query</label>
+                    </div>
+                  </th>
+                  <th>Url Path</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-subm let-ri="rowIndex">
+                <tr>
+                  <td style="width: 60px;">{{ri+1}}</td>
+                  <td>{{subm['pageTitle']}}</td>
+                  <td *ngFor="let chk of subm['mPermission']">
+                    <div class="p-field-checkbox" *ngIf="chk['isVisible']">
+                      <p-checkbox value="chk['permName']" inputId="screen1" [(ngModel)]="chk['isChecked']"
+                        (onChange)="changePerm3($event, subm,chk)" binary="true"></p-checkbox>
+                      <label for="screen1">{{chk['permName']}}</label>
+                    </div>
+                  </td>
+                  <td>{{subm['urlPath']}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-accordionTab>
+        </p-accordion>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

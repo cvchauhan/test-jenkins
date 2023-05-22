@@ -1,0 +1,274 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<form [formGroup]="employeeKYC" (ngSubmit)="onSubmit()">
+  <div class="p-grid">
+    <div class="p-col-12 p-md-5">
+      <div class="employeeinfo">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter">
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="pan">Pan<sup>*</sup></label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="pan" #panNo type="text" (keydown)="onPan($event)" formControlName="pan" pInputText>
+                    <div *ngIf="(f.pan.invalid) && (f.pan.touched || f.pan.dirty)">
+                      <p class="danger" *ngIf="f.pan.errors?.required">PAN no is Required</p>
+                      <p class="danger" *ngIf="!f.pan.errors?.pattern && f.pan.errors?.minlength">Minimum 10 char only
+                      </p>
+                      <p class="danger" *ngIf="f.pan.errors?.maxlength">Maximum 12 char only</p>
+                      <p class="danger" *ngIf="f.pan.errors?.pattern">Enter pan not valid</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="adhaar">Adhaar linked Mobile<sup>*</sup></label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="adhaar" type="text" #aadhar placeholder="Accept only number" (keydown)="onKey($event)"
+                      formControlName="adhaarMN" pInputText numbersOnly>
+                    <!-- <div *ngIf="(f.adhaarMN.invalid) && (f.adhaarMN.touched || f.adhaarMN.dirty)">
+                      <p class="danger" *ngIf="f.adhaarMN.errors?.required">Aadhar no is Required</p>
+                      <p class="danger" *ngIf="f.adhaarMN.errors?.pattern && !f.adhaarMN.errors?.minlength">Minimum 12 char only</p>
+                      <p class="danger" *ngIf="f.adhaarMN.errors?.maxlength">Maximum 12 char only</p>
+                      <p class="danger" *ngIf="f.adhaarMN.errors?.pattern">Aadhar not valid</p>
+                    </div> -->
+                    <div *ngIf="employeeKYC.get('adhaarMN').hasError('pattern')">Enter 10 digit Mobile Number.</div>
+                    <!-- <div *ngIf="(f.adhaarMN.invalid) && (f.adhaarMN.touched || f.adhaarMN.dirty)">
+                      <div class="danger"  *ngIf="f.adhaarMN.errors.required">Aadhar Number is required.</div>
+                      <div class="danger"  *ngIf="f.adhaarMN.errors.pattern">Please, Enter 12 digit Aadhar Number.</div>
+                  </div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label>Gratuity Application</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <div class="remember">
+                      <label class="container-checkbox">
+                        <input type="checkbox" formControlName="gratuity">
+                        <span class="check-mark"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="pfn">PF Number</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="pfn" formControlName="pfnumber" type="text" pInputText>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="kdoc">KYC Document</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <p-dropdown id="kdoc" [options]="typesOfKycDocs" optionLabel="name" formControlName="kycdocType"
+                      placeholder="select kyc doc type">
+                    </p-dropdown>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="kyn">KYC Number</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="kyn" type="text" formControlName="kycnumber" pInputText>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="ban">Bank Account No</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="ban" type="text" formControlName="cBankAcNo" pInputText>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12">
+                <div class="p-grid p-nogutter grid-gutter">
+                  <div class="p-col-12 p-md-4">
+                    <label for="ifsc">IFSC</label>
+                  </div>
+                  <div class="p-col-12 p-md-8">
+                    <input id="ifsc" type="text" formControlName="cifsc" pInputText>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid">
+          <div class="p-col-12 p-md-8 p-md-offset-4 p-pl-0">
+            <button pButton type="submit" label="{{editEmpData ? 'Update': 'Save'}}"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-7">
+      <div class="employeeinfo">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-3">
+                <label for="pnv">PAN</label>
+              </div>
+              <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                  <div *ngIf="panFile?.length > 0" class="p-col-3">
+                    <img [src]="panFile" width="100" height="80" />
+                  </div>
+                  <div class="p-col-9">
+                    <!-- <p-fileUpload id="pnv" #fubauto
+                  url="http://saylussapitest.bancplus.in/api/FileUpload?fileName=pan_{{fileUuid}}"
+                  mode="basic" name="filePath" (onUpload)="onBasicUpload($event, 'pan')" [auto]="true"
+                  accept="image/*" maxFileSize="500000"></p-fileUpload> -->
+
+                    <p-fileUpload #fubauto url="{{baseUrl}}/FileUpload?fileName=pan_{{fileUuid}}" name="filePath"
+                      (onUpload)="onBasicUpload($event, 'pan')" accept="image/*" maxFileSize="500000">
+                      <ng-template pTemplate="content">
+                        <ul *ngIf="uploadedFiles.length">
+                          <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                        </ul>
+                      </ng-template>
+                    </p-fileUpload>
+
+
+                  </div>
+
+                  <div class="p-col-12 uplod" *ngIf="editEmpData && editedPan?.length > 0">
+                    <img [src]="editedPan" width="100" height="80" />
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter">
+              <div class="p-col-12 p-md-3">
+                <label for="pv">Police Verification</label>
+              </div>
+              <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                  <div *ngIf="policeFile?.length > 0" class="p-col-3">
+                    <img [src]="policeFile" width="100" height="80" />
+                  </div>
+                  <div class="p-col-9">
+                    <!-- <p-fileUpload id="pv" #fubauto
+                  url="http://saylussapitest.bancplus.in/api/FileUpload?fileName=police_{{fileUuid}}"
+                  mode="basic" name="filePath" (onUpload)="onBasicUpload($event, 'police')" [auto]="true"
+                  accept="image/*" maxFileSize="500000"></p-fileUpload> -->
+
+                    <p-fileUpload #fubauto url="{{baseUrl}}/FileUpload?fileName=police_{{fileUuid}}" name="filePath"
+                      (onUpload)="onBasicUpload($event, 'police')" accept="image/*" maxFileSize="500000">
+                      <ng-template pTemplate="content">
+                        <ul *ngIf="uploadedFiles.length">
+                          <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                        </ul>
+                      </ng-template>
+                    </p-fileUpload>
+                  </div>
+
+                  <div class="p-col-12" *ngIf="editEmpData && editedPolice.length > 0">
+                    <img [src]="editedPolice" width="100" height="80" />
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-3">
+                <label for="photo">Photo</label>
+              </div>
+              <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                  <div *ngIf="photoFile?.length > 0" class="p-col-3">
+                    <img [src]="photoFile" width="100" height="80" />
+                  </div>
+                  <div class="p-col-9">
+                    <!-- <p-fileUpload id="pv" #fubauto url="http://saylussapitest.bancplus.in/api/FileUpload?fileName=photo_{{fileUuid}}" mode="basic" name="filePath"  (onUpload)="onBasicUpload($event, 'photo')" [auto]="true" accept="image/*"
+                    maxFileSize="500000">
+                    </p-fileUpload> -->
+                    <p-fileUpload #fubauto url="{{baseUrl}}/FileUpload?fileName=photo_{{fileUuid}}"
+                      (onUpload)="onBasicUpload($event, 'photo')" accept="image/*" maxFileSize="500000">
+                      <ng-template pTemplate="content">
+                        <ul *ngIf="uploadedFiles.length">
+                          <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                        </ul>
+                      </ng-template>
+                    </p-fileUpload>
+                  </div>
+
+                  <div class="p-col-12" *ngIf="editEmpData && editedPhoto.length > 0">
+                    <img [src]="editedPhoto" width="100" height="80" />
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="p-col-12 p-md-12">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-3">
+                <label for="kycdoc">KYC Document</label>
+              </div>
+              <div class="p-col-12 p-md-9">
+                <div class="p-grid p-nogutter">
+                  <div *ngIf="kycFile?.length > 0" class="p-col-3">
+                    <img [src]="kycFile" width="100" height="80" />
+                  </div>
+                  <div class="p-col-9">
+                    <!-- <p-fileUpload id="kycdoc" #fubauto
+                        url="http://saylussapitest.bancplus.in/api/FileUpload?fileName=kyc_{{fileUuid}}"
+                        mode="basic" name="filePath" (onUpload)="onBasicUpload($event, 'kyc')" [auto]="true"
+                        accept="image/*" maxFileSize="500000">
+                      </p-fileUpload> -->
+
+                    <p-fileUpload #fubauto url="{{baseUrl}}/FileUpload?fileName=kyc_{{fileUuid}}" name="filePath"
+                      (onUpload)="onBasicUpload($event, 'kyc')" accept="image/*" maxFileSize="500000">
+                      <ng-template pTemplate="content">
+                        <ul *ngIf="uploadedFiles.length">
+                          <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                        </ul>
+                      </ng-template>
+                    </p-fileUpload>
+                  </div>
+
+                  <div class="p-col-12" *ngIf="editEmpData && editedKyc?.length > 0">
+                    <img [src]="editedKyc" width="100" height="80" />
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

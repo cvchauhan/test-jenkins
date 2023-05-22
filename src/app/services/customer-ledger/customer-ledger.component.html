@@ -1,0 +1,830 @@
+<div class="dashboard">
+    <div class="manage-groups">
+
+
+        <div class="p-grid p-nogutter">
+            <div class="p-md-6">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 p-md-10">
+                        <div class="search">
+                            <!-- <input placeholder="Search" id="search" type="text" pInputText>
+                            <button pButton type="button" icon="pi pi-search" iconPos="left"></button> -->
+
+                            <!-- <p-dropdown [options]="customerListDropdown" optionLabel="cDisplayNm" [(ngModel)]="selectedCustomer" (onChange)="customerDetail($event)" [filter]="true" filterBy="cDisplayNm" [showClear]="true" placeholder="Search"> -->
+                            <p-autoComplete [suggestions]="filteredGroups" field="cPatientNm"
+                                [(ngModel)]="selectedCustomer" (completeMethod)=" filterGroup($event) "
+                                (onSelect)="customerDetail($event)" [filter]="true " placeholder=" Search "
+                                [dropdown]="true " [style]="{width: '30rem'} ">
+                                <ng-template pTemplate="selectedItem ">
+                                    <div class="customer-item customer-item-value " *ngIf="selectedCustomer ">
+                                        <div>{{selectedCustomer.cPatientNm}} </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template let-customer pTemplate="item ">
+                                    <div class="customer-item ">
+                                        <div>{{customer.cDisplayNm}} {{customer.cPatientNm}} ({{customer.cAccHolder}})</div>
+                                    </div>
+                                </ng-template>
+                                <!-- </p-dropdown> -->
+                            </p-autoComplete>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="showCustomerRecord " class="p-col-12">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-12 p-py-0">
+                        <h5 class="p-m-0">Customer Details:</h5>
+                    </div>
+                    <div class="p-md-6">
+                        <p-table [value]="patientDetails" [scrollable]="true" scrollHeight="200px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Patient Id</th>
+                                    <th>Age</th>
+                                    <th>Description</th>
+                                    <th>Diagnosis</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-patient>
+                                <tr>
+                                    <td>{{patient.patientid}}</td>
+                                    <td>{{patient.age}}</td>
+                                    <td>{{patient.description}}</td>
+                                    <td>{{patient.diagnosis}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <div class="p-md-6">
+                        <p-table [value]="customerHistory" [scrollable]="true" scrollHeight="200px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Contact Person</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>District</th>
+                                    <th>State</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-chistroy>
+                                <tr>
+                                    <td>{{chistroy.contactperson}}</td>
+                                    <td>{{chistroy.mobile}}</td>
+                                    <td>{{chistroy.address}}</td>
+                                    <td>{{chistroy.city}}</td>
+                                    <td>{{chistroy.district}}</td>
+                                    <td>{{chistroy.state}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p-tabView>
+            <p-tabPanel header="Job History">
+                <div class="p-grid">
+                    <div class="p-md-7">
+                        <p-table #jhistory [value]="customerJobDetails" [autoLayout]="true" [paginator]="true"
+                            [rows]="rows" [showCurrentPageReport]="true"
+                            [globalFilterFields]="['cJobNo','customerName','patientName','jobstartdate','unit','frequency','rate']"
+                            [rowsPerPageOptions]="[10,20,40,80,120]">
+                            <ng-template pTemplate="caption">
+                                <div class="p-grid  p-jc-end">
+                                    <div class="p-col-9 p-md-5 p-pb-0">
+                                        <div class="search">
+                                            <input placeholder="Search" id="search" type="text"
+                                                (input)="jhistory.filterGlobal($event.target.value,'contains')"
+                                                pInputText>
+                                            <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                        </div>
+
+                                    </div>
+                                    <div class="p-col-3 p-md-7 p-text-right">
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Job No</th>
+                                    <th>Date</th>
+                                    <th>Patient Name</th>
+                                    <th>Frequency</th>
+                                    <th>Rate</th>
+                                    <th>Unit</th>
+                                    <th>Total Service Days</th>
+                                    <th>Unbilled Days</th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-job>
+                                <tr>
+                                    <td>{{job.cjobno}}</td>
+                                    <td>{{job.jobstartdate | dateFormat}}</td>
+                                    <td>{{job.patientname}}</td>
+                                    <td>{{job.frequency}}</td>
+
+                                    <td>{{job.rate}}</td>
+                                    <td>{{job.unit}}</td>
+                                    <td>{{job.totaldays}}</td>
+                                    <td>{{job.notbilldays}}</td>
+                                    <td>
+                                        <button icon="pi pi-pencil"
+                                            class="p-button-raised p-mr-2" (click)="viewJobWithId(job.njobid, 'E', '')" pButton>
+                                        </button>
+                                        <button icon="pi pi-eye" (click)="viewJobHistory(job)"
+                                            class="p-button-raised p-mr-2" pButton></button>
+                                        <button icon="pi pi-copy" class="p-button-raised" (click)="history(job)"
+                                            pTooltip="History" placeholder="Left" pButton></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <button icon="pi pi-eye"
+                                            class="p-button-raised p-mr-2" (click)="viewJobWithId('296', 'T', '')" pButton>
+                                        </button>
+                    </div>
+                    <div class="p-md-5">
+                        <p-table #sevItem [value]="customerServiceItem" [autoLayout]="true" [paginator]="true"
+                            [rows]="rows" [showCurrentPageReport]="true"
+                            [globalFilterFields]="['itemName','nadRate','nadSecurity','nInstallationCharge']"
+                            [rowsPerPageOptions]="[10,20,40,80,120]">
+                            <ng-template pTemplate="caption">
+                                <div class="p-grid  p-jc-end">
+                                    <div class="p-col-9 p-md-7 p-pb-0">
+                                        <div class="search">
+                                            <input placeholder="Search" id="search" type="text"
+                                                (input)="sevItem.filterGlobal($event.target.value,'contains')"
+                                                pInputText>
+                                            <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                        </div>
+
+                                    </div>
+                                    <div class="p-col-3 p-md-5 p-text-right">
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Job No</th>
+                                    <th>Serial No</th>
+                                    <th>Rate</th>
+                                    <th>Security</th>
+                                    <th>Inst. Charge</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item>
+                                <tr>
+                                    <td>{{item.itemname}}</td>
+                                    <td>{{item.cJobNo}}</td>
+                                    <td>{{item.cSerialNo}}</td>
+                                    <td>{{item.nadrate}}</td>
+                                    <td>{{item.nadsecurity}}</td>
+                                    <td>{{item.ninstallationcharge}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Transactions">
+                <div lang="p-grid">
+                    <div class="p-md-12 p-px-0">
+                        <p-tabView>
+                            <p-tabPanel header="Ledger">
+                                <p-table #ledger [value]="customerLedger" [autoLayout]="true" [paginator]="true"
+                                    [rows]="rows" [showCurrentPageReport]="true"
+                                    [globalFilterFields]="['transDate','drAmt','crAmt','description']"
+                                    [rowsPerPageOptions]="[10,20,40,80,120]">
+                                    <ng-template pTemplate="caption">
+                                        <div class="p-grid  p-jc-end">
+                                            <div class="p-col-9 p-md-5 p-pb-0">
+                                                <div class="search">
+                                                    <input placeholder="Search" id="search" type="text"
+                                                        (input)="ledger.filterGlobal($event.target.value,'contains')"
+                                                        pInputText>
+                                                    <button pButton type="button" icon="pi pi-search"
+                                                        iconPos="left"></button>
+                                                </div>
+
+                                            </div>
+                                            <div class="p-col-3 p-md-7 p-text-right">
+
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Debit Amount</th>
+                                            <th>Credit Amount</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-ledger>
+                                        <tr>
+                                            <td>{{ledger.transdate | dateFormat}}</td>
+                                            <td>{{ledger.description}}</td>
+                                            <td>{{ledger.dramt}}</td>
+                                            <td>{{ledger.cramt}}</td>
+                                            <td>{{ledger.runningtotal}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </p-tabPanel>
+                            <p-tabPanel header="Receipt">
+                                <p-table #receipt [value]="customerReceipt" [autoLayout]="true" [paginator]="true"
+                                    [rows]="rows" [showCurrentPageReport]="true"
+                                    [globalFilterFields]="['rcDate','amount','description']"
+                                    [rowsPerPageOptions]="[10,20,40,80,120]">
+                                    <ng-template pTemplate="caption">
+                                        <div class="p-grid  p-jc-end">
+                                            <div class="p-col-9 p-md-5 p-pb-0">
+                                                <div class="search">
+                                                    <input placeholder="Search" id="search" type="text"
+                                                        (input)="receipt.filterGlobal($event.target.value,'contains')"
+                                                        pInputText>
+                                                    <button pButton type="button" icon="pi pi-search"
+                                                        iconPos="left"></button>
+                                                </div>
+
+                                            </div>
+                                            <div class="p-col-3 p-md-7 p-text-right">
+
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-receipt>
+                                        <tr>
+                                            <td>{{receipt.rcdate | dateFormat}}</td>
+                                            <td>{{receipt.description}}</td>
+                                            <td>{{receipt.amount}}</td>
+                                            <td>
+                                                <p-button (click)="downloadPdf(receipt)" icon="pi pi-file-pdf"
+                                                    class="p-button-raised">
+                                                </p-button>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </p-tabPanel>
+                            <p-tabPanel header="Invoice">
+                                <p-table #invoice [value]="customerInvoice" [autoLayout]="true" [paginator]="true"
+                                    [rows]="rows" [showCurrentPageReport]="true"
+                                    [globalFilterFields]="['invoiceNo','invoiceDate','amount']"
+                                    [rowsPerPageOptions]="[10,20,40,80,120]">
+                                    <ng-template pTemplate="caption">
+                                        <div class="p-grid  p-jc-end">
+                                            <div class="p-col-9 p-md-5 p-pb-0">
+                                                <div class="search">
+                                                    <input placeholder="Search" id="search" type="text"
+                                                        (input)="invoice.filterGlobal($event.target.value,'contains')"
+                                                        pInputText>
+                                                    <button pButton type="button" icon="pi pi-search"
+                                                        iconPos="left"></button>
+                                                </div>
+
+                                            </div>
+                                            <div class="p-col-3 p-md-7 p-text-right">
+
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Invoice No</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-invoice>
+                                        <tr>
+                                            <td>{{invoice.invoiceNo}}</td>
+                                            <td>{{invoice.invoiceDate | dateFormat}}</td>
+                                            <td>{{invoice.amount}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </p-tabPanel>
+                        </p-tabView>
+                    </div>
+                </div>
+
+            </p-tabPanel>
+        </p-tabView>
+        <!-- <p-tabView>
+            <p-tabPanel header="Job History">
+                <div *ngIf="showCustomerRecord && customerList.hasOwnProperty('jobDetail')" class="p-grid p-nogutter ">
+
+                    <div class="card">
+                        <p-table [value]="jobDetails"  dataKey="name" [scrollable]="true" scrollHeight="350px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th></th>
+                                    <th pSortableColumn="description">Description<p-sortIcon field="description"></p-sortIcon></th>
+                                    <th pSortableColumn="rate">Rate<p-sortIcon field="rate"></p-sortIcon></th>
+                                    <th pSortableColumn="frequency">Frequency<p-sortIcon field="frequency"></p-sortIcon></th>
+                                    <th pSortableColumn="securityAmt">Security Amount<p-sortIcon field="securityAmt"></p-sortIcon></th>
+                                    <th pSortableColumn="type">Type<p-sortIcon field="type"></p-sortIcon></th>
+                                    <th pSortableColumn="status">Status<p-sortIcon field="status"></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+        
+                            <ng-template pTemplate="body" let-customer let-rowIndex="rowIndex" let-expanded="expanded">
+                                
+                                    <tr *ngIf="rowGroupMetadata[customer.name].index === rowIndex" [ngClass]="expanded?'exp-active':''">
+                                        <td colspan="7">
+                                            <button type="button" pButton pRipple [pRowToggler]="customer" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                            <span class="group_id">SMH001</span>
+                                            <span class="p-text-bold p-ml-2">{{customer.name}}</span>
+                                        </td>
+                                    </tr>
+                            </ng-template>
+        
+                       
+        
+                                <ng-template pTemplate="rowexpansion" let-customer>
+                                    <tr class="onelebel-active" [ngClass]="customer.viewDetails ?'twolebel-active':''">
+                                        <td>
+                                            {{customer.nJobdId}}
+                                            <i *ngIf="customer.srvPoint && customer.srvPoint.length > 0" (click)="customer.viewDetails = !customer.viewDetails" [ngClass]="customer.viewDetails ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                        </td>
+                                        <td>
+                                            {{customer.description}}
+                                        </td>
+                                        <td>
+                                            {{customer.rate}}
+                                        </td>
+                                        <td>
+                                            {{customer.frequency}}
+                                        </td>
+                                        <td>
+                                            {{customer.securityAmt}}
+                                        </td>
+                                        <td>
+                                            {{customer.type}}
+                                        </td>
+                                        <td>
+                                            {{customer.status}}
+                                        </td>
+                                    </tr>
+        
+                                    <ng-container *ngTemplateOutlet="extensiontemplate; context: customer"></ng-container>
+                                    <ng-template #extensiontemplate>
+                                        <ng-container *ngIf="customer.viewDetails">
+                                            <tr class="threelebel-active" *ngFor="let item of customer.srvPoint">
+                                                <td>
+                                                    {{item.nJobdid}}               
+                                                </td>
+                                                <td>
+                                                    {{item.srvPoint}}
+                                                </td>
+                                                <td>{{item.rate}}</td>
+                                                <td>{{item.nJobFrq}}</td>
+                                                <td>{{item.nadSecurity}}</td>
+                                                <td>SRV POINT</td>
+                                                <td></td>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-template>
+        
+                                </ng-template>
+                       
+                        </p-table>
+                    </div>
+        
+        
+        
+        
+        
+        
+                    <div class="p-md-2">
+                        <p-dropdown [options]="manage" placeholder="Select" class="manage-ledger"
+                            (onChange)="manageDialog($event)" optionLabel="name"></p-dropdown>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Transactions">
+                <div *ngIf="showCustomerRecord " class="p-grid p-nogutter ">
+                    <p-tabView>
+                        <p-tabPanel header="Receipts ">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th pSortableColumn="rcDate">Date<p-sortIcon field="rcDate"></p-sortIcon></th>
+                                        <th pSortableColumn="description">Description<p-sortIcon field="description"></p-sortIcon></th>
+                                        <th pSortableColumn="amount">Amount<p-sortIcon field="amount"></p-sortIcon></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of customerList.receipts; let i=index;">
+                                        <td>{{i+1}}</td>
+                                        <td>{{product.rcDate | dateFormat}}</td>
+                                        <td>{{product.description}}</td>
+                                        <td>{{product.amount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                           
+                        </p-tabPanel>
+                        <p-tabPanel header="Invoice ">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Date<p-sortIcon field=""></p-sortIcon></th>
+                                        <th>Invoice<p-sortIcon field=""></p-sortIcon></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of customerList.invoice; let i=index;">
+                                        <td>{{i+1}}</td>
+                                        <td>{{product.invoiceDate | dateFormat}}</td>
+                                        <td>{{product.amount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                           
+                        </p-tabPanel>
+                        <p-tabPanel header="Ledger ">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Date<p-sortIcon field=""></p-sortIcon></th>
+                                        <th>Description<p-sortIcon field=""></p-sortIcon></th>
+                                        <th>DrAmount<p-sortIcon field=""></p-sortIcon></th>
+                                        <th>CrAmount<p-sortIcon field=""></p-sortIcon></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of customerList.ledger; let i=index;">
+                                        <td>{{i+1}}</td>
+                                        <td>{{product.transDate | dateFormat}}</td>
+                                        <td>{{product.description}}</td>
+                                        <td>{{product.drAmt}}</td>
+                                        <td>{{product.crAmt}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+            </p-tabPanel>
+        </p-tabView> -->
+
+
+        <div class="p-grid p-nogutter ">
+            <div class="p-md-12 ">
+                <button pButton type="button " label="Receipt "></button>
+                <button pButton type="button " label="Payments " class="p-mx-1 "></button>
+                <button pButton type="button " label="Journal " class="p-mr-1 "></button>
+                <button pButton type="button " label="Cancel "></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- More address popup -->
+<p-dialog header="Address " [(visible)]="moreAddressDialog " [style]="{width: '50vw'} ">
+    <div class="p-grid ">
+        <div class="p-md-6 " *ngFor="let custDetail of customerList.addressDetail ">
+            <div class="p-grid p-nogutter ">
+                <div class="p-md-3 p-p-0 ">
+                    <label>Customer:</label>
+                </div>
+                <div class="p-md-9 p-p-0 ">
+                    <h6 class="p-m-0 ">{{custDetail.contactperson}}</h6>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter ">
+                <div class="p-md-3 p-p-0 ">
+                    <label>Mobile:</label>
+                </div>
+                <div class="p-md-9 p-p-0 ">
+                    <h6 class="p-m-0 ">{{custDetail.mobile}}</h6>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter ">
+                <div class="p-md-3 p-p-0 ">
+                    <label>Address:</label>
+                </div>
+                <div class="p-md-9 p-p-0 ">
+                    <h6 class="p-m-0 ">{{custDetail.address}}, {{custDetail.district}}, {{custDetail.state}}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Manage History Dialog -->
+<p-dialog header="Manage History" [(visible)]="displayServiceHistory" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false">
+
+    <p-table [value]="manageHistoryData" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>SNo</th>
+                <th>Emp Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-history let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{history.empName}}</td>
+                <td>{{history.sDate | dateFormat}}</td>
+                <td>{{history.eDate}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</p-dialog>
+
+<!-- Job Closer Request Dialog -->
+<p-dialog header="Job Closer Request" [(visible)]="displayCloseRequest" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false">
+
+    <p-table [value]="manageHistoryData" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>SNo</th>
+                <th>Emp Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-history let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{history.empName}}</td>
+                <td>{{history.sDate | dateFormat}}</td>
+                <td>{{history.eDate}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</p-dialog>
+
+<!-- Patient Data Dialog -->
+<p-dialog header="Patient Data" [(visible)]="displayPatientData" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false">
+
+    <p-table [value]="manageHistoryData" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>SNo</th>
+                <th>Emp Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-history let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{history.empName}}</td>
+                <td>{{history.sDate | dateFormat}}</td>
+                <td>{{history.eDate}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</p-dialog>
+
+<!-- View job History based on Jobid -->
+<p-dialog header="{{empJobNo}} - {{empJobStartDate | dateFormat}}" [(visible)]="displayJobHistory" [modal]="true"
+    [style]="{width: '50vw'}">
+    <p-table [value]="jobHistoryData" responsiveLayout="scroll" [autofLayout]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>SNo</th>
+                <th>Created Date</th>
+                <th>Task</th>
+                <th>Task Data</th>
+                <th>Done By</th>
+                <th>Images</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-history let-index="rowIndex">
+            <tr>
+                <td>{{index+1}}</td>
+                <td>{{history.dCreatedate | dateFormat}}</td>
+                <td>{{history.taskNm}}</td>
+                <td>{{history.cTskData}}</td>
+                <td>{{history.userName}}</td>
+                <td><img src="../../../assets/images/profile.png" alt="" width="60" height="60"></td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</p-dialog>
+
+<!-- Job receipt pdf download -->
+
+<p-dialog header="Receipt" [(visible)]="jobReceiptPDF" [style]="{width: '80vw'}" [baseZIndex]="10000" [modal]="true"
+    [draggable]="false" [resizable]="false">
+
+    <div class="p-grid p-nogutter">
+        <div class="p-md-12 p-text-center">
+            <button type="button" label="Print" (click)="generatePDF()" pButton></button>
+        </div>
+    </div>
+    <div id="contentToConvert" class="contentToConvert">
+        <table style="width: 100%;table-layout: fixed;">
+            <tbody>
+                <tr>
+
+                    <td style="width: 10%">
+                        <img src="../../../assets/images/logo.png" width="130px" alt="">
+                    </td>
+                    <td style="width:90%;text-align:center;font-size: 16px;color: #000;padding-right: 130px;">
+                        <h2 style="text-transform: uppercase;margin: 0 0 6px;">Sayluss Medicare (P) Ltd</h2>
+                        <h4 style="margin: 0 0 6px;">201, Golden Heights,</h4>
+                        <h4 style="margin: 0 0 6px;">Moksh Marg,Udaipur(raj.) -313001</h4>
+
+                        <h4 style="margin: 0 0 6px;">Ph: 76655-45555</h4>
+                        <h4 style="margin: 0 0 6px;">Email: <a
+                                href="mailto:info@saylussmedicare.com">info@saylussmedicare.com</a></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <h1 style="font-size: 24px;color: #000;margin-bottom: 30px;">RECEIPT</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <div style="text-align: left;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize; color: #999595;display: inline-block;padding: 0 10px;">
+                                            RECEIVED FROM: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['name']}}</span>
+                                        </h3>
+                                    </div>
+                                    <div style="text-align: left;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            PAYMENT DATE: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['vrDate']
+                                                | dateFormat}}</span></h3>
+                                    </div>
+
+                                </td>
+                                <td style="text-align: right;width:50%">
+                                    <div style="text-align: right">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            JOB NO: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['jobNo']}}</span>
+                                        </h3>
+                                    </div>
+                                    <div style="text-align: right;">
+
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            RECEIPT NO: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['receiptNo']}}</span>
+                                        </h3>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!-- <tr>
+                    <td style="font-size: 16px;color: #000;padding-top: 10px;">
+                        <h4 style="text-transform: uppercase;margin: 0 0 6px;">{{pdfDat['name']}}</h4>
+                        
+                        <h4 style="margin: 0 0 6px;">{{pdfDat['address']}}</h4>
+                        <h4 style="margin: 0 0 6px;">{{pdfDat['mobile']}}</h4>
+                        
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;margin:0;border:1px solid #666;border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: lightcyan;font-size: 16PX;">
+                                    <th style="padding: 10px 0;">DESCRIPTION</th>
+                                    <!-- <th style="padding: 10px 0;border-left: 1px solid #666;">TYPE</th> -->
+                                    <th style="padding: 10px 0;border-left: 1px solid #666;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="font-size: 15px;color: #000;"
+                                    *ngFor="let item of pdfDat['itemDescriptions']">
+                                    <td style="padding:5px 5px;font-size: 13px">{{item['itemName']}}</td>
+                                    <!-- <td style="padding:10px 0;text-align: center;border-left: 1px solid #666;">RENTAL</td> -->
+                                    <td style="padding:5px 5px;text-align: right;border-left: 1px solid #666;">
+                                        {{item['amount']}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;margin: 20PX 0 0;border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: lightcyan;font-size: 16PX;">
+                                    <th style="padding: 10px 0;">PAYMENT MODE</th>
+                                    <th style="padding: 10px 0;">Naration</th>
+                                    <th style="padding: 10px 0;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="font-size: 15px;color: #000;" *ngFor="let pay of pdfDat['jobReceipts']">
+                                    <td style="padding:10px 5px">{{pay['docType']}}</td>
+                                    <td style="padding:10px 0;text-align: center;">{{pay['narration']}}</td>
+                                    <td style="padding:10px 5px;text-align: right;">{{pay['amount']}}</td>
+                                </tr>
+
+                                <tr style="font-size: 14px;color: #000;border:1px solid #666">
+                                    <td style="padding: 5px;">In words:</td>
+
+                                    <td colspan="2" style="padding: 5px;">{{totalAmountPdfWord}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5 style="font-size: 15px;color: #000;margin:0 0 20px">Terms</h5>
+                        <p style="font-size: 14px;color: #000;margin: 0;">1. Term</p>
+                        <p style="font-size: 14px;color: #000;margin: 0">2. Term</p>
+                        <p style="font-size: 14px;color: #000;margin: 0">3. Term</p>
+                    </td>
+                    <td style="text-align: right;">
+                        <h3 style="font-size: 22px;color: #000;padding-bottom: 40px;margin:0">For Sayluss Medicare (p)
+                            Ltd.</h3>
+                        <h5 style="font-size: 15px;color: #000;margin: 0;">(Authorised Signatory)</h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</p-dialog>
+
+<!-- Full calendar dialog -->
+
+<div  *ngIf="fullCalendar && calenderData.length" class="caelndar-popup">
+
+    <!-- <div class="calendar-wrraper">
+        <button pButton pRipple type="button" icon="pi pi-times" (click)="closeCalendar()" class="close p-button-rounded p-button-danger p-button-outlined"></button>
+        <app-full-calendar></app-full-calendar>
+    </div> -->
+
+    <div class="calendar-wrraper">
+        <div class="custom-header">
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-text-right">
+                    <button pButton pRipple type="button" icon="pi pi-times" (click)="closeCalendar()"
+                        class="close"></button>
+                </div>
+            </div>
+        </div>
+        <p-tabView [(activeIndex)]="index">
+            <p-tabPanel header="History">
+                <h3>{{fcalJobNo}}  - {{fcalPatientName}}</h3>
+                <app-full-calendar [calendarData]="calenderData" (newItemEvent)="getEventItem($event)">
+                </app-full-calendar>
+            </p-tabPanel>
+            <p-tabPanel header="List">
+                <div class="list-data" *ngFor="let item of eventLists">
+                    <h4>{{item.eventDate}}</h4>
+                    <p>{{item.title}}</p>
+                    <p>{{item.mobile}}</p>
+                    <p>{{item.dstartDate}}</p>
+                    <p>{{item.dendDate}}</p>
+                    <p>{{item.latLng}}</p>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+
+    </div>
+</div>

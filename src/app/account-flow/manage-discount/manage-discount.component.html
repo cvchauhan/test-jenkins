@@ -1,0 +1,72 @@
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-md-1">
+            <label>Select Role</label>
+        </div>
+        <div class="p-md-2">
+            <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-1">
+            <label>Branch</label>
+        </div>
+        <div class="p-md-2">
+            <p-multiSelect placeholder="Select Branch" [options]="branchData" optionLabel="txt" optionValue="val"></p-multiSelect>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-1">
+            <label>Category</label>
+        </div>
+        <div class="p-md-2">
+            <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-1">
+            <label>Sales Mode</label>
+        </div>
+        <div class="p-md-2">
+            <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-1">
+            <label>Discount Limit</label>
+        </div>
+        <div class="p-md-2">
+            <input type="text" pInputText>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-1"></div>
+        <div class="p-md-2">
+            <button type="submit" label="Save" pButton></button>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-12">
+            <p-table [value]="products">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Role</th>
+                        <th>Category</th>
+                        <th>Sales Mode</th>
+                        <th>Discount Limit(%)</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

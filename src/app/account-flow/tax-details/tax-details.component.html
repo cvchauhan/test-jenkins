@@ -1,0 +1,373 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+    <div class="manage-groups">
+        <div class="p-grid p-nogutter">
+            <label class="p-md-1">Entry Mode</label>
+            <div class="p-md-3">
+                <p-dropdown placeholder="Item/Service skills" [options]="entryMode" optionLabel="name"
+                    optionValue="valName" (onChange)="onEntryModeChange($event)" [(ngModel)]="srvmodeId"></p-dropdown>
+            </div>
+        </div>
+        <div *ngIf="showItem" class="p-grid p-nogutter">
+            <label class="p-md-1">Select Item(s)</label>
+            <div class="p-md-3">
+                <p-dropdown [options]="entryModeItem" (onChange)="onchangeSelectedItem($event)" optionLabel="cItemNm"
+                    optionValue="nItemid" placeholder="Select Item" [(ngModel)]="itemId">
+                </p-dropdown>
+            </div>
+        </div>
+        <div *ngIf="showService">
+            <div class="p-grid p-nogutter">
+                <label class="p-md-1">Service</label>
+                <div class="p-md-3">
+                    <p-dropdown placeholder="SELECT" [options]="serviceData"
+                        (onChange)="onchangeSelectedService($event)" optionLabel="txt" optionValue="val"
+                        [(ngModel)]="srvId"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <label class="p-md-1">Services Skills</label>
+                <div class="p-md-3">
+                    <p-dropdown placeholder="SELECT" [options]="sSkills"
+                        (onChange)="onchangeSelectedServiceSkills($event)" optionLabel="name" optionValue="serialNo"
+                        [(ngModel)]="srvSkill"></p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-12">
+
+                <p-table #tax [value]="taxDetailList"
+                    [globalFilterFields]="['cHsn','cSalesMode','nTaxClass','nTaxType','nTaxRate','cInputAccCode','cOutputAccCode']"
+                    [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+                    [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10,20,40,80,120]" [scrollable]="true" scrollHeight="400px">
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search"
+                                        (input)="tax.filterGlobal($event.target.value,'contains')" type="text"
+                                        pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+
+                            </div>
+                            <div class="p-col-3 p-md-2 p-text-right">
+                                <button pButton type="button" [disabled]="!enableBtn" icon="pi pi-plus" iconPos="left"
+                                    (click)="addTaxDetail()"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th [ngStyle]="{'width':'30px'}">SNo</th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="dEffectDt">Effect Date<p-sortIcon field="dEffectDt"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="srvName">Service<p-sortIcon field="srvName">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'200px'}" pSortableColumn="serviceSkill">Skill / Item<p-sortIcon field="serviceSkill">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="cHsn">HSN<p-sortIcon field="cHsn"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="cSalesMode">Mode<p-sortIcon field="cSalesMode"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="nTaxClass">Tax Class<p-sortIcon field="nTaxClass"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="nTaxType">Tax Type<p-sortIcon field="nTaxType"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'100px'}" pSortableColumn="nTaxRate">Tax Rate<p-sortIcon field="nTaxRate"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="cInputAccCode">Input Ledger<p-sortIcon field="cInputAccCode">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="cOutputAccCode">Output Ledger<p-sortIcon field="cOutputAccCode">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="cSalesLedger">SalesLedger<p-sortIcon field="cSalesLedger"></p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'150px'}" pSortableColumn="cPurchaseLedger">PurchaseLedger<p-sortIcon field="cPurchaseLedger">
+                                </p-sortIcon>
+                            </th>
+                            <th [ngStyle]="{'width':'50px'}">Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-tax let-i="rowIndex">
+                        <tr>
+                            <td class="break-word" [ngStyle]="{'width':'30px'}">
+                                {{i+1}}
+
+                            </td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.dEffectDt | dateFormat}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'150px'}">{{tax.srvName}} </td>
+                            <td class="break-word" [ngStyle]="{'width':'200px'}">{{tax.serviceSkill}} {{tax.itemName}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.cHsn}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.cSalesMode}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.nTaxClass}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.taxType}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'100px'}">{{tax.nTaxRate}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'150px'}">{{tax.cInputAccCode}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'150px'}">{{tax.cOutputAccCode}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'150px'}">{{tax.cSalesLedger}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'150px'}">{{tax.cPurchaseLedger}}</td>
+                            <td class="break-word" [ngStyle]="{'width':'50px'}">
+                                <p-button icon="pi pi-pencil" (click)="editDetails(tax)" class="p-button-raised">
+                                </p-button>
+                                <p-button icon="pi pi-trash" (click)="delTax(tax.nTaxid)"
+                                    class="p-button-raised p-button-danger p-ml-2"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add tax detail list  -->
+<p-dialog class="manage-ledger" header="{{popupTaxheader}}" [(visible)]="displayTaxDetail" [modal]="true"
+    [style]="{width: '55vw'}" [baseZIndex]="10000">
+    <form [formGroup]="taxDetailForm" (ngSubmit)="onSubmit()">
+        <div class="p-grid p-nogutter">
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="">Effect Date </label>
+                    <div class="p-md-7 p-pl-1">
+                        <p-calendar formControlName="dEffectDt" dateFormat="dd-mm-yy"></p-calendar>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="">Tax Class</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="nTaxClass"  pInputText />
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-5">Sale Mode</label>
+                    <div class="p-md-7">
+                        <p-dropdown appendTo="body" formControlName="cSalesMode" placeholder="Sale Mode"
+                            [options]="salesModes" (onChange)="onSalesMOde($event)" optionLabel="name"
+                            optionValue="value"></p-dropdown>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">HSN</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="cHsn" pInputText />
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-5">Tax Type</label>
+                    <div class="p-md-7">
+                        <p-dropdown appendTo="body" formControlName="nTaxType" placeholder="Tax Type"
+                            [options]="taxTypeData" (onChange)="onTaxType($event)" optionLabel="codeName" optionValue="serialNo"></p-dropdown>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Tax Rate</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="nTaxRate" [appInputDisabled]='enableTaxRate' pInputText />
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Input Tax Ledger</label>
+                    <div class="p-md-7">
+                        <p-autoComplete id="state"  [suggestions]="filteredGroups"
+                            (completeMethod)="filterGroup()" field="cLedgerNm" [minLength]="1"
+                            formControlName="cInputAccCode" [dropdown]="true">
+                        </p-autoComplete>
+                        <!-- <input type="text" *ngIf="isEdit==true" formControlName="cInputAccCode" pInputText /> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Output Tax Ledger</label>
+                    <div class="p-md-7">
+                        <p-autoComplete id="state"  [suggestions]="filteredGroups"
+                            (completeMethod)="filterGroup()" field="cLedgerNm" [minLength]="1"
+                            formControlName="cOutputAccCode" [dropdown]="true">
+                        </p-autoComplete>
+                        <!-- <input type="text" *ngIf="isEdit==true" formControlName="cOutputAccCode" pInputText /> -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Purchase Ledger</label>
+                    <div class="p-md-7">
+                        <p-autoComplete id="state" appendTo="body"  [disabled]='purchaseDropdown'
+                            [suggestions]="filteredPurchase" (completeMethod)="filterPurchase()" field="cLedgerNm"
+                            [minLength]="1" formControlName="cPurchaseLedger" [dropdown]="true"></p-autoComplete>
+                        <!-- <input type="text" [appInputDisabled]='purchaseDropdown' *ngIf="isEdit==true"  formControlName="cPurchaseLedger" pInputText /> -->
+                        <!-- <input type="text" [disabled]='purchaseDropdown'   pInputText />
+                        <input [disabled]='purchaseDropdown' > -->
+
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Sales Ledger</label>
+                    <div class="p-md-7">
+                        <p-autoComplete id="state" appendTo="body" [disabled]="saleseDropdown"
+                            [suggestions]="filteredSales" (completeMethod)="filterSales()" field="cLedgerNm"
+                            [minLength]="1" formControlName="cSalesLedger" [dropdown]="true"></p-autoComplete>
+                        <!-- <input type="text" *ngIf="isEdit==true" formControlName="cSalesLedger" [appInputDisabled]='saleseDropdown'
+                            pInputText /> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="p-md-2">
+                <button pButton type="button" label="Add"></button>
+            </div> -->
+
+
+
+            <!-- <div class="">
+            <div class="p-col-12 p-mt-3">
+                <p-table [value]="">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th>Bank Name</th>
+                            <th>Branch</th>
+                            <th>District</th>
+                            <th>IFSC Code</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-pdata>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>{{pdata.cBank}}</td>
+                            <td>{{pdata.cBranch}}</td>
+                            <td>{{pdata.cDistrict}}</td>
+                            <td>{{pdata.cifsc}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div> -->
+            <div class="p-col-12 text-left">
+                <p-button type="submit" label="{{ isEdit==true ? 'Update' : 'Save'}}" class="p-button-text"></p-button>
+            </div>
+
+        </div>
+    </form>
+    <!-- <ng-template pTemplate="footer">
+    <p-button type="submit" (click)="displayBasic=false" label="Save" class="p-button-text"></p-button>
+  </ng-template> -->
+</p-dialog>
+
+<!-- Add tax detail list  -->
+<!-- <p-dialog class="manage-ledger" header="Edit Tax Details - # Items" [(visible)]="editTaxDetail" [modal]="true"
+    [style]="{width: '55vw'}" [baseZIndex]="10000">
+    <form [formGroup]="taxDetailForm" (ngSubmit)="onSubmit()">
+        <div class="p-grid p-nogutter">
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="">Effect Date </label>
+                    <div class="p-md-7 p-pl-1">
+                        <p-calendar formControlName="dEffectDt" dateFormat="dd-mm-yy"></p-calendar>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="">Tax Class</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="nTaxClass" pInputText />
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-5">Sale Mode</label>
+                    <div class="p-md-7">
+                        <p-dropdown appendTo="body" formControlName="cSalesMode" placeholder="Sale Mode"
+                            [options]="salesModes" optionLabel="name" optionValue="value"></p-dropdown>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">HSN</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="cHsn" pInputText />
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter">
+                    <label class="p-md-5">Tax Type</label>
+                    <div class="p-md-7">
+                        <p-dropdown appendTo="body" formControlName="nTaxType" placeholder="Tax Type"
+                            [options]="taxTypeData" optionLabel="codeName" optionValue="serialNo"></p-dropdown>
+                    </div>
+
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Tax Rate</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="nTaxRate" pInputText />
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Input Tax Ledger</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="cInputAccCode" pInputText />
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <label class="p-md-5" for="middle">Output Tax Ledger</label>
+                    <div class="p-md-7">
+                        <input type="text" formControlName="cOutputAccCode" pInputText />
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 text-left">
+                <p-button type="submit" label="Update" class="p-button-text"></p-button>
+            </div>
+
+        </div>
+    </form>
+</p-dialog> -->

@@ -1,0 +1,298 @@
+<p-toast></p-toast>
+<div class="dashboard">
+  <div class="p-grid">
+    <div class="p-md-3">
+      <div class="p-grid">
+        <label class="p-col-fixed">Branch</label>
+        <div class="p-col">
+          <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt" optionValue="val" inputId="priority"
+            [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-2">
+      <button type="button" label="View" (click)="viewData()" pButton></button>
+    </div>
+
+  </div>
+  <div class="p-grid p-no-gutter">
+    <div class="p-col-12">
+      <p-table #clouser [value]="pendingTabelData" [autoLayout]="true" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[15,25,40,80,120]"
+        [globalFilterFields]="['branchId','CJobNo','srvCategory','billMode','cCustNm','Mobileno','dJobDate','Accountname','Address','ItemDelivery','cStatus']" scrollHeight="350px">
+        <ng-template pTemplate="caption">
+          <div class="p-grid p-mt-3">
+            <div class="p-col-9 p-md-5">
+              <div class="search">
+                <input placeholder="Search" id="search" type="text"
+                  (input)="clouser.filterGlobal($event.target.value,'contains')" pInputText>
+                <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+              </div>
+            </div>
+            <div class="p-col-3 p-md-7 p-text-right">
+              <!-- <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showDialog()"
+                                class="btn-plus"></button> -->
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>SNo</th>
+            <th pSortableColumn="CJobNo">Job No<p-sortIcon field="CJobNo"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dJobDate">Job Date<p-sortIcon field="dJobDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="Accountname">Customer<p-sortIcon field="Accountname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="Mobileno">Mobile<p-sortIcon field="Mobileno"></p-sortIcon>
+            </th>
+            <th pSortableColumn="Address">Address<p-sortIcon field="Address"></p-sortIcon>
+            </th>
+            <th pSortableColumn="ItemDelivery">Item Delivery<p-sortIcon field="ItemDelivery"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cStatus">Payment Status<p-sortIcon field="cStatus"></p-sortIcon>
+            </th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowIndex="rowIndex" let-data>
+          <tr>
+            <td>{{rowIndex + 1}}</td>
+            <td>{{data.CJobNo}}</td>
+            <td>{{data.dJobDate | dateFormat}}</td>
+            <td>{{data.Accountname}}</td>
+            <td>{{data.Mobileno}}</td>
+            <td>{{data.Address}}</td>
+            <td>{{data.ItemDelivery}}</td>
+            <td>{{data.cStatus}}</td>
+            <td><button type="button" label="View" (click)="viewPendingIssue(data)" class="p-mr-2" pButton></button>
+              <button type="button" (click)="showIssue(data)" label="Issue" pButton></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr *ngIf="manageJobData > 0">
+            <td colspan="9">There Is No Data Found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<!-- View Pending Items -->
+<p-dialog header="Pending Stock Item" [modal]="true" [(visible)]="viewPendingDisplay" [style]="{width: '40vw'}">
+  <p-table [value]="pendingTabelData1" [autoLayout]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Item Id</th>
+        <th>Item Name</th>
+        <!-- <th>Job Id</th> -->
+        <th>Approved Qty</th>
+        <th>Customer In Hand</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-data>
+      <tr>
+        <td>{{data.nItemid}}</td>
+        <td>{{data.cItemNm}}</td>
+        <!-- <td>{{data.njobdid}}</td> -->
+        <td>{{data.ApproveQty}}</td>
+        <td>{{data.StockQty}}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+	
+
+</p-dialog>
+
+
+<!-- for Item issue -->
+<p-dialog header="Add Issue" class="stock-issue" [(visible)]="issueDialog" [modal]="true" [style]="{width: '70vw'}"
+  [baseZIndex]="1000" (onHide)="onHide()">
+
+  <div class="p-col-12 p-md-12">
+    <form [formGroup]="issueForm" (ngSubmit)="addIssueItem()">
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar [showIcon]="true" placeholder="Select Date" formControlName="dStkDate"
+            (onSelect)="onSelectDate($event)" dateFormat="dd-mm-yy"></p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Issue To</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="issue" optionLabel="name" placeholder="Select"
+            (onChange)="onIssueChange($event)" formControlName="issueTo"></p-dropdown>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Branch</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+            formControlName="issueBranch" (onChange)="onIssueBranchChange($event)"></p-dropdown>
+        </div>
+
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Job Number</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <!-- <span class="p-w-100 p-input-icon-right">
+            <i class="pi pi-search"></i>
+            <p-autoComplete formControlName="nJobid" [(ngModel)]="jobModel" id="customer"
+              [suggestions]="jobData" (completeMethod)="searchJobIssueData($event)"
+              placeholder="Search Jobs by Job Number" field="cJobNo" [ngModelOptions]="{standalone: true}"
+              (onSelect)="selectJob($event)">
+            </p-autoComplete>
+          </span> -->
+          <input type="text" pInputText formControlName="nJobid" (blur)="getIssueJobno($event)">
+        </div>
+        <div *ngIf="showCustomerIssue" class="p-col-1 p-md-1"><label for="">Customer</label></div>
+        <div *ngIf="showCustomerIssue" class="p-col-4 p-md-3">
+          <!-- <p-dropdown [options]="customerData" optionLabel="cDisplayNm" placeholder="Select Customer"
+            optionValue="nAcid" formControlName="nAcid"></p-dropdown> -->
+          <!-- <p-autoComplete [suggestions]="customerData" (completeMethod)="searchCustomerIssueData()" field="cDisplayNm" [minLength]="1" formControlName="nAcid" [dropdown]="true"
+                        ></p-autoComplete> -->
+
+          <input type="text" pInputText placeholder="Customer" formControlName="nAcid" disabled>
+        </div>
+        <div *ngIf="showEmployeeIssue" class="p-col-1 p-md-1"><label for="">Employee</label></div>
+        <div *ngIf="showEmployeeIssue" class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" [options]="employeeData" optionLabel="cEmpName" optionValue="nEmpId"
+            placeholder="Select Employee" formControlName="nEmpid"></p-dropdown>
+
+          <!-- <input type="text" pInputText placeholder="Autocomplete, from Account Master where Group Type nodeid=5"
+            formControlName="cCustomer"> -->
+        </div>
+      </div>
+      <div *ngIf="showIssueEmpItems">
+        <div formGroupName="createIssueItem" class="repeatedForm">
+          <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-1"><label for="">Item</label></div>
+            <div class="p-col-5 p-md-5">
+              <p-dropdown appendTo="body" placeholder="Select Item" [options]="items" optionLabel="cItemNm"
+                formControlName="nItemid">
+              </p-dropdown>
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Serial NO</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText placeholder="Autocomplete" formControlName="cSerialNo">
+            </div>
+            <div class="p-col-1 p-md-1"><label for="">Quantity</label></div>
+            <div class="p-col-5 p-md-5">
+              <input type="text" pInputText formControlName="nQty">
+            </div>
+            <div class="p-col-6 p-md-6 p-text-right">
+              <button pButton type="button" (click)="addIssueDetails()" label="Add more"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="isCustDelivery" class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-1 p-md-1"><label for="">Delivery Date</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-calendar [showIcon]="true" placeholder="Select Date" formControlName="dDeliDate"
+            (onSelect)="onSelectDeliveryDate($event)" [disabled]="isDeliveryPermited" dateFormat="dd-mm-yy">
+          </p-calendar>
+        </div>
+        <div class="p-col-1 p-md-1"><label for="">Delivered By</label></div>
+        <div class="p-col-4 p-md-3">
+          <p-dropdown appendTo="body" #deliveredBy [filter]="true"
+          [placeholder]="issueForm.get('nDelivered').value ? newEmpName :'Select Delivered By'"
+           [showClear]="true" (onChange)="onChangeDeliverBy($event, deliveredBy)" [options]="employeeData"
+            optionLabel="empName" optionValue="nEmpid"  formControlName="nDelivered"
+            [disabled]="isDeliveryPermited"></p-dropdown>
+        </div>
+      </div>
+
+      <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-12 p-md-12" *ngIf="showGrid">
+          <p-table [value]="empTableQty" [autoLayout]="true" [scrollable]="true" scrollHeight='flex'>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th style="width: 2.25em">#</th>
+                <th style="width: 16.25em">Items</th>
+
+                <th>Approved Quantity</th>
+                <th>Customer in Hand</th>
+                <th>Stock Balance</th>
+                <th>Qty</th>
+                <th>Serialize Added</th>
+                <th>Serialized</th>
+                <!-- <th>GST</th>
+
+            <th>Amount</th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td style="width: 2.25em">
+                  {{i+1}}
+                </td>
+                <td style="width: 16.25em">{{item?.itemName}}</td>
+                <td>{{item?.approveItemQty}}</td>
+                <td>{{item?.customerInHand}}</td>
+                <td>{{item?.stockBalance}}</td>
+                <td><input type="text" (keyup)="nQuanty(item,$event,i)" pInputText [value]="item?.nQty"
+                    [disabled]="(item?.cSrlzd == 'True' || item.stockBalance < 1) || ((item?.approveItemQty-item?.customerInHand)<=0)" />
+                  <p *ngIf="item?.qntyWrong" class="danger">Quantity is more than Approved Quantity</p>
+                </td>
+                <td></td>
+                <td>
+
+                  <ng-container *ngIf="item?.cSrlzd == 'True' && (item?.stockBalance >= item?.approveItemQty)">
+                    <!-- {{item | json}} -->
+                    <!-- <p-chips  separator="," (onAdd)="addChips($event, item.nItemid,i,item?.approveItemQty)" (onRemove)="removeChips($event, item.nItemid,i,item?.approveItemQty)"></p-chips>
+                       -->
+                    <!-- <button  type="button" label="Add Serial Number" (click)="addSerialized(item,i)" pButton></button> -->
+                    <p-multiSelect appendTo="body" [options]="item.stockInHand"
+                      [disabled]="item.stockBalance < 1 || (item.approveItemQty - item.customerInHand  < 1)"
+                      (onChange)="onChangeSerialized($event,item,i)" optionLabel="cSerialNo" optionValue="cSerialNo">
+                    </p-multiSelect>
+                    <span *ngIf="item?.isError" style="color:red;">You are selecting more than approved </span>
+
+                  </ng-container>
+
+                  <ng-container *ngIf="item?.cSrlzd == 'False' || (item?.approveItemQty > item?.stockBalance) ">
+                    <span>Serialization is not available</span>
+                  </ng-container>
+
+                </td>
+                <!-- <td>{{item?.gst}}</td>
+            <td>{{item?.amount}}</td> -->
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      <div class="p-grid p-nogutter grid-gutter p-mt-2">
+        <div class="p-col-12 p-md-12 p-p-0">
+          <!-- <button pButton type="submit" label="Save"></button> -->
+          <span *ngIf="showSerializedErr" style="color: red;"> No of Serialization is more than Approved Quantity</span>
+          <button pButton type="button" (click)="showOTPDialog()" [disabled]="!saveButtonEnabled"
+            label="Save"></button>&nbsp;
+          <!-- <button pButton type="button" (click)="issuePrint()" label="Print"></button> -->
+        </div>
+      </div>
+
+    </form>
+  </div>
+</p-dialog>
+
+<!-- OTP dialog -->
+<p-dialog header="OTP" [(visible)]="otpDialog" [style]="{width: '20vw'}" [modal]="true" [baseZIndex]="10000">
+  <div class="p-grid p-nogutter grid-gutter">
+    <div class="p-col-1 p-md-5"><label for="">Enter OTP:</label></div>
+    <div class="p-col-4 p-md-7">
+      <input type="text" [(ngModel)]="otpValue" [ngModelOptions]="{standalone: true}" pInputText>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="p-text-right">
+      <button pButton type="button" (click)="validateOtp()" [disabled]="!saveButtonEnabled" label="Confirm"></button>
+      <button pButton type="button" (click)="otpDialog=false" [disabled]="!saveButtonEnabled" label="Close"></button>
+      <!-- <p-button label="Confirm" styleClass="p-button-text" (click)="validateOtp()" ></p-button> -->
+      <!-- <p-button  label="Close" styleClass="p-button-text"></p-button> -->
+    </div>
+  </ng-template>
+</p-dialog>

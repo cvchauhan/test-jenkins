@@ -1,0 +1,6 @@
+  <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" minZoom="3" [zoom]="zoom">
+    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true"
+    (dragEnd)="markerDragEnd($event)"></agm-marker>
+  </agm-map>
+  <!-- <input type="text" [value]="nLat">
+  <input type="text" [value]="nLong"> -->

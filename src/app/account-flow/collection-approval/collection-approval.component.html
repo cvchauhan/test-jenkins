@@ -1,0 +1,298 @@
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <p-toast [baseZIndex]="100000"></p-toast>
+            <div class="p-col-12">
+                <form>
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-12 p-md-2 p-pr-5">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="Date">Date</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-calendar placeholder="Select Date" [(ngModel)]="formDate"
+                                        (onSelect)="onSelectMethod($event, 'fromD')" [showIcon]="true" inputId="fromD"
+                                        [ngModelOptions]="{ standalone: true }" dateFormat="dd-mm-yy">
+                                    </p-calendar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-pr-5">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="to">To</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-calendar placeholder="Select Date" [(ngModel)]="toDate"
+                                        (onSelect)="onSelectMethod($event, 'to')" [showIcon]="true" inputId="to"
+                                        dateFormat="dd-mm-yy" [ngModelOptions]="{ standalone: true }">
+                                    </p-calendar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="priority">Employee</label>
+                                </div>
+                                <div class="p-col-8">
+                                    <p-dropdown [options]="employeeData" optionLabel="empName" optionValue="nEmpid"
+                                        placeholder="Select" (onChange)="onChangeDeliverBy($event)"
+                                        [ngModelOptions]="{standalone: true}"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="priority">Status</label>
+                                </div>
+                                <div class="p-col-8">
+                                    <p-dropdown [options]="statusData"  optionLabel="sname" placeholder="Select"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="StatusId"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-1">
+                            <button type="button" label="View" (click)="view()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-col-12">
+                <p-table #collections [value]="collection" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[12,20,40,80,120]"
+                    [globalFilterFields]="['cJobNo','cCustName','cEmpName','cMobile','cAddress','AmounttobeCollected','dJobDate','cApproveName','dApproveDate','cStatus','cash','banktransfer','cheque']">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid p-mt-3">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" type="text"
+                                        (input)="collections.filterGlobal($event.target.value,'contains')" pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+                            </div>
+                            <div class="p-col-3 p-md-7 p-text-right">
+
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th pSortableColumn="cJobNo">Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cCustName">Customer<p-sortIcon field="cCustName"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cEmpName">Assign To<p-sortIcon field="cEmpName"></p-sortIcon>
+                            </th>
+                            <!-- <th>Service Name</th> -->
+                            <th pSortableColumn="cMobile">Customer Mobile<p-sortIcon field="cMobile"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="cAddress">Address<p-sortIcon field="cAddress"></p-sortIcon>
+                            </th>
+                            <!-- <th>Bank</th> -->
+                            <th pSortableColumn="AmounttobeCollected">Payable<p-sortIcon field="AmounttobeCollected">
+                                </p-sortIcon>
+                            </th>
+                            <th pSortableColumn="AmounttobeCollected">ColDate<p-sortIcon field="AmounttobeCollected">
+                                </p-sortIcon>
+                            </th>
+                            <th *ngIf="IsVisible" pSortableColumn="cash">Cash<p-sortIcon field="cash"></p-sortIcon>
+                            </th>
+                            <th *ngIf="IsVisible" pSortableColumn="banktransfer">Bank<p-sortIcon field="banktransfer"></p-sortIcon>
+                            </th>
+                            <th *ngIf="IsVisible" pSortableColumn="cheque">Cheque<p-sortIcon field="cheque"></p-sortIcon>
+                            </th>
+                            <th  pSortableColumn="dJobDate">Job Date<p-sortIcon field="dJobDate"></p-sortIcon>
+                            </th>
+                            <!-- <th>Delivered</th> -->
+                            <!-- <th pSortableColumn="cApproveName">Approved<p-sortIcon field="cApproveName"></p-sortIcon></th>
+                            <th pSortableColumn="dApproveDate">Approved Date<p-sortIcon field="dApproveDate"></p-sortIcon></th>
+                            <th pSortableColumn="cStatus">Status<p-sortIcon field="cStatus"></p-sortIcon></th> -->
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-data let-index="rowIndex">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{data.cJobNo}}</td>
+                            <td>{{data.cCustName}}</td>
+                            <td>{{data.cEmpName}}</td>
+                            <!-- <td>{{data.cSrvName}}</td> -->
+                            <td>{{data.cMobile}}</td>
+                            <td>{{data.cAddress}}</td>
+                            <!-- <td>{{data.nBankAmt}}</td> -->
+                            <td>{{data.AmounttobeCollected}}</td>
+                            <td>{{data.colDate | dateFormat}}</td>
+                            <td *ngIf="IsVisible">{{data.cash}}</td>
+                            <td *ngIf="IsVisible">{{data.banktransfer}}</td>
+                            <td *ngIf="IsVisible">{{data.cheque}}</td>
+                            <td>{{data.dJobDate | dateFormat}}</td>
+                            <!-- <td>{{data.dDeliveredOn | dateFormat}}</td> -->
+                            <!-- <td>{{data.cApproveName}}</td>
+                            <td>{{data.dApproveDate | dateFormat}}</td>
+                            <td>{{data.cStatus}}</td> -->
+                            <!-- <td *ngIf="data.cStatus == 'Pending'">Unapproved</td> -->
+                            <!-- <td *ngIf="data.cStatus == 'Approved'">Approved</td> -->
+                            <td>
+                                <p-button icon="pi pi-pencil" *ngIf="data.cStatus=='Pending'|| data.cStatus=='Assign'" class="p-button-raised"
+                                    (click)="OpenAssignEmp(data)">
+                                </p-button>
+                                <p-button icon="pi pi-send" *ngIf="data.cStatus=='Collected'" class="p-button-raised"
+                                    (click)="OpenApproveEmp(data)">
+                                </p-button>
+                                <!-- <button type="button" label="Approved" pButton></button> -->
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr *ngIf="collection?.length>0">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>{{getTotalCost() | number:'3.2-5'}}</th>
+                            <th></th>
+                            <th *ngIf="IsVisible">{{getTotalCash() | number:'3.2-5'}}</th>
+                            <th *ngIf="IsVisible">{{getTotalBanktransfer() | number:'3.2-5'}}</th>
+                            <th *ngIf="IsVisible">{{getTotalCheque() | number:'3.2-5'}}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Assign Employee Collection -->
+<p-dialog header="Assign Employee Collection" [modal]="true" [(visible)]="viewAssignEmployeeCollection"
+    [style]="{width: '40vw', height: '15vw'}">
+    <form [formGroup]="EmpAssignForm" (ngSubmit)="addAssignEmpCollection(EmpAssignForm.value)">
+        <div class="p-grid p-nogutter grid-gutter">
+            <div class="p-col-1 p-md-2"><label for="">Employee</label></div>
+            <div class="p-col-4 p-md-3">
+                <p-dropdown [options]="employeeData" formControlName="AssignEmpId" optionLabel="empName"
+                    optionValue="nEmpId" placeholder="Select" (onChange)="onChangeEmp($event)" [filter]="true"></p-dropdown>
+                <small class="p-error"
+                    *ngIf="empAssignControl.AssignEmpId.invalid && (empAssignControl.AssignEmpId.dirty || empAssignControl.AssignEmpId.touched)">Employee
+                    is required.</small>
+            </div>
+            <div class="p-col-1 p-md-2"><label for="">Date</label></div>
+            <div class="p-col-4 p-md-3">
+                <p-calendar showButtonBar="true" formControlName="AssignEmpDate" [(ngModel)]="AssignEmpDate"
+                    [showIcon]="true" placeholder="Select Date" dateFormat="dd-mm-yy">
+                </p-calendar>
+            </div>
+        </div>
+        <div class="p-grid p-nogutter grid-gutter p-mt-2">
+            <div class="p-col-12 p-md-12 p-p-0">
+                <button pButton type="submit" label="Save" [disabled]="EmpAssignForm.invalid"></button>&nbsp;
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+
+<!-- Approve Employee collection -->
+<p-dialog header="Approve Employee Collection" [modal]="true" [(visible)]="viewApproveEmployeeCollection"
+    [style]="{width: '80vw', height: 'auto'}">
+    <div class="p-grid p-nogutter grid-gutter">
+        <div class="p-col-9 p-md-9">
+            <p-table [value]="ApproveitemList" [autoLayout]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Type</th>
+                        <th>Ref No / Cheque No </th>
+                        <th>Cheque Date</th>
+                        <th>Amount</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Bank</th>
+
+                        <!-- <th>Collection Date</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Cheque No / Ref No</th>
+                        <th>CODdid</th>
+                        <th>ChequeDate</th>
+                        <th>Image</th>
+                        <th>BatchNo</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{item.Type}}</td>
+                        <td> {{item.cRefNo}} {{item.cChequeNo}}</td>
+                        <td>{{item.dChequeDate | dateFormat}}</td>
+                        <td>{{item.nAmt}}</td>
+                        <td>
+                            <a style="color:blue;cursor: pointer;" (click)="OpenImage(item.cImage)">Image</a>
+                        </td>
+                        <td>
+                            <p-dropdown [options]="innerStatusData" optionLabel="sname" placeholder="Select"
+                                appendTo="body" (onChange)="onSelectMethodStatus($event,item)" [ngModelOptions]="{standalone: true}" [ngModel]="InnerStatusId">
+                            </p-dropdown>
+                        </td>
+                        <td>
+                            <p-calendar placeholder="Select Date" [ngModel]="toDate" appendTo="body"
+                                (onSelect)="onSelectMethodDate($event,item)" [showIcon]="true" inputId="to"
+                                dateFormat="dd-mm-yy" [ngModelOptions]="{ standalone: true }">
+                            </p-calendar>
+                        </td>
+                        <td>
+                            <p-dropdown appendTo="body" [ngModel]="BankId" [filter]="true" filterBy="cLedgerNm" placeholder="Select Bank"
+                            (onChange)="onSelectMethodBank($event,item)"  [options]="sBank" optionLabel="cLedgerNm" [disabled]="item.IsDisableBank"></p-dropdown>
+                        </td>
+
+                        <!-- <td>{{item.dVrDate | dateFormat}}</td>
+                        <td>{{item.nAmt}}</td>
+                       
+                   
+                        <td>{{item.dChequeDate | dateFormat}}</td>
+                        <td>{{item.nCODdid}}</td>
+                       
+                        <td>
+                            <a style="color:blue;cursor: pointer;"  (click)="OpenImage(item.cImage)">Image</a>
+                        </td>
+                        <td>{{item.cBatchNo}}</td> -->
+
+                    </tr>
+                </ng-template>
+            </p-table>
+            <button type="submit" label="Submit" class="p-mt-2" (click)="ApproveEmployeeCollection()" pButton></button>
+        </div>
+        <div class="p-col-3 p-md-3">
+            <div style="margin-left: 10px;">
+                <img [src]="ImgURL" height="80%" width="80%" alt="">
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- OTP dialog -->
+<p-dialog header="OTP" [(visible)]="otpDialog" [style]="{width: '20vw'}" [modal]="true" [baseZIndex]="10000" >
+    <div class="p-grid p-nogutter grid-gutter">
+      <div class="p-col-1 p-md-5"><label for="">Enter OTP:</label></div>
+      <div class="p-col-4 p-md-7">
+        <input type="text" [(ngModel)]="otpValue"
+        [ngModelOptions]="{standalone: true}" pInputText>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="p-text-right">
+        <p-button label="Confirm" styleClass="p-button-text" (click)="validateOtp()" ></p-button>
+        <p-button (click)="otpDialog=false" label="Close" styleClass="p-button-text"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+  

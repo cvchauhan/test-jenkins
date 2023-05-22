@@ -1,0 +1,111 @@
+<div class="dashboard">
+    <div class="manage-job">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+                <form>
+                    <div class="p-grid p-nogutter">
+                        <div class="p-col-12 p-md-3 p-pr-1">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="priority">Branch</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-dropdown placeholder="Select" [options]="branchData" optionLabel="txt"
+                                        inputId="priority" [ngModelOptions]="{standalone: true}" [(ngModel)]="branchId">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-pr-1">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="to">Gender</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-dropdown placeholder="Select" [options]="gender" optionLabel="gName"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="genderId">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-pr-1">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="priority">Deparment</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-dropdown placeholder="Select" [options]="departmentData" optionLabel="codeName"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="deptId"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-pr-1">
+                            <div class="p-grid">
+                                <div class="p-col-3">
+                                    <label for="priority">Shift</label>
+                                </div>
+                                <div class="p-col-9">
+                                    <p-dropdown placeholder="Select" [options]="shift" optionLabel="shiftNameDate"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="shiftId">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-1">
+                            <button type="button" label="View" (click)="view()" pButton></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-col-12">
+                <p-table #empShift [value]="employeeShiftData"
+                    [globalFilterFields]="['nEmpId','empName','cMobile1','cMobile2','branchName','department','designation','cshiftName']"
+                    responsiveLayout="scroll" [autoLayout]="true" [paginator]="true" [rows]="rows"
+                    [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search"
+                                        (input)="empShift.filterGlobal($event.target.value,'contains')" type="text"
+                                        pInputText>
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                            <th>Emp Id</th>
+                            <th>Emp Name</th>
+                            <th>Mobile</th>
+                            <th>Branch</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Shift Name</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-shift let-index="rowIndex">
+                        <tr>
+                            <td><p-tableCheckbox [value]="shift"></p-tableCheckbox></td>
+                            <td>{{shift.nEmpId}}</td>
+                            <td>{{shift.empName}}</td>
+                            <td>{{shift.cMobile1}}<br />{{shift.cMobile2}}</td>
+                            <td>{{shift.branchName}}</td>
+                            <td>{{shift.department}}</td>
+                            <td>{{shift.designation}}</td>
+                            <td>{{shift.cshiftName}}</td>
+                            <td>{{shift.startTime}}</td>
+                            <td>{{shift.endTime}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                
+            </div>
+        </div>
+    </div>
+</div>

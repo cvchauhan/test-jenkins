@@ -1,0 +1,80 @@
+.main-box{
+    min-height: 300px;
+}
+.step-box{
+    text-align: center;
+    padding: 10px;
+}
+
+.step-form{
+    padding: 0px;
+    margin: 0px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 40px;
+    position: relative;
+}
+.step-form::after{
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: #e1dede;
+    left: 0px;
+    top: 9px;
+    z-index: 1;
+}
+.step-form li{
+    display: inline-block;
+    margin: 0px 20px;
+    vertical-align: top;
+    position: relative;
+    padding-top: 25px;
+    width: 70px;
+    z-index: 10;
+}
+
+.step-form li span{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 0px;
+    background: #e1dede;
+    left: calc(50% - 10px);
+    font-weight: bold;
+    font-size: 12px;
+    padding-top: 3px;
+}
+.step-form li.active span{
+    background-color: #455c71;
+    color: #fff;
+}
+.button-section{
+    width: 100%;
+    padding-top: 10px;
+}
+.d-block{
+    width: 100%;
+    display: block;
+}
+::ng-deep .p-datatable-tfoot td{
+    padding: 8px 10px !important;
+}
+.form-control-number{
+    width: 100%;
+    height: 26px;
+    font-size: 10px;
+    padding: 5px;
+    font-family: "Roboto", sans-serif;
+    border: 1px solid #ced4da !important;
+    outline: none;
+}
+.form-control-number:focus, .form-control-number:hover, .form-control-number:active{
+    border: 1px solid #ced4da !important;
+    box-shadow: none;
+    outline: none;
+}
+.errMsg{
+    color: red;
+}

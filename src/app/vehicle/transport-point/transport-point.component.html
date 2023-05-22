@@ -1,0 +1,126 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="dashboard">
+    <h3>Transport point</h3>
+    <div class="manage-job">
+        <div class="p-grid p-no-gutter">
+            <div class="p-col-12">
+                <p-table #dt1 [value]="pointData" [autoLayout]="true" [scrollable]="true" scrollHeight="350px"
+                    [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [rowsPerPageOptions]="[10, 25, 50]" [rows]="5" [showCurrentPageReport]="true"
+                    [globalFilterFields]="['cTransportPointNm','cDescription','cLatLong']">
+                    <ng-template pTemplate="caption">
+                        <div class="p-grid  p-jc-end p-mt-3">
+                            <div class="p-col-9 p-md-5">
+                                <div class="search">
+                                    <input placeholder="Search" id="search" type="text" pInputText
+                                        (input)="dt1.filterGlobal($event.target.value, 'contains')">
+                                    <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                                </div>
+                            </div>
+                            <div class="p-col-3 p-md-7 p-text-right">
+                                <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="openAddForm()"
+                                    class="btn-plus"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>SNo</th>
+                            <th>Transport Point Name</th>
+                            <th>Description</th>
+                            <th>Lat Long</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-holiday let-rowIndex="rowIndex">
+                        <tr>
+                            <td>{{rowIndex + 1}}</td>
+                            <td>{{holiday.cTransportPointNm}}</td>
+                            <td>{{holiday.cDescription}}</td>
+                            <td>{{holiday.cLatLong}}</td>
+                            <td>{{holiday.dCreateDate | date: 'dd/MM/yyyy'}}</td>
+                            <td>
+                                <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editHoliday(holiday)">
+                                </p-button>
+                                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"
+                                    (click)="deleteHoliday(holiday.nHolidayId)"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft">
+                        <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" hidden></p-button>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorright">
+                        <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text" hidden></p-button>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popup -->
+<p-dialog class="jobalert" header="{{isEdit ? 'Update': 'Add'}} Transport Point" [modal]="true"
+    [(visible)]="holidayDialog" [style]="{width: '40vw'}" [baseZIndex]="10000">
+    <form [formGroup]="transortPointForm">
+        <!-- <div class="p-grid">
+            <div class="p-md-4">
+                <label for="group">Status<sup>*</sup></label>
+            </div>
+            <div class="p-md-8">
+                <p-dropdown placeholder="Select" [options]="StatusData" optionLabel="name" appendTo="body"
+                    inputId="priority" formControlName="status" [disabled]="!isEdit ? true : false">
+                </p-dropdown>
+            </div>
+        </div> -->
+        <div class="p-grid">
+            <div class="p-md-4">
+                <label for="group">Transport Point Name<sup>*</sup></label>
+            </div>
+            <div class="p-md-8">
+                <input type="text" pInputText formControlName="cTransportPointNm" />
+                <p class="danger"
+                    *ngIf="formControls.cTransportPointNm.invalid && (formControls.cTransportPointNm.dirty || formControls.cTransportPointNm.touched)">
+                    Transport Point Name Is Required</p>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-md-4">
+                <label for="group">Description<sup>*</sup></label>
+            </div>
+            <div class="p-md-8">
+                <input type="text" pInputText formControlName="cDescription" />
+                <p class="danger"
+                    *ngIf="formControls.cDescription.invalid && (formControls.cDescription.dirty || formControls.cDescription.touched)">
+                    Description Is Required</p>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-md-4">
+                <label for="group">LatLong<sup>*</sup></label>
+            </div>
+            <div class="p-md-8">
+                <input type="text" pInputText formControlName="cLatLong" />
+                <button icon="pi pi-map-marker" class="p-button-raised btn" (click)="openMap()" pButton></button>
+                <p class="danger"
+                    *ngIf="formControls.cLatLong.invalid && (formControls.cLatLong.dirty || formControls.cLatLong.touched)">
+                    LatLong Is Required</p>
+            </div>
+        </div>
+
+        <div class="p-grid p-mb-3">
+            <div class="p-md-12 text-center ">
+                <p-button type="submit" [disabled]="!transortPointForm.valid" (click)="addEditTransportPoint()">
+                    {{isEdit? 'Update': 'Save'}}</p-button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog class="jobalert" header="Transport Point" [modal]="true" [(visible)]="isMapVisible" [style]="{width: '40vw'}"
+    [baseZIndex]="10000">
+    <app-map-common (latLong)="getLatLng($event)" [Name]="latitude"></app-map-common>
+</p-dialog>

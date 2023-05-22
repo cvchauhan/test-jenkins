@@ -1,0 +1,80 @@
+<p-toast  [baseZIndex]="100000"></p-toast>
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"></p-confirmDialog>
+<div class="dashboard">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12 p-md-4">
+        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+          <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4" id="drop"><label for="first">Unit Name<sup>*</sup></label></div>
+                <div class="p-col-12 p-md-8">
+                  <input type="text" formControlName="cCodeName" pInputText>
+                   <!-- <p style="color: red;"
+                    *ngIf="(formControl.cCodeName.invalid) && (formControl.cCodeName.touched || formControl.cCodeName.dirty)">
+                    Unit is Required
+                  </p> -->
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-4" id="drop"><label for="">Duty Hours<sup>*</sup></label></div>
+                <div class="p-col-12 p-md-8">
+                  <input type="text" pInputText formControlName="nHr">
+                  <!-- <p style="color: red;"
+                    *ngIf="(formControl.nHr.invalid) && (formControl.nHr.touched || formControl.nHr.dirty)">
+                    Hours is Required
+                  </p> -->
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-8 p-md-offset-4">
+              <button pButton type="submit" label="{{isEdit? 'Update':'Save'}}"></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="p-col-12 p-md-8">
+        <!-- <div class="p-grid">
+          <div class="p-md-12 p-text-right">
+            <button pButton type="button" icon="pi pi-plus" iconPos="left"
+              class="btn-plus"></button>
+          </div>
+        </div> -->
+        <p-table #unitprice [value]="unitData" [autoLayout]="true" [globalFilterFields]="['']" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+        [scrollable]="true" scrollHeight="350px">
+        <ng-template pTemplate="caption">
+          <div class="p-grid p-jc-end">
+              <div class="p-col-5">
+                  <div class="search">
+                      <input type="text" (input)="unitprice.filterGlobal($event.target.value,'contains')" pInputText>
+                      <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                  </div>
+              </div>
+          </div>
+      </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th></th>
+              <th pSortableColumn="name">Unit<p-sortIcon field="name"></p-sortIcon></th>
+              <th pSortableColumn="nHr">Duty Hours<p-sortIcon field="nHr"></p-sortIcon></th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-unit let-i="rowIndex">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{unit.name}}</td>
+              <td>{{unit.nHr}}</td>
+              <td>
+                <p-button icon="pi pi-pencil" class="p-button-raised" (click)="editUnitDataF(unit)"></p-button>
+                <p-button icon="pi pi-trash" class="p-button-raised p-button-danger p-ml-2" (click)="delUnitDataF(unit['serialNo'])"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  
+  </div>

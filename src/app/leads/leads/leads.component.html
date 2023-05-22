@@ -1,0 +1,271 @@
+<div class="dashboard">
+    <div class="leads">
+        <h1>Lead Confirmation</h1>
+        <br/>
+        <p-table [value]="leadlist" [autoLayout]="true" [scrollable]="true" scrollHeight="250px">
+          <ng-template pTemplate="header" let-columns>
+              <tr>
+                  <th>#</th>
+                  <th>Lead Id</th>
+                  <th>Lead Date</th>
+                  <th>Service</th>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Remarks</th>
+                  <th>Status</th>
+                  <th>Action</th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-lead>
+              <tr>
+                  <td>
+                      <p-tableCheckbox [value]="lead"></p-tableCheckbox>
+                  </td>
+                  <td>{{lead.LeadId}}</td>
+                  <td>{{lead.LeadDate}}</td>
+                  <td>{{lead.Service}}</td>
+                  <td>{{lead.Name}}</td>
+                  <td>{{lead.Contact}}</td>
+                  <td>{{lead.Remarks}}</td>
+                  <td>{{lead.Status}}</td>
+                  <td><a (click)="openLeadHCUpdate()">Edit</a></td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </div>
+</div>
+
+
+<p-dialog header="Update Lead" [(visible)]="leadASDialog" [modal]="true" [style]="{width: '45vw'}" [baseZIndex]="10000">
+    <form [formGroup]="leadasupdateInfoForm" (ngSubmit)="onleadASSubmit()">
+        <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter grid-gutter" >
+            <div class="p-col-4 p-md-2"><label for="">Service Category<sup>*</sup></label></div>
+            <div class="p-col-4 p-md-3  p-pl-2">
+            <p-dropdown id="ddlServiceCatageory" [options]="" optionLabel="" formControlName="ServiceId"></p-dropdown>
+            </div>
+        </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                <label for="middle">Enquirer Details</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <input type="text" pInputText />
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                    <input type="text" pInputText />
+                </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                    <label for="middle">Service Location</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <input type="text" pInputText />
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                    <label for="middle">Contact Person</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <input type="text" pInputText />
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                    <input type="text" pInputText />
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                    <label for="middle">Remarks</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <textarea rows="3" type="text" pInputText ></textarea>
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                <label for="middle">Vehicle Type</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <p-dropdown id="ddlVehicleType" [options]="" optionLabel=""></p-dropdown>
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                <label for="middle">Services Type</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <p-dropdown id="ddlServices" [options]="" optionLabel=""></p-dropdown>
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button icon="pi pi-check" pButton label="Submit" class="p-button-text"></p-button>
+            <p-button icon="pi pi-check" (click)="rejectedDialog()" label="Rejected" class="p-button-text"></p-button>
+            <p-button icon="pi pi-check" (click)="cancelDialog()" label="Cancel" class="p-button-text"></p-button>
+        </ng-template>
+    </form> 
+</p-dialog>
+
+<p-dialog header="Update Lead" [(visible)]="leadHCDialog" [modal]="true" [style]="{width: '70vw'}" [baseZIndex]="10000">
+    <form [formGroup]="leadhcupdateInfoForm" (ngSubmit)="onleadHCSubmit()">
+        <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                <label for="middle">Requirement Background</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <textarea rows="3" pInputText formControlName="RequirementinBackground" ></textarea>
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                    <div class="p-col-12 p-md-3">
+                        <label for="middle">Procurement within (Days)</label>
+                    </div>
+                    <div class="p-col-12 p-md-8">
+                        <input pInputText formControlName="ProcurementwithinDays"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                    <label for="middle">Contact Mobile</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <input type="text" pInputText />
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                    <label for="middle">Contact Remarks</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <textarea rows="3" type="text" pInputText ></textarea>  
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+            <div class="p-col-12 p-md-4">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-3">
+                <label for="middle">Services</label>
+                </div>
+                <div class="p-col-12 p-md-9">
+                    <p-dropdown id="ddlVehicleType" [options]="" optionLabel=""></p-dropdown>
+                </div>
+            </div>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-8">
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter" >
+
+        <p-button icon="pi pi-check" pButton label="Save" class="p-button-text"></p-button>
+            </div></div>
+    </form>
+</p-dialog>

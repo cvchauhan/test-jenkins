@@ -1,0 +1,18 @@
+<div class="dashboard">
+    <p-toast></p-toast>
+    <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false">
+    </p-steps>
+</div>
+<div *ngIf="activeIndex == 0">
+    <app-assessment-data (changeIndex)="changeActiveIndex($event)"></app-assessment-data>
+</div>
+<div *ngIf="activeIndex == 1">
+    <app-recommendation-skills (changeIndex)="changeActiveIndex($event)"></app-recommendation-skills>
+</div>
+<div *ngIf="activeIndex == 2">
+    <app-medicine (changeIndex)="changeActiveIndex($event)"></app-medicine>
+</div>
+<div *ngIf="activeIndex == 3">
+    <app-stepsummary (changeIndex)="changeActiveIndex($event)"></app-stepsummary>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,1081 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<div class="dashboard">
+    <div class="manage-groups">
+        <div class="p-grid p-nogutter">
+            <div class="p-md-12">
+                <p-tabView>
+                    <p-tabPanel header="Job Receipts">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-2">
+                                <div class="p-grid">
+                                    <label class="p-md-4">Date</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="fromDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-2">
+                                <div class="p-grid">
+                                    <label class="p-md-4">To</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="toDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-3">
+                                <div class="p-grid">
+                                    <label class="p-md-3" for="priority">Branch</label>
+                                    <div class="p-md-9">
+                                        <p-dropdown placeholder="Select Branch" [options]="branchData" optionLabel="txt"
+                                            [showClear]="true" optionValue="val" [(ngModel)]="branch">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-4">
+                                <div class="p-grid">
+                                    <label class="p-md-4">Payment Status</label>
+                                    <div class="p-md-8">
+                                        <p-dropdown placeholder="Pending/Received" [options]="paymentStatusData"
+                                            [(ngModel)]="receiptStatusId" optionLabel="name" optionValue="value"
+                                            (onChange)="statusChange($event)"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-1">
+                                <button type="button" label="View" (click)="loadReceiptData()" pButton></button>
+                            </div>
+                        </div>
+                        <p-table #jobreceipt [value]="jobReceipt"
+                            [globalFilterFields]="['cJobNo','cBatchNo','dJobDate','srvName','cCustNm','billMode','nTotalService']"
+                            *ngIf="showJobReceiptTable" responsiveLayout="scroll" [autoLayout]="true" [paginator]="true"
+                            [rows]="rows" [rowsPerPageOptions]="[15,25,40,80,120]" [showCurrentPageReport]="true">
+                            <ng-template pTemplate="caption">
+                                <div class="p-d-flex p-ai-center p-jc-between">
+                                    <div class="p-col-9 p-md-6">
+                                        <div class="search">
+                                            <input placeholder="Search" id="search" type="text"
+                                                (input)="jobreceipt.filterGlobal($event.target.value,'contains')"
+                                                pInputText>
+                                            <!-- <input placeholder="Search" id="search" type="text" pInputText [(ngModel)]="searchBox"> -->
+                                            <button pButton type="button" icon="pi pi-search" iconPos="left"
+                                                (click)="filterLedgerTableF()"></button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>SNo</th>
+                                    <th pSortableColumn="cJobNo">Job No<p-sortIcon field="cJobNo"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="cBatchNo" *ngIf="!pendingStatusHideShow">Receipt No<p-sortIcon
+                                            field="cBatchNo"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="dJobDate" *ngIf="pendingStatusHideShow">Job Date<p-sortIcon
+                                            field="dJobDate"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="srvName" *ngIf="pendingStatusHideShow">Service<p-sortIcon
+                                            field="srvName"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="cCustNm">CUstomer<p-sortIcon field="cCustNm"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="billMode" *ngIf="pendingStatusHideShow">Billing Mode<p-sortIcon
+                                            field="billMode"></p-sortIcon>
+                                    </th>
+
+                                    <!-- <th pSortableColumn="" *ngIf="pendingStatusHideShow">Deposit<p-sortIcon field="">
+                                        </p-sortIcon>
+                                    </th> -->
+                                    <th>Advance</th>
+                                    <th>Security</th>
+                                    <th>Other</th>
+                                    <th pSortableColumn="nTotalService">Total<p-sortIcon field="nTotalService">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th *ngIf="pendingStatusHideShow">Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-jreceipt let-i="rowIndex">
+                                <tr>
+                                    <td>{{i+1}}</td>
+                                    <td>{{jreceipt.cJobNo}}</td>
+                                    <td *ngIf="!pendingStatusHideShow">{{jreceipt.cBatchNo}}</td>
+                                    <td *ngIf="pendingStatusHideShow">{{jreceipt.dJobDate | dateFormat}}</td>
+                                    <td *ngIf="pendingStatusHideShow">{{jreceipt.srvName}}</td>
+                                    <td>{{jreceipt.cCustNm}}</td>
+                                    <td *ngIf="pendingStatusHideShow">{{jreceipt.billMode}}</td>
+
+                                    <!-- <td *ngIf="pendingStatusHideShow">{{jreceipt.nTotalService}}</td> -->
+                                    <td>{{jreceipt.nAdvanceAmt}}</td>
+                                    <td>{{jreceipt.nTotalSecurity}}</td>
+                                    <td>{{ jreceipt.installationCharge + jreceipt.nDeliveryCharge}}</td>
+                                    <td>{{jreceipt.nAdvanceAmt + jreceipt.nTotalSecurity + jreceipt.installationCharge + jreceipt.nDeliveryCharge}}</td>
+                                    <td *ngIf="pendingStatusHideShow">{{jreceipt.cStatus}}</td>
+                                    <td>
+                                        <p-button *ngIf="!pendingStatusHideShow"
+                                            (click)="downloadPdf(jreceipt,receiptStatusId)" icon="pi pi-file-pdf"
+                                            class="p-button-raised">
+                                        </p-button>
+                                        <p-button *ngIf="!pendingStatusHideShow" icon="pi pi-trash"
+                                            class="p-button-danger p-ml-2">
+                                        </p-button>
+                                        <button *ngIf="pendingStatusHideShow"
+                                            (click)="editJob(jreceipt,receiptStatusId)" type="button"
+                                            icon="pi pi-pencil" class="p-button-raised" pButton></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </p-tabPanel>
+                    <p-tabPanel header="Invoice Generation">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-3">
+                                <div class="p-grid">
+                                    <label class="p-md-4">Invoice Date</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="InvoiceDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-3">
+                                <div class="p-grid">
+                                    <label class="p-md-4">Billing Date</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="BillingDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-3">
+                                <div class="p-grid">
+                                    <label class="p-md-3" for="priority">Branch</label>
+                                    <div class="p-md-9">
+                                        <p-dropdown placeholder="Select Branch" (onChange)="onChangeBranch($event)"
+                                            [options]="branchData" optionLabel="txt" [showClear]="true"
+                                            optionValue="val" [(ngModel)]="branch">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-2">
+                                <button type="button" label="View" (click)="changeBranch()" pButton></button>
+                            </div>
+                        </div>
+                        <p-table [value]="invoiceData" [scrollable]="true" scrollHeight="350px" dataKey="nAcID">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th> 
+                                        <p-checkbox name="selectAllCustomer" value="all" label=""
+                                            (onChange)="selectAllJobData($event)"></p-checkbox>
+
+                                        <!-- <p-checkbox name="selectAllCustomer" value="all" label=""
+                                            (onChange)="selectAll($event)"></p-checkbox> -->
+                                    </th>
+                                    <th style="width: 3rem"></th>
+                                    <th pSortableColumn="customer">Customer
+                                        <p-sortIcon field="customer"></p-sortIcon>
+                                    </th>
+                                    <th>mobileNo</th>
+                                    <th pSortableColumn="address">Address
+                                        <p-sortIcon field="address"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="invoiceAmt">InvoiceAmt
+                                        <p-sortIcon field="invoiceAmt"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="noOfJobs">No Of Jobs
+                                        <p-sortIcon field="noOfJobs"></p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-invoice let-i="rowIndex" let-expanded="expanded">
+                                <tr>
+                                    <td>
+                                        <a *ngIf="invoice['isVisibleBlack']" href="javascript:void(0)">
+                                            <span class="navLogo">
+                                                <img src="../../assets/sidebar-icon/black-check.png" alt="">
+                                            </span>
+                                        </a>
+                                        <!-- <p-checkbox *ngIf="!invoice['isVisibleBlack']" value="invoice['nAcID']"
+                                            inputId="screen{{invoice.nAcID}}" [(ngModel)]="invoice['isChecked']"
+                                            (onChange)="selectInvoice($event,invoice.nAcID)" binary="true">
+                                        </p-checkbox> -->
+                                        <p-checkbox *ngIf="!invoice['isVisibleBlack']" value="invoice['nAcID']"
+                                            inputId="screen{{invoice.nAcID}}" [(ngModel)]="invoice['isChecked']"
+                                            (onChange)="selectInvoiceData($event,invoice.nAcID, i)" binary="true">
+                                        </p-checkbox>
+                                    </td>
+                                    <td style="width: 3rem">
+                                        <button type="button" pButton pRipple [pRowToggler]="invoice" (click)="GetCustomerName(invoice.customer)"
+                                            class="p-button-text p-button-rounded p-button-plain"
+                                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                    </td>
+                                    <td>{{invoice.customer}}</td>
+                                    <td>{{invoice.mobileNo}}</td>
+                                    <td>{{invoice.address}}</td>
+                                    <td>{{invoice.invoiceAmt}}</td>
+                                    <td>{{invoice.noOfJobs}}</td>
+
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="rowexpansion" let-invoice let-i="rowIndex">
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="p-p-3">
+                                            <p-table [value]="invoice.jobInvServices" dataKey="nJobId">
+                                                <ng-template pTemplate="header">
+                                <tr>
+                                    <th>
+                                        <!-- <p-checkbox name="selectAllJobs" value="allJobs" [(ngModel)]="invoice.isChecked"
+                                            label="" (onChange)="selectAllJob($event,invoice.nAcID)" binary="true">
+                                        </p-checkbox> -->
+                                        <p-checkbox *ngIf="!invoice['isVisibleBlack']" value="invoice['nAcID']"
+                                            inputId="screen{{invoice.nAcID}}" [(ngModel)]="invoice['isChecked']"
+                                            (onChange)="selectInvoiceData($event,invoice.nAcID, i)" binary="true">
+                                        </p-checkbox>
+                                    </th>
+                                    <!-- <th>Job Id </th> -->
+                                    <th>Job No</th>
+                                    <th>Job Date </th>
+                                    <th>Invoice Amount</th>
+                                    <th></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-job let-i="rowIndex">
+                                <tr>
+                                    <td>
+                                        <!-- <p-checkbox name="selectJob" value="Job" [(ngModel)]="job.isChecked"
+                                            (onChange)="selectJob($event,invoice.nAcID,job.nJobId)" binary="true">
+                                        </p-checkbox> -->
+                                        <p-checkbox name="selectJob" value="Job" [(ngModel)]="job.isChecked"
+                                            (onChange)="singleSelectJob($event,invoice.nAcID,i,job)" binary="true">
+                                        </p-checkbox>
+                                    </td>
+                                    <!-- <td>{{job.nJobId}}</td> -->
+                                    <td>{{job.cJobdNo}}</td>
+                                    <td>{{job.dJobdDt | dateFormat}}</td>
+                                    <td>{{job.invoiceAmt}}</td>
+                                    <td><button icon="pi pi-map-marker" class="p-button-raised"
+                                            (click)="showDetail(job.jobInvServiceDtls,job.cJobdNo)" pButton></button></td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="6">There are no Job Service for this Customer yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+            </div>
+            </td>
+            </tr>
+            </ng-template>
+
+            </p-table>
+            <button pButton type="button" label="Generate Invoice" [disabled]="payLoadCollectionBody.length == 0"
+                (click)="generateInvoice()" class="template p-mt-4"></button>
+                    </p-tabPanel>
+                    <p-tabPanel header="Invoice History">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-2">
+                                <div class="p-grid">
+                                    <label class="p-md-4">Date</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="historyFromDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-2">
+                                <div class="p-grid">
+                                    <label class="p-md-4">To</label>
+                                    <div class="p-md-8">
+                                        <p-calendar [(ngModel)]="historyToDate" [showIcon]="true" dateFormat="dd-mm-yy">
+                                        </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-3">
+                                <div class="p-grid">
+                                    <label class="p-md-3" for="priority">Branch</label>
+                                    <div class="p-md-9">
+                                        <p-dropdown placeholder="Select Branch" [options]="branchData"
+                                            (onChange)="onChangeHistoryBranch($event)" optionLabel="txt" [showClear]="true"
+                                            optionValue="val" [(ngModel)]="historyBranch">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-2">
+                                <button type="button" label="View" (click)="getInvoiceHistory()" pButton></button>
+                            </div>
+                        </div>
+                        <p-table #invoicedata [value]="invoiceHistoryData"
+                            [globalFilterFields]="['customer','mobileNo','invoiceNo','invoiceDate','invoiceAmt','noOfJobs']" [autoLayout]="true"
+                            [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [rowsPerPageOptions]="[15,25,40,80,120]">
+                            <ng-template pTemplate="caption">
+                                <div class="p-d-flex p-ai-center p-jc-between">
+                                    <div class="p-col-9 p-md-6">
+                                        <div class="search">
+                                            <input placeholder="Search" id="search" type="text"
+                                                (input)="invoicedata.filterGlobal($event.target.value,'contains')" pInputText>
+                                            <!-- <input placeholder="Search" id="search" type="text" pInputText [(ngModel)]="searchBox"> -->
+                                            <button pButton type="button" icon="pi pi-search" iconPos="left"
+                                                (click)="filterLedgerTableF()"></button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <!-- <th>
+                                                <p-checkbox name="groupname"></p-checkbox>
+                                            </th> -->
+                                    <th>SNo</th>
+                                    <th pSortableColumn="customer">Customer<p-sortIcon field="customer"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="mobileNo">Phone No<p-sortIcon field="mobileNo"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="invoiceNo">Invoice No<p-sortIcon field="invoiceNo"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="invoiceDate">Invoice Date<p-sortIcon field="invoiceDate"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="invoiceAmt">Invoice Amount<p-sortIcon field="invoiceAmt"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="noOfJobs">No of Jobs<p-sortIcon field="noOfJobs"></p-sortIcon>
+                                    </th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-history let-i="rowIndex">
+                                <tr>
+                                    <!-- <td>
+                                                <p-checkbox name="groupname"></p-checkbox>
+                                            </td> -->
+                                    <td>{{i+1}}</td>
+                                    <td>{{history.customer}}</td>
+                                    <td>{{history.mobileNo}}</td>
+                                    <td>{{history.invoiceNo}}</td>
+                                    <td>{{history.invoiceDate | dateFormat}}</td>
+                                    <td>{{history.invoiceAmt}}</td>
+                                    <td>{{history.noOfJobs}}</td>
+                                    <td>
+                                        <a (click)="previewPDF(history)" href="javascript:void(0)" data-toggle="tooltip"
+                                            data-placement="top" title="Click to Preview">
+                                            <span class="navLogo">
+                                                <img src="../../assets/sidebar-icon/preview.png" alt="">
+                                            </span>
+                                        </a>
+                                        <!-- <button (click)="previewPDF(history)" class="template">Preview</button></td> -->
+                                        <!--  -->
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <button pButton type="button" label="Generate Invoice" class="template p-mt-4"></button>
+                    </p-tabPanel>
+                </p-tabView>
+        </div>
+    </div>
+</div>
+</div>
+
+<p-dialog class="manage-ledger jobreceipt" header="Job Receipt - # {{jobData['cJobNo']}}"
+    [(visible)]="displayJobReceipt" [modal]="true" [style]="{width: '55vw'}" (onHide)="cancel()" [baseZIndex]="10000">
+    <div class="p-grid p-nogutter">
+        <!-- <div class="p-col-12">
+            <div class="p-grid p-nogutter grid-gutter">
+                <label class="p-md-2" for="">Job Receipts </label>
+                <div class="p-md-7 p-pl-1">
+                    <h4>#{{jobData['cJobNo']}}</h4>
+                </div>
+            </div>
+        </div> -->
+        <div class="p-col-12 p-md-12 p-pl-2">
+            <label class="p-pr-3">Job Start Date: <h4 class="p-d-inline">{{jobData['dJobDate'] | dateFormat}}</h4>
+            </label>
+            <label class="p-pr-3">Customer: <h4 class="p-d-inline">{{jobData['cCustNm']}}</h4></label>
+            <label>Mobile: <h4 class="p-d-inline">{{jobData['cMobile']}}</h4></label>
+
+        </div>
+
+        <div class="p-md-3 p-pl-2">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-4 p-p-0"><label>Date</label></div>
+                <div class="p-md-8 p-p-0">
+                    <p-calendar [(ngModel)]="dateP" dateFormat="dd-mm-yy" [showIcon]="true"
+                        [ngModelOptions]="{standalone: true}"></p-calendar>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="p-grid p-nogutter">
+        <div class="p-md-9 p-p-0">
+            <h4 class="p-m-0">Payment Details</h4>
+            <form [formGroup]="paymentForm" (ngSubmit)="onAdd()">
+                <div class="p-grid p-nogutter">
+                    <div class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"><label>Payment mode</label></div>
+                            <div class="p-md-8">
+                                <p-dropdown appendTo="body" [options]="paymentMode" formControlName="paymentMode"
+                                    [selectedItem] [(ngModel)]="selectedPayMode" optionLabel="codeName"
+                                    (onChange)="selectCashMode()"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"><label>Amount</label></div>
+                            <div class="p-md-8">
+                                <input type="text" pInputText formControlName="amount" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"><label>Remarks</label></div>
+                            <div class="p-md-8">
+                                <input type="text" pInputText formControlName="remarks" />
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="showBankDropDowns" class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"><label>Ref No</label></div>
+                            <div class="p-md-8"><input type="text" pInputText formControlName="refNo" /></div>
+                        </div>
+                    </div>
+                    <div *ngIf="showBankDropDowns" class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"><label>Bank</label></div>
+                            <div class="p-md-8">
+                                <p-dropdown appendTo="body" placeholder="Select Banks" [options]="bankData"
+                                    formControlName="bank" optionLabel="cDisplayNm" (onChange)="selectBanks($event)">
+                                </p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-md-6 p-p-0">
+                        <div class="p-grid p-nogutter">
+                            <div class="p-md-4"></div>
+                            <div class="p-md-8">
+                                <button type="submit" label="Add" class="p-button-text p-mr-2" pButton></button>
+                                <!-- <p-button type="button" label="Cancel" class="p-button-text"></p-button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-md-3 p-mt-3">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Particulars:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0">Amount</h5>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Total Service:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0">{{jobData['nAdvanceAmt']}}</h5>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Total Security:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0">{{jobData['nTotalSecurity']}}</h5>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Installation Charges:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0"> {{jobData['installationCharge']}}</h5>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Delhivery Charges:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0">{{jobData['nDeliveryCharge']}}</h5>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter">
+                <div class="p-md-7 p-pt-0">
+                    <h5 class="p-m-0">Total:</h5>
+                </div>
+                <div class="p-md-5 p-pt-0">
+                    <h5 class="p-m-0">{{totalAmount}}</h5>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="tableValue" *ngIf="jobReceiptAddData.length > 0">
+        <p-table [value]="jobReceiptAddData">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Payment Mode</th>
+                    <th>Ref No</th>
+                    <th>Bank</th>
+                    <th>Amount</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                    <th>Action</th>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-doc let-i="rowIndex">
+                <tr>
+                    <td>{{doc?.paymentMode.codeName}}</td>
+                    <td>{{doc?.ref}}</td>
+                    <td>{{doc.bank?.cDisplayNm}}</td>
+                    <td>{{doc?.amount}}</td>
+                    <td>{{doc?.remarks}}</td>
+                    <td>{{doc?.dDate | dateFormat}}</td>
+                    <td>
+                        <p-button icon="pi pi-trash" (click)="delRec(i)" class="p-button-raised p-button-danger p-ml-2">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="p-grid p-nogutter">
+        <div *ngIf="disabledSave" class="p-md-12 p-p-0 p-my-2 p-text-center moreAMount">
+            <span class="redText">Payment Amount should be equal to Total Amount</span>
+        </div>
+        <!-- <div class="p-md-12 p-py-0 P-MY-1" *ngIf="showPrint">
+            <div class="p-grid p-nogutter">
+                <div class="p-md-3 p-p-0 p-mt-2 p-mb-2">
+                    <button type="button" label="SMS" class="p-button-text" pButton></button>
+                    <button type="button" label="Print" class="p-button-text p-ml-2" (click)="printPDF()" pButton></button>
+                </div>
+                <div class="p-md-1 p-p-0">
+                    <div class="p-field-checkbox">
+                        <input type="checkbox" name="pring" (change)="printPDF($event)">
+                        <label for="print">Print</label>
+                    </div>
+                </div>
+            </div> 
+        </div>-->
+        <div class="p-md-12 p-py-0">
+            <button [disabled]="disabledSave" type="submit" (click)="saveData()" label="Save" class="p-button-text"
+                pButton></button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- PDF preview modal -->
+<p-dialog header="PDF" [(visible)]="displayPDFpreview" [style]="{width: '80vw'}">
+    <div class="p-grid p-nogutter">
+        <div class="p-md-12 p-text-right">
+            <button type="button" icon="pi pi-download" (click)="generatePdf()" pButton></button>
+        </div>
+        <div class="p-md-12 contentToConvert" id="contentToConvert">
+            <table style="width: 1000px;margin: 0 auto;border-collapse: collapse;">
+                <tbody>
+                    <tr>
+                        <td colspan="1">
+                            <img src="../../../assets/images/logo.png" alt="logo">
+                        </td>
+                        <td colspan="6" style="text-align: center;">
+                            <h1 style="font-size: 36px;line-height: 42px;color: darkblue;margin: 0 0 20px;">SAYLUSS
+                                MEDICARE PVT LTD</h1>
+                            <h5 style="font-size: 14px;line-height: 30px;color: #000;margin: 0;">201,Golden Heights,
+                                Moksh Marg, Ashok Nagar, Udaipur</h5>
+                            <h6 style="font-size: 14px;line-height: 24px;color: #000;margin: 0;">Phone: 9887744001</h6>
+                            <h5 style="font-size: 14px;line-height: 24px;color: #000;margin: 0;">Website:
+                                www.saylussmedicare.com E-Mail: saylussmedicare@gmail.com</h5>
+                            <h6 style="font-size: 14px;line-height: 30px;color: #000;margin: 0;">GSTIN: 08AARCS4660C1Z5
+                            </h6>
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid #000;">
+                        <td colspan="1" style="padding: 10px 20px;">
+                            <h5 style="font-size: 16px;line-height: 24px;color: #000;margin: 0;">Name: <span
+                                    style="text-transform: uppercase;">{{pdfData?.customer}}</span></h5>
+                            <h6 style="font-size: 12px;line-height: 24px;color: #000;margin: 0;">Address:
+                                {{pdfData?.address}}</h6>
+                        </td>
+                        <td colspan="6" style="padding: 10px 20px;">
+                            <h5 style="font-size: 16px;line-height: 24px;color: #000;margin: 0;">Invoice No.:
+                                {{pdfData?.invoiceNo}} </h5>
+                            <h6 style="font-size: 12px;line-height: 24px;color: #000;margin: 0;">Date:
+                                {{pdfData?.invoiceDate | dateFormat}}</h6>
+                            <h6 style="font-size: 12px;line-height: 24px;color: #000;margin: 0;">Contact Person:
+                                {{pdfData?.customer}}</h6>
+                            <h6 style="font-size: 12px;line-height: 24px;color: #000;margin: 0;">Phone no.:
+                                {{pdfData?.mobileNo}}</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <table style="width: 100%;border-collapse: collapse;border-bottom: 1px solid #000;">
+                                <tbody>
+                                    <tr style="background-color: #a6f5f6; color: #000; font-size: 14px;">
+                                        <th
+                                            style="width: 50px;padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            SNo.
+                                        </th>
+                                        <th
+                                            style="width: 120px;padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Job No.
+                                        </th>
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Service Description</th>
+                                       
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Quantity</th>
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Rate</th>
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Dis/Per</th>
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            Net Rate</th>
+                                        <th
+                                            style="padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                                            GST</th>
+                                        <th
+                                            style=" padding: 10px 5px;border-left: 1px solid #000;border-bottom: 1px solid #000;border-right: 1px solid #000;">
+                                            Amount</th>
+                                    </tr>
+                                    <tr style="font-size: 14px;line-height: 24px;color: #000;"
+                                        *ngFor="let job of pdfData?.jobInvServices; let i = index">
+                                        <td style="width: 50px;padding: 10px 5px;border-left: 1px solid #000;">
+                                            {{i+1}}.
+                                        </td>
+                                        <td style="height: 15px;font-weight: 500; border-left: 1px solid #000;padding: 10px 5px;">{{job.cJobdNo}}</td>
+                                        <td style="width: 37%;padding: 10px 5px;border-left: 1px solid #000;">
+                                            <table style="width: 100%;">
+                                                <tbody>
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td style="height: 15px; padding-left: 30px;">
+                                                           {{item.srvSkill}} {{item.dStarttm}}
+                                                           <div>
+                                                           <small>({{item.Remarks}})</small></div>
+                                                        </td>
+                                                        <!-- ({{job.lastBilling | date:'dd-MMM-y'}} to {{job.dJobdDt | date:'dd-MMM-y'}}) -->
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+
+                                        </td>
+                                        <td style="width: 10%;padding: 10px 5px;border-left: 1px solid #000;">
+                                            <table style="width: 100%; text-align: right;">
+                                                <tbody>
+
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td>{{item.nQty}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td style="width: 10%;padding: 10px 5px;border-left: 1px solid #000;">
+                                            <table style="width: 100%; text-align: right;">
+                                                <tbody>
+
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td>{{item.mrp}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td style="width: 10%;padding: 10px 5px;border-left: 1px solid #000;">
+                                            <table style="width: 100%; text-align: right;">
+                                                <tbody>
+
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td>{{item.discPer}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td style="width: 9%;padding: 10px 5px;border-left: 1px solid #000;">
+                                            <table style="width: 100%;text-align: right;">
+                                                <tbody>
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td>{{item.aDRate}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td
+                                            style="width: 10%;padding: 10px 5px;border-left: 1px solid #000;border-right: 1px solid #000;">
+                                            <table style="width: 100%; text-align: right;">
+
+                                                <tbody>
+                                                    <ng-container *ngFor="let item of job.jobInvServiceDtls">
+                                                        <tr>
+                                                            <td>
+                                                                {{taxCalculation(item.jobInvServiceTaxDtls)}}
+                                                                <!-- {{item.jobInvServiceTaxDtls[0]['taxAmount']}} -->
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                    
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+
+                                        <td
+                                            style="width: 10%;padding: 10px 5px;border-left: 1px solid #000;border-right: 1px solid #000;">
+                                            <table style="width: 100%;text-align: right;">
+                                                <tbody>
+                                                    <tr *ngFor="let item of job.jobInvServiceDtls">
+                                                        <td>{{item.nQty*item.aDRate}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr
+                                        style="font-size: 14px;line-height: 24px;color: #000;border-top:1px solid #000;border-left:1px solid #000;border-right:1px solid #000;">
+                                        <td colspan="7" style="padding: 0 5px;">
+                                            {{ netAmountInvHst}} only
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <table style="width: 100%;margin: 0 auto;border-collapse: collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 140px;">
+                                            <img src="../../../assets/images/qrcode.png" width="100" alt="QRCODE">
+                                            <h6>
+                                                <img src="../../../assets/images/payment-icon.png" width="140" alt="">
+                                            </h6>
+                                        </td>
+                                        <td style="width: 30%; text-align: center;vertical-align: top;">
+                                            <h5 style="font-size: 16px;line-height: 24px;color: darkblue;margin: 0;">
+                                                Bank</h5>
+                                            <h5 style="font-size: 16px;line-height: 24px;color: darkblue;margin: 0;">A/C
+                                                NO.</h5>
+                                            <h5 style="font-size: 16px;line-height: 24px;color: darkblue;margin: 0;">
+                                                IFSC</h5>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <table
+                                                style="width: 100%;margin: 0 auto;border-collapse: collapse; border-left: 1px solid #000;border-bottom: 1px solid #000;border-right: 1px solid #000;">
+                                                <tr>
+                                                    <td style="border-right: 1px solid #000;padding-left: 10px;">
+
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                          <strong>Sub Total</strong>  </p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            Discount</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            SGST({{cGstRate}})</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            CGST({{cGstRate}})</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            IGST({{iGstRate}})</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">Other
+                                                            Adj</p>
+                                                        <h5
+                                                            style="font-size: 15px;line-height: 16px;color: #000;margin:0;font-weight: 700;">
+                                                            Grand Total</h5>
+                                                    </td>
+                                                    <td style="text-align: right;padding-right: 10px;">
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp;<strong>{{totalAmountData}}</strong> </p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp;   {{discount?discount:0}}</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp;   {{gstCalculation?.sgst}}</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp;   {{gstCalculation?.cgst}}</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp; {{gstCalculation?.igst}}</p>
+                                                        <p style="font-size: 12px;line-height: 15px;color: #000;">
+                                                            &nbsp;  {{otherAdj?otherAdj:0}}</p>
+                                                        <h5
+                                                            style="font-size: 15px;line-height: 16px;color: #000;margin:0;font-weight: 700;">
+                                                           &nbsp; {{totalAmountData + gstCalculation?.sgst + gstCalculation?.cgst + gstCalculation?.igst | number:'0.1-2'}}
+                                                        </h5>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- <tr>
+                        <td colspan="7">
+                            <table style="width: 100%;border-collapse: collapse;border-top: 1px solid #000;border-bottom: 1px solid #000;font-size: 14px;line-height: 24px;color: #000;">
+                                <tbody>
+                                    <tr>
+                                        <td style="border-left:1px solid #000;padding: 10px 5px;">1</td>
+                                        <td style="border-left:1px solid #000;padding: 10px 5px;">1</td>
+                                        <td style="border-left:1px solid #000;padding: 10px 5px;">1</td>
+                                        <td style="border-left:1px solid #000;padding: 10px 5px;">1</td>
+                                        <td style="border-left:1px solid #000;padding: 10px 5px;">1</td>
+                                        <td style="border-left:1px solid #000;border-right:1px solid #000;padding: 10px 5px;">1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td style="width: 50%;">
+                            <h6
+                                style="font-size: 13px;line-height: 16px;margin: 0;font-style: italic;color: #000;text-decoration: underline;">
+                                Terms & Conditions</h6>
+                            <p style="font-size: 11px;color: #000;line-height: 14px;">1.All Disputes are subject to
+                                UDAIPUR Jurisdictions only.</p>
+                            <p style="font-size: 11px;color: #000;line-height: 14px;">2.Interest @24%p.a. will be
+                                charged if bill not paid within 7 days</p>
+                            <p style="font-size: 11px;color: #000;line-height: 14px;">3.Please intimate within 2 days if
+                                any Discrepancy found in this bill</p>
+                            <p style="font-size: 11px;color: #000;line-height: 14px;">4.Any transportation charges will
+                                be borne by party</p>
+                        </td>
+                        <td style="width: 50%;text-align: right;">
+                            <h3 style="font-size: 20px;line-height: 30px;color:#000">For SAYLUSS MEDICARE PVT LTD</h3>
+                            <h5 style="font-size: 16px;line-height: 20px;color: #000;">Authorised signatory</h5>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Job receipt form modal -->
+
+<p-dialog header="Receipt" [(visible)]="jobReceiptPDF" [style]="{width: '80vw'}" [baseZIndex]="10000" [modal]="true"
+    [draggable]="false" [resizable]="false" (onHide)="cancel()">
+
+    <div class="p-grid p-nogutter">
+        <div class="p-md-12 p-text-center">
+            <button type="button" label="Print" (click)="generatePDF()" pButton></button>
+        </div>
+    </div>
+    <div id="contentToConvert" class="contentToConvert">
+        <table style="width: 100%;table-layout: fixed;">
+            <tbody>
+                <tr>
+
+                    <td style="width: 10%">
+                        <img src="../../../assets/images/logo.png" width="130px" alt="">
+                    </td>
+                    <td style="width:90%;text-align:center;font-size: 16px;color: #000;padding-right: 130px;">
+                        <h2 style="text-transform: uppercase;margin: 0 0 6px;">Sayluss Medicare (P) Ltd</h2>
+                        <h4 style="margin: 0 0 6px;">201, Golden Heights,</h4>
+                        <h4 style="margin: 0 0 6px;">Moksh Marg,Udaipur(raj.) -313001</h4>
+
+                        <h4 style="margin: 0 0 6px;">Ph: 76655-45555</h4>
+                        <h4 style="margin: 0 0 6px;">Email: <a
+                                href="mailto:info@saylussmedicare.com">info@saylussmedicare.com</a></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <h1 style="font-size: 24px;color: #000;margin-bottom: 30px;">RECEIPT</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <div style="text-align: left;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize; color: #999595;display: inline-block;padding: 0 10px;">
+                                            RECEIVED FROM: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['name']}}</span>
+                                        </h3>
+                                    </div>
+                                    <div style="text-align: left;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            PAYMENT DATE: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['vrDate']
+                                                | dateFormat}}</span></h3>
+                                    </div>
+
+                                </td>
+                                <td style="text-align: right;width:50%">
+                                    <div style="text-align: right;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            JOB NO: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['jobNo']}}</span>
+                                        </h3>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <h3
+                                            style="font-size: 14px;margin: 0;text-transform: capitalize;color: #999595;display: inline-block;padding: 0 10px;">
+                                            RECEIPT NO: <span
+                                                style="font-size: 16px;margin: 5px 0 0;color:#000;text-transform: uppercase;">{{pdfDat['receiptNo']}}</span>
+                                        </h3>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!-- <tr>
+                    <td style="font-size: 16px;color: #000;padding-top: 10px;">
+                        <h4 style="text-transform: uppercase;margin: 0 0 6px;">{{pdfDat['name']}}</h4>
+                        
+                        <h4 style="margin: 0 0 6px;">{{pdfDat['address']}}</h4>
+                        <h4 style="margin: 0 0 6px;">{{pdfDat['mobile']}}</h4>
+                        
+                    </td>
+                </tr> -->
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;margin:0;border:1px solid #666;border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: lightcyan;font-size: 16PX;">
+                                    <th style="padding: 10px 0;">DESCRIPTION</th>
+                                    <!-- <th style="padding: 10px 0;border-left: 1px solid #666;">TYPE</th> -->
+                                    <th style="padding: 10px 0;border-left: 1px solid #666;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="font-size: 15px;color: #000;"
+                                    *ngFor="let item of pdfDat['itemDescriptions']">
+                                    <td style="padding:0px 5px;font-size: 13px;">{{item['itemName']}}</td>
+                                    <!-- <td style="padding:10px 0;text-align: center;border-left: 1px solid #666;">RENTAL</td> -->
+                                    <td style="padding:0px 5px;text-align: right;border-left: 1px solid #666;">
+                                        {{item['amount']}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width: 100%;margin: 20PX 0 0;border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: lightcyan;font-size: 16PX;">
+                                    <th style="padding: 10px 0;">PAYMENT MODE</th>
+                                    <th style="padding: 10px 0;">Naration</th>
+                                    <th style="padding: 10px 0;">AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="font-size: 15px;color: #000;" *ngFor="let pay of pdfDat['jobReceipts']">
+                                    <td style="padding:10px 5px">{{pay['docType']}}</td>
+                                    <td style="padding:10px 0;text-align: center;">{{pay['narration']}}</td>
+                                    <td style="padding:10px 5px;text-align: right;">{{pay['amount']}}</td>
+                                </tr>
+
+                                <tr style="font-size: 14px;color: #000;border:1px solid #666">
+                                    <td style="padding: 5px;">In words:</td>
+
+                                    <td colspan="2" style="padding: 5px;">{{totalAmountPdfWord}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5 style="font-size: 15px;color: #000;margin:0 0 20px">Terms</h5>
+                        <p style="font-size: 14px;color: #000;margin: 0;">1. Term</p>
+                        <p style="font-size: 14px;color: #000;margin: 0">2. Term</p>
+                        <p style="font-size: 14px;color: #000;margin: 0">3. Term</p>
+                    </td>
+                    <td style="text-align: right;">
+                        <h3 style="font-size: 22px;color: #000;padding-bottom: 40px;margin:0">For Sayluss Medicare (p)
+                            Ltd.</h3>
+                        <h5 style="font-size: 15px;color: #000;margin: 0;">(Authorised Signatory)</h5>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</p-dialog>
+
+<p-dialog class="manage-ledger jobreceipt" header="{{invoiceDetailHeader}}" [(visible)]="displayJobInvServiceDtls"
+    [modal]="true" [style]="{width: '55vw'}" (onHide)="cancel()" [baseZIndex]="10000">
+    <div class="p-grid p-nogutter">
+        <p-table #invoicedata [value]="jobInvServiceDtlsData" appendTo="body" [autoLayout]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>SNo</th>
+                    <th>Type
+                    </th>
+                    <th>Service Name
+                    </th>
+                    <th>Item / ServiceSkill / ServicePoint
+                    </th>
+                    <th>MRP
+                    </th>
+                    <th>Discount(%)
+                    </th>
+                    <th>Net Rate
+                    </th>
+                    <th>Qty
+                    </th>
+                    <th>Amount
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data let-i="rowIndex">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td>{{data.srvType}}</td>
+                    <td>{{data.srvName}}</td>
+                    <td>{{data.item}}{{data.srvSkill}}{{data.srvPoint}}</td>
+                    <td>{{data.mrp}}</td>
+                    <td>{{data.discPer}}</td>
+                    <td>{{data.adRate}}</td>
+                    <td>{{data.nQty}}</td>
+                    <td>{{data.nAmount}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-dialog>

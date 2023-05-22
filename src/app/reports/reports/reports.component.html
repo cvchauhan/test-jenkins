@@ -1,0 +1,13 @@
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-md-4" *ngFor="let item of reportMenuData">
+            <p-card header="{{item?.title}}" [style]="{'width': '25rem', 'margin-bottom': '2em'}">
+                <ul>
+                    <li *ngFor="let subM of item?.submenu" ><a href="" [routerLink]="['/reports/report-details', subM?.path, subM?.nmenuId, subM?.reportName]">{{subM?.title}}</a></li>
+                </ul>
+            </p-card>
+        </div>
+     
+    </div>
+    
+</div>

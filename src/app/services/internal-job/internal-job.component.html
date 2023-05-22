@@ -1,0 +1,511 @@
+<p-toast [baseZIndex]="100000"></p-toast>
+
+<div class="dashboard">
+  <div class="manage-job">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12">
+        <form>
+          <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-3 p-pr-2">
+                <div class="p-grid">
+                  <div class="p-col-3">
+                    <label for="shift">Service</label>
+                  </div>
+                  <div class="p-col-8">
+                    <p-dropdown placeholder="Select Branch" [showClear]="true" inputId="priority" [ngModelOptions]="{standalone: true}">
+                  </p-dropdown>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-pr-2">
+                <div class="p-grid">
+                  <div class="p-col-3">
+                    <label for="shift">Status</label>
+                  </div>
+                  <div class="p-col-8">
+                    <p-dropdown placeholder="Select Branch" [showClear]="true" inputId="priority" [ngModelOptions]="{standalone: true}">
+                  </p-dropdown>
+                  </div>
+                </div>
+              </div>
+            <div class="p-col-12 p-md-2 p-pr-2">
+              <div class="p-grid">
+                <div class="p-col-3">
+                  <label for="Date">Date</label>
+                </div>
+                <div class="p-col-9">
+                  <p-calendar placeholder="Select Date" [showIcon]="true" inputId="Date" [ngModelOptions]="{standalone: true}"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-2 p-pr-2">
+              <div class="p-grid">
+                <div class="p-col-3">
+                  <label for="to">To</label>
+                </div>
+                <div class="p-col-9">
+                  <p-calendar placeholder="Select Date" [showIcon]="true" inputId="to" [ngModelOptions]="{standalone: true}"></p-calendar>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="p-grid p-no-gutter">
+      <div class="p-col-12">
+        <p-table [value]="internalJobData" [autoLayout]="true" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,40,80,120]"
+        [scrollable]="true" scrollHeight="350px">
+          <ng-template pTemplate="caption">
+            <div class="p-grid  p-jc-end p-mt-3">
+              <div class="p-col-9 p-md-5">
+                <div class="search">
+                  <input placeholder="Search" id="search" type="text" pInputText>
+                  <button pButton type="button" icon="pi pi-search" iconPos="left"></button>
+                </div>
+
+              </div>
+              <div class="p-col-3 p-md-7 p-text-right">
+
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>SNo</th>
+              <th>Job No</th>
+              <th>Job Start Date</th>
+              <th>Service</th>
+              <th>Customer</th>
+              <th>Assigned To</th>
+              <th>Data Status</th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-Data let-i="rowIndex">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{Data.jno}}</td>
+              <td>{{Data.jStartDate | dateFormat}}</td>
+              <td>{{Data.service}}</td>
+              <td> {{Data.customer}} </td>
+              <td>{{Data.assignedTo}}</td>
+              <td>{{Data.dataStatus}}</td>
+              <td>
+                <a class="p-button-raised" [routerLink]="['/edit-job/Data.jno']"><i class="pi pi-pencil"></i></a>
+              </td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Customer dialog box -->
+<p-dialog header="Assessment" [(visible)]="jobEditDialog" [modal]="true" [style]="{width: '70vw'}" [baseZIndex]="10000">
+  <form>
+    <div class="p-grid">
+      <div class="p-md-6">
+        <h3>Assessment Data</h3>
+        <div class="p-grid">
+          <div class="p-md-3"><label>Customer</label></div>
+          <div class="p-md-9">
+            <input type="text" PInputText>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-3"><label>Service Point</label></div>
+          <div class="p-md-9">
+            <p-dropdown appendTo="body" class="popdropdown" [showClear]="true"></p-dropdown>
+            <p-button class="rgtButton" type="button" label="Load"></p-button>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-12">
+            <p-table [value]="jobAssessment" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th></th>
+                  <th>SNo</th>
+                  <th>Service Point</th>
+                  <th>Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-jobData let-i="rowIndex">
+                <tr>
+                  <td><p-radioButton name="groupname"></p-radioButton></td>
+                  <td>{{i + 1}}</td>
+                  <td>{{jobData.servicepoint}}</td>
+                  <td>
+                    <p-button icon="pi pi-trash" class="p-button-raised p-button-danger"></p-button>
+                  </td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-6">
+        <h3>Patient Info</h3>
+        <div class="p-grid">
+          <div class="p-md-7">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-4 p-p-0"><label>Label</label></div>
+              <div class="p-md-8 p-p-0"><input type="text" pInputText></div>
+            </div>
+          </div>
+          <div class="p-md-5">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-4 p-p-0"><label>Gender</label></div>
+              <div class="p-md-8 p-p-0">
+                <p-dropdown appendTo="body" [showClear]="true"></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-7">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-4 p-p-0"><label>Age</label></div>
+              <div class="p-md-8 p-p-0">
+                <div class="p-grid p-nogutter">
+                  <div class="p-md-4 p-p-0"><input type="text" pInputText></div>
+                  <div class="p-md-4 p-p-0 p-pr-1 p-text-right"><label>Weight</label></div>
+                  <div class="p-md-4 p-p-0"><input type="text" pInputText></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-5">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-4 p-p-0"><label>Height</label></div>
+              <div class="p-md-8 p-p-0">
+                <input type="text" pInputText>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-12">
+            <p-table [value]="jobAssessment" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>SNo</th>
+                  <th>Task</th>
+                  <th>Value</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-jobData let-i="rowIndex">
+                <tr>
+                  <td>{{i + 1}}</td>
+                  <td>{{jobData.servicepoint}}</td>
+                  <td>
+                   <input type="text" PInputText>
+                  </td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+          <div class="p-col-12">
+            <p-button type="submit" label="Submit"></p-button>
+      
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </form>
+</p-dialog>
+
+<button type="button" (click)="commonDialog()" label="Common">Common</button>
+
+<!-- Recomendation, medicin, summary popup -->
+<p-dialog header="" [(visible)]="commonThreeDialog" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000">
+  <form>
+    <p-tabView>
+      <p-tabPanel header="Recommendation">
+        <div class="p-grid p-nogutter">
+          <div class="p-md-12">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-11 p-p-0">
+                <div class="p-field-radiobutton">
+                  <input name="recommedValue"  [(ngModel)]="recommedValue" type="radio" [value]="true" [checked]="recommedValue" inputId="servrecm"/> 
+                  <label for="servrecm">Service(s) Recommendation:</label>
+                 </div>
+                <div class="p-field-radiobutton">
+                  <input name="recommedValue"[(ngModel)]="recommedValue" type="radio" [value]="false" [checked]="!recommedValue" inputId="spoint"/> 
+                  <label for="spoint">Service Point(s) Recommendation:</label>
+                 </div>
+              </div>
+              <div class="p-md-1 p-p-0 p-text-right">
+                <button pButton type="button" icon="pi pi-plus" (click)="showServPoint()" iconPos="left" class="btn-plus"></button>
+              </div>
+            </div>
+            
+          </div>
+          <div class="p-md-12">
+            <div *ngIf="recommedValue">
+              <div class="p-grid p-nogutter">
+                <div class="p-md-12 p-p-0">
+                  <p-table [value]="internalJobData" [autoLayout]="true">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th><p-checkbox name="groupname"></p-checkbox></th>
+                        <th>Type</th>
+                        <th>Service</th>
+                        <th>Skills</th>
+                        <th>Price(Unit)</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                      <tr>
+                        <td><p-checkbox name="groupname"></p-checkbox></td>
+                        <td>{{Data.jno}}</td>
+                        <td>{{Data.jStartDate}}</td>
+                        <td>{{Data.service}}</td>
+                        <td><p-dropdown></p-dropdown></td>
+                      </tr>
+                    </ng-template>
+          
+                  </p-table>
+                </div>
+                
+              </div>
+            </div>
+            <div *ngIf="!recommedValue">
+              <div class="p-grid p-nogutter">
+                <div class="p-md-12 p-p-0">
+                  <p-table [value]="internalJobData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th><p-checkbox name="groupname"></p-checkbox></th>
+                        <th>Service Point</th>
+                        <th>Service</th>
+                        <th>Skills</th>
+                        <th>Duration(Hrs)</th>
+                        <th>Price(Unit)</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                      <tr>
+                        <td><p-checkbox name="groupname"></p-checkbox></td>
+                        <td>{{Data.jno}}</td>
+                        <td>{{Data.jStartDate}}</td>
+                        <td>{{Data.service}}</td>
+                        <td>-</td>
+                        <td><p-dropdown></p-dropdown></td>
+                      </tr>
+                    </ng-template>
+          
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-12 p-p-0 p-mt-5">
+            <div class="p-grid p-nogutter">
+              <div class="p-md-9 p-p-0">
+                <h3>Machine Recommendation</h3>
+              </div>
+              <div class="p-md-3 p-p-0 p-text-right">
+                <button pButton type="button" icon="pi pi-plus" iconPos="left" (click)="showMachine()" class="btn-plus"></button>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-12 p-p-0">
+            <p-table [value]="internalJobData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th><p-checkbox name="groupname"></p-checkbox></th>
+                  <th>Equipment</th>
+                  <th>S. Deposit</th>
+                  <th>Rental</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                <tr>
+                  <td><p-checkbox name="groupname"></p-checkbox></td>
+                  <td>{{Data.jno}}</td>
+                  <td>{{Data.jStartDate}}</td>
+                  <td>{{Data.service}}</td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+          <div class="p-md-12">
+            <p-button label="Next" type="button"></p-button>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Medicine">
+          Content 2
+      </p-tabPanel>
+      <p-tabPanel header="Summary">
+        <div class="p-grid p-nogutter">
+          <div class="p-md-12">
+            <h3>Service</h3>
+            <p-table [value]="internalJobData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>SNo</th>
+                  <th>Service</th>
+                  <th>Service Skills</th>
+                  <th>Service Points</th>
+                  <th>Duration</th>
+                  <th>Price</th>
+                  <th>Frequency</th>
+                  <th>Repeats on</th>
+                  <th>Schedule Time</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                <tr>
+                  <td>{{i+1}}</td>
+                  <td>{{Data.jno}}</td>
+                  <td>{{Data.jStartDate}}</td>
+                  <td>{{Data.service}}</td>
+                  <td> {{Data.customer}} </td>
+                  <td>{{Data.assignedTo}}</td>
+                  <td><p-dropdown></p-dropdown></td>
+                  <td><input type="text" pInputText></td>
+                  <td>
+                    <input type="text" pInputText>
+                  </td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+          <div class="p-md-12 p-mt-5">
+            <h3>Equipment</h3>
+            <p-table [value]="internalJobData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>SNo</th>
+                  <th>Description</th>
+                  <th>Security Deposit</th>
+                  <th>Price</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                <tr>
+                  <td>{{i+1}}</td>
+                  <td>{{Data.jno}}</td>
+                  <td>{{Data.jStartDate}}</td>
+                  <td>{{Data.service}}</td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+          <div class="p-md-12 p-mt-5">
+            <h3>Medicine</h3>
+            <p-table [value]="internalJobData" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th><p-checkbox name="medicine"></p-checkbox></th>
+                  <th>Medication</th>
+                  <th>Type</th>
+                  <th>Qty</th>
+                  <th>Price(Unit)</th>
+                  <th>Action</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-Data let-i="rowIndex">
+                <tr>
+                  <td><p-checkbox name="medicine"></p-checkbox></td>
+                  <td>{{Data.jno}}</td>
+                  <td>{{Data.jStartDate}}</td>
+                  <td>{{Data.service}}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </ng-template>
+    
+            </p-table>
+          </div>
+          <div class="p-md-12 p-mt-5">
+            <div class="p-grid p-nogutter">
+              <label class="p-md-2 p-p-0">Job Start Date</label>
+              <div class="p-md-4">
+                <input type="text" pInputText>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-12 p-mt-5">
+            <button pButton type="button" label="Create Service Job"></button>
+          </div>
+        </div>
+        
+      </p-tabPanel>
+  </p-tabView>
+  </form>
+</p-dialog>
+
+
+<!-- Add service point popup -->
+<p-dialog header="Add Service Points" [(visible)]="sevPointeDialog" [modal]="true" [style]="{width: '30vw'}" [baseZIndex]="10000">
+  <form>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Select Service</label>
+      <div class="p-md-8">
+        <p-dropdown></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Service Point</label>
+      <div class="p-md-8">
+        <p-dropdown></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Price</label>
+      <div class="p-md-8">
+        <h4>100 Per Visit</h4>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <div class="p-md-12">
+        <p-button label="Add" type="button"></p-button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Machine popu -->
+<p-dialog header="Machine Recommendation" [(visible)]="machineDialog" [modal]="true" [style]="{width: '30vw'}" [baseZIndex]="10000">
+  <form>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Select Service</label>
+      <div class="p-md-8">
+        <p-dropdown></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Equipment</label>
+      <div class="p-md-8">
+        <p-dropdown></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <label class="p-md-4">Price</label>
+      <div class="p-md-8">
+        <h4>100 Per Visit</h4>
+      </div>
+    </div>
+    <div class="p-grid p-nogutter">
+      <div class="p-md-12">
+        <p-button label="Add" type="button"></p-button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

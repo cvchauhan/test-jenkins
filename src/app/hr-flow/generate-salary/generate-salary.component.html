@@ -1,0 +1,49 @@
+<div class="dashboard">
+    <div class="p-grid">
+        <div class="p-col-12 p-md-1">
+            <label>Month/Year</label>
+        </div>
+        <div class="p-col-12 p-md-3">
+            <p-calendar [(ngModel)]="date12" view="month" dateFormat="mm-yy" [showIcon]="true" [yearNavigator]="true" yearRange="2000:2030" [readonlyInput]="true"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-12 p-md-1">
+            <label>Department</label>
+        </div>
+        <div class="p-col-12 p-md-3">
+            <p-dropdown [options]="cities" placeholder="Select" [(ngModel)]="selectedCityCode" optionLabel="name" optionValue="code"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-12 p-md-1">
+
+        </div>
+        <div class="p-col-12 p-md-3">
+            <button pButton type="button" class="template" label="Generate" ></button>
+            <button pButton type="button" class="template p-ml-1" label="Salary sheet" ></button>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-md-12">
+            <p-table [value]="products">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="code">Code<p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="category">Category<p-sortIcon field="category"></p-sortIcon></th>
+                        <th pSortableColumn="quantity">Quantity<p-sortIcon field="quantity"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{product.code}}</td>
+                        <td>{{product.name}}</td>
+                        <td>{{product.category}}</td>
+                        <td>{{product.quantity}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

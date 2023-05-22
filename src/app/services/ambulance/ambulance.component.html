@@ -1,0 +1,183 @@
+<div class="dashboard">
+    <div class="ambulance">
+        <div class="p-grid p-nogutter">
+            <div class="p-col-12 p-md-11">
+                <div class="p-grid p-nogutter">
+                  <div class="p-col-8 p-md-8">
+                    <input id="txtSearch" type="text" pInputText>
+                  </div>
+                  <div class="p-col-3 p-md-3"></div>
+                  <div class="p-col-1 p-md-1">
+                  </div>
+                </div>
+            </div>
+        </div>
+         <br/>
+        <p-table [value]="jobAmbulancelist" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+          <ng-template pTemplate="header" let-columns>
+              <tr>
+                  
+                  <th>SrNo</th>
+                  <th>JobNo</th>
+                  <th>Job Date</th>
+                  <th>Vehicle Type</th>
+                  <th>Service(s)</th>
+                  <th>Customer</th>
+                  <th>Assigned To</th>
+                  <th>Status</th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-job>
+              <tr>
+                  <td>{{job.SrNo}}</td>
+                  <td>{{job.JobNo}}</td>
+                  <td>{{job.JobDate | dateFormat}}</td>
+                  <td>{{job['Vehicle Type']}}</td>
+                  <td>{{job.Services}}</td>
+                  <td>{{job.Customer}}</td>
+                  <td>{{job.Assigned}}</td>
+                  <td><a (click)="openAssignment()">{{job.Status}}</a></td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </div> 
+</div>
+
+<p-dialog header="Assigment Details" [(visible)]="jobDialog" [modal]="true" [style]="{width: '70vw'}" [baseZIndex]="10000">
+    <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-2"><label for="">JobNo</label></div>
+          <div class="p-col-12 p-md-10  p-pl-2">
+              <label>#-{{job.JobNo}}</label>              
+          </div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-2"><label for="">Customer</label></div>
+          <div class="p-col-12 p-md-10  p-pl-2">
+              <label>{{job.Customer}}</label>              
+          </div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+        <div class="p-grid p-nogutter grid-gutter">
+          <div class="p-col-12 p-md-2"><label for=""><b>Vehicle Requirment</b></label></div>
+          <div class="p-col-12 p-md-10  p-pl-2">
+              <label>{{job['Vehicle Type']}}</label>              
+          </div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter" >
+        <div class="p-col-4 p-md-2"><label for=""><b>Remarks</b></label></div>
+        <div class="p-col-6 p-md-3  p-pl-2">
+            <label>{{job.Remarks}}</label>   
+        </div>
+        <div class="p-col-4 p-md-2"><label for=""><b>Staff Requirment</b></label></div>
+        <div class="p-col-6 p-md-3  p-pl-2">
+            <label>{{job['Staff Requirment']}}</label>   
+        </div>
+       </div>
+    </div>
+    <div class="p-col-12 p-md-12">
+      <div class="p-grid p-nogutter grid-gutter" >
+        <div class="p-col-6 p-md-6">
+          <h4>Requirment</h4><br/> 
+          <p-table [value]="serviceRequirmentlist" [autoLayout]="true" [scrollable]="true" scrollHeight="350px">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>#</th>
+                    <th>Requirment Type</th>
+                    <th>Particular</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-service>
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="service"></p-tableCheckbox>
+                  </td>
+                  <td>{{service['Requirment Type']}}</td>
+                  <td>{{service.Particulars}}</td>
+                  <td><a href="javascript:void(){return false}">Remove</a></td>
+                </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="p-col-6 p-md-6">
+            <div class="p-col-4 p-md-2"><label for=""><b>Available Vehicle!</b></label></div>
+            <div class="p-grid p-nogutter">
+                <div class="p-col-12 p-md-11">
+                    <div class="p-grid p-nogutter">
+                      <div class="p-col-8 p-md-8">
+                        <input id="txtSearch" type="text" pInputText>
+                      </div>
+                      <div class="p-col-3 p-md-3"></div>
+                      <div class="p-col-1 p-md-1">
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <p-table [value]="serviceAvailablelist" [scrollable]="true" scrollHeight="350px">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                        <th>Type</th>
+                        <th>Vehicle Number</th>
+                        <th>Travelled sofar</th>
+                        <th>Driver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-service>
+                    <tr>
+                      <td>
+                          <p-tableRadioButton [value]="service"></p-tableRadioButton>
+                          <!-- <p-tableCheckbox [value]="service"></p-tableCheckbox> -->
+                      </td>
+                      <td>{{service.Type}}</td>
+                      <td>{{service['Vehicle Number']}}</td>
+                      <td>{{service['Travelled so far']}}</td>
+                      <td> 
+                      <p-dropdown appendTo="body" [options]="" optionLabel="" [(ngModel)]="service.Driver"></p-dropdown>   
+                        </td>
+                    </tr>
+                </ng-template>
+              </p-table>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <div class="p-grid p-nogutter grid-gutter">
+                <div class="p-col-12 p-md-2"><label for=""><b>Assignment</b></label></div>
+                <p-table [value]="serviceAssignmentlist" [autoLayout]="true" [scrollable]="true" scrollHeight="80px">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th>#</th>
+                            <th>Requirment&nbsp;Type</th>
+                            <th>Assigned&nbsp;To</th>
+                            <th>Mobile</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-service>
+                        <tr>
+                          <td>
+                            <p-tableCheckbox [value]="service" checked></p-tableCheckbox>
+                          </td>
+                          <td>{{service['Requirment Type']}}</td>
+                          <td >{{service['Assigned To']}}</td>
+                          <td>{{service['Mobile']}}</td>
+                          <td> 
+                              <a href="javascript:void(){return false}">Remove</a>
+                          </td>
+                        </tr>
+                    </ng-template>
+                  </p-table>
+            </div>
+        </div>  
+      </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="saveDialog()" label="Save" class="p-button-text"></p-button>
+        <p-button icon="pi pi-times" (click)="hideDialog()" label="Cancel"></p-button>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,4 @@
+#bt{
+    margin-left: 20px;
+}
+.grid-gutter [class*="p-col-"]:not(:first-child){padding: 0 15px 8px 0;}

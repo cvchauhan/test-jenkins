@@ -1,0 +1,54 @@
+<div class="p-grid p-mr-0">
+
+    <!-- <div class="container">
+        <ssrs-reportviewer
+            [reportserver]="reportServer"
+            [reporturl]="reportUrl"
+            [showparameters]="showParameters" 
+            [parameters]="parameters" 
+            [language]="language" 
+            [width] ="width" 
+            [height]="height" 
+            [toolbar]="toolbar" >
+        </ssrs-reportviewer>
+    </div> -->
+
+    <div class="p-md-9">
+        <pdf-viewer [src]="'http://sabriapi.bancplus.in/api/Report/GetUser1?UserId=0'" [render-text]="true"
+            [original-size]="false" style="width: 100%; height: 400px"></pdf-viewer>
+    </div>
+    <div class="p-md-3 p-p-0">
+        <div class="report-filter">
+            <div class="p-grid p-m-0">
+                <div class="p-md-12">
+                    <label for="branch">Branch</label>
+                    <p-dropdown [options]="branch" placeholder="Select" id="branch" optionLabel="name"></p-dropdown>
+                </div>
+                <div class="p-md-12">
+                    <label for="fdate">From Date</label>
+                    <p-calendar [showIcon]="true" id="fdate"></p-calendar>
+                </div>
+                <div class="p-md-12">
+                    <label for="tdate">To Date</label>
+                    <p-calendar [showIcon]="true" id="tdate"></p-calendar>
+                </div>
+                <div class="p-md-12">
+                    <label for="mode">Mode</label>
+                    <p-dropdown [options]="branch" placeholder="Select" id="mode" optionLabel="name"></p-dropdown>
+                </div>
+                <div class="p-md-12">
+                    <label for="account">Account</label>
+                    <input type="text" id="account" pInputText />
+                </div>
+                <div class="p-md-12">
+                    <label for="gtype">Group Type</label>
+                    <p-dropdown [options]="branch" placeholder="Select" id="gtype" optionLabel="name"></p-dropdown>
+                </div>
+                <div class="p-md-12">
+                    <button type="submit" label="View" class="p-mr-2" pButton></button>
+                    <button type="submit" label="Export" pButton></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

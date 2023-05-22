@@ -1,0 +1,139 @@
+<div class="login_wrapper">
+  <div class="p-grid p-nogutter">
+    <div class="p-col-12 p-md-5 p-lg-5">
+      <div class="logo">
+        <img src="../../../assets/images/logo16x16.png" alt="logo">
+      </div>
+      <div class="login">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12">
+            <div class="heading">
+              <h1>Sign in</h1>
+
+            </div>
+          </div>
+          <div class="p-col-12">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="p-fluid">
+
+                <p-message-error class="errMsg" text="Message Content" *ngIf="showErrorMsg">{{loginError}}
+                </p-message-error>
+
+                <div class="p-field">
+                  <label for="email" class="p-col-12 p-px-0 p-mb-0">User Name</label>
+                  <div class="p-col-12 p-p-0 p-mb-0">
+                    <div class="p-inputgroup">
+                      <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                      <input id="email" type="text" pInputText formControlName="username" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-field">
+                  <label for="password" class="p-col-12 p-px-0 p-mb-0">Password</label>
+                  <div class="p-col-12 p-p-0 p-mb-0">
+                    <div class="show_hide">
+                      <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-key"></i></span>
+                        <input id="password" [type]="show?'text':'password'" pInputText formControlName="password"
+                          required>
+                      </div>
+                      <div class="show_hide_icon">
+                        <a *ngIf="!show" href="javascript:void(0)" (click)="showPassword()"><i
+                            class="pi pi-eye"></i></a>
+                        <a *ngIf="show" href="javascript:void(0)" (click)="hidePassword()"><i
+                            class="pi pi-eye-slash"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-field p-grid p-nogutter">
+                  <div class="p-col-6 p-px-0">
+                    <div class="remember">
+                      <label class="container-checkbox">
+                        <input type="checkbox">
+                        <span class="check-mark"></span>
+                      </label>
+                      <h5>Remember me</h5>
+                    </div>
+                  </div>
+                  <div class="p-col-6 p-px-0 p-text-right">
+                    <a class="forgot" href="javascript:void(0)" (click)="ShowDialogForgot()">Forgot password?</a>
+                  </div>
+                </div>
+                <div class="p-field">
+                  <div class="p-col-12">
+                    <button pButton type="submit" label="Sign in" class="btn-signin"></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-7 p-lg-7">
+      <div class="Login_right">
+        <div class="brand_desc">
+          <h1>Well-crafted,<br />Coded with attention,<br />Build with passion.</h1>
+          <p>treo helps developers to build organized and well-coded admin dashboards full of beautiful and feature rich
+            modules.</p>
+          <button pButton type="button" label="Primary" class="p-button-outlined btn-learn-more">Learn more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Forgot Password" [(visible)]="customerDialog" [modal]="true" [style]="{width: '30vw'}"
+  [baseZIndex]="10000">
+  <form [formGroup]="formsGroup">
+    <div class="p-grid">
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-4">
+            <label for="username">User Name</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input id="op" formControlName="username" type="text" pInputText (keyup)="CheckUserName($event)">
+            <p-message-error class="errMsg" text="Message Content" *ngIf="showcheckUserName">
+              {{UserNameinError}}</p-message-error>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12">
+        <div class="p-grid p-nogutter">
+          <div class="p-col-12 p-md-4">
+            <label for="mobileno">Mobile No</label>
+          </div>
+          <div class="p-col-12 p-md-8">
+            <input id="op" formControlName="mobileno" type="text" (keyup)="CheckMobileno($event)" pInputText>
+            <p-message-error class="errMsg" text="Message Content" *ngIf="showcheckmobile">
+              {{MobileinError}}</p-message-error>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-12" style="text-align:center;">
+        <button label="Send Otp" class="p-mt-2" (click)="SendOtp()" [disabled]="IsEnabledButton==false"
+          pButton></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- OTP dialog -->
+<p-dialog header="OTP" [(visible)]="otpDialog" [style]="{width: '20vw'}" [modal]="true" [baseZIndex]="10000">
+  <div class="p-grid p-nogutter grid-gutter">
+    <div class="p-col-1 p-md-5"><label for="">Enter OTP:</label></div>
+    <div class="p-col-4 p-md-7">
+      <input type="text" [(ngModel)]="otpValue" [ngModelOptions]="{standalone: true}" pInputText>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="p-text-right">
+      <button label="Confirm" class="p-mt-2" (click)="validateOtp()" 
+      pButton></button>
+      <button label="Close" class="p-mt-2" (click)="otpDialog=false"
+      pButton></button>
+    </div>
+  </ng-template>
+</p-dialog>

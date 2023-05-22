@@ -1,0 +1,44 @@
+<div class="container">
+
+  <h1>Tag Location</h1>
+  <div class="form-group">
+    <div class="p-grid p-nogutter">
+      <div class="p-col-12 p-md-12 p-pr-2">
+        <div class="p-grid">
+          <div class="p-col-11">
+            <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text"
+              class="form-control" #search>
+          </div>
+          <div class="p-col-1">
+            <button type="button" label="Find" (click)="FindAddress()" pButton></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <agm-map [latitude]="latitude" [longitude]="longitude"   [scrollwheel]="false" [fitBounds]="true" [zoom]="zoom">
+    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" [agmFitBounds]="true" 
+       (dragEnd)="markerDragEnd($event)"></agm-marker>
+  </agm-map>
+</div>
+
+
+<!-- <div class="mapContainer">
+
+  <div class="form-group" style="display: none;">
+    <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search>
+  </div>
+
+    <app-map (latLong)="getLatLong($event)">
+
+    </app-map>
+</div> -->
+
+<!-- <h1>Customer Address</h1>
+    <div class="form-group">
+      <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search [formControl]="searchControl">
+    </div>
+    <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom">
+      <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true"
+      (dragEnd)="markerDragEnd($event)"></agm-marker>
+    </agm-map> -->

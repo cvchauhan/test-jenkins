@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --prod",
-    "build:prod": "ng build configurations=prod",
+    "build:prod": "ng build configurations=production",
     "build:dev": "ng build configurations=dev",
     "build:test": "ng build configurations=test",
     "test": "ng test",

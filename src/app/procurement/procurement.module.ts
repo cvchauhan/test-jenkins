@@ -6,7 +6,6 @@ import {ButtonModule} from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import {DialogModule} from 'primeng/dialog';
 import {FileUploadModule} from 'primeng/fileupload';
-
 import { ProcurementRoutingModule } from './procurement-routing.module';
 import { ProcurementReqComponent } from './procurement-req/procurement-req.component';
 import { ProcurementQuotationUploadComponent } from './procurement-quotation-upload/procurement-quotation-upload.component';

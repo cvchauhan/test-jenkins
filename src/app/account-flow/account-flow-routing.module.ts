@@ -3,6 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'account-ledger', 
+    pathMatch: "full"
+  },
+  {
     path: 'account-ledger',
     loadChildren: () =>
       import('./account-ledger/account-ledger.module').then(

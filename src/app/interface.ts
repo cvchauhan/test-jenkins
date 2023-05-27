@@ -55,3 +55,13 @@ export interface BRANCHMODEL {
   txt: string;
   val: number;
 }
+
+export interface STATUS_DATA {
+  sname: string;
+  code: string;
+}
+
+export interface INNER_STATUS_DATA {
+  sname: string;
+  code: string;
+}

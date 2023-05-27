@@ -1,27 +1,19 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TabViewModule } from 'primeng/tabview';
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ToastModule } from 'primeng/toast';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceRoutingModule } from './service-routing.module';
 import { ServiceComponent } from './service/service.component';
 import { ServiceSkillsPricingComponent } from './service-skills-pricing/service-skills-pricing.component';
 import { ServicePointsComponent } from './service-points/service-points.component';
 import { VehicleEntryComponent } from './vehicle-entry/vehicle-entry.component';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { CalendarModule } from 'primeng/calendar';
 import { ServicePointCarePlanComponent } from './service-point-care-plan/service-point-care-plan.component';
 import { VehiclePricingComponent } from './vehicle-pricing/vehicle-pricing.component';
 import { VehicleAvailabilityComponent } from './vehicle-availability/vehicle-availability.component';
 import { ServiceDesignService } from './service-design.service';
 import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ServicePipe } from '../service/service.pipe';
@@ -37,6 +29,7 @@ import { ServicePackageComponent } from './service-package/service-package.compo
 import { PackageTableComponent } from './package-table/package-table.component';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { MapCommonModule } from '../map-common/map-common.module';
 
 @NgModule({
   declarations: [
@@ -54,20 +47,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
     PackageTableComponent,
   ],
   imports: [
-    CommonModule,
+    MapCommonModule,    
     ServiceRoutingModule,
     TabViewModule,
-    DropdownModule,
     MultiSelectModule,
-    ButtonModule,
-    TableModule,
-    CalendarModule,
-    FormsModule,
-    DialogModule,
     ToastModule,
     InputTextareaModule,
-    ReactiveFormsModule,
-    ConfirmDialogModule,
     RadioButtonModule,
     CheckboxModule,
     SplitButtonModule,

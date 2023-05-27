@@ -5,6 +5,7 @@ import moment from 'moment';
 import { MessageService } from 'primeng/api';
 import { ServicesService } from 'src/app/services/services.service';
 import { AccountService } from '../account.service';
+import { INNERSTATUSDATA, STATUSDATA } from 'src/app/constant';
 
 @Component({
 
@@ -31,16 +32,8 @@ export class CollectionApprovalComponent implements OnInit {
   BankId: any;
   ImgURL: SafeResourceUrl;
   AssignEmpDate: any = null;
-  statusData: any = [
-    { sname: "Approve", code: "A" },
-    { sname: "Pending", code: "P" },
-    { sname: "Assigned", code: "N" },
-    { sname: "Collected", code: "C" }
-  ];
-  innerStatusData: any = [
-    { sname: "Approve", code: "A" },
-    { sname: "Rejected", code: "R" },
-  ];
+  statusData = STATUSDATA;
+  innerStatusData = INNERSTATUSDATA;
   StatusId: any = {};
   InnerStatusId: any = {};
   first = 0;

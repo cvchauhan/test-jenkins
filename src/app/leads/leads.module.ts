@@ -14,21 +14,16 @@ import { LeadCreationComponent } from './lead-creation/lead-creation.component';
 import { VehicleAvailabilityComponent } from './vehicle-availability/vehicle-availability.component';
 import { VehicleEntryComponent } from './vehicle-entry/vehicle-entry.component';
 import { LeadsRoutingModules } from './leads-routing.module';
+import { MapCommonModule } from '../map-common/map-common.module';
 
 @NgModule({
   declarations: [AmbulanceAssignmentComponent, LeadsComponent, LeadCreationComponent, VehicleAvailabilityComponent, VehicleEntryComponent],
   imports: [
     LeadsRoutingModules,
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
     TabViewModule,
-    ButtonModule,
-    DialogModule,
-    DropdownModule,
     AutoCompleteModule,
     FileUploadModule,
-    TableModule
+    MapCommonModule
   ],
 })
 export class LeadsModule { }

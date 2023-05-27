@@ -221,8 +221,7 @@ export class StockApprovalComponent implements OnInit {
 
   filterManageItem(){
     this.branchData =JSON.parse(localStorage.getItem('branchData'));
-    let selBranch = this.branchData.filter(e => e.txt == this.selectedBranch['txt']);
-    debugger
+    let selBranch = this.branchData.filter(e => e.txt == this.selectedBranch['txt']);    
     let transType = 'P';
     let Status =  this.selectedStatus.value;
     this.accountService.StockTransList(Utils.formatDate(this.formDate), Utils.formatDate(this.toDate), transType, selBranch[0]['val'], Status).subscribe(

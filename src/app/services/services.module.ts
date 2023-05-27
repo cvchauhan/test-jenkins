@@ -1,17 +1,8 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { DropdownModule } from 'primeng/dropdown';
-import { DialogModule } from 'primeng/dialog';
-import { HttpClientModule } from '@angular/common/http';
-import { ManageJobComponent } from './manage-job/manage-job.component';
 import { ServicesRoutingModule } from './services-routing.module';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { RadioButton } from 'primeng/radiobutton';
 import { TabViewModule } from 'primeng/tabview';
 import { FileUploadModule } from 'primeng/fileupload';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
 import { JobComponent } from './job/job.component';
 import { AmbulanceComponent } from './ambulance/ambulance.component';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -21,24 +12,18 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {
   ConfirmationService,
-  MessageService,
-  PrimeNGConfig,
+  MessageService  
 } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ManageHolidayComponent } from './manage-holiday/manage-holiday.component';
 import { ManageHolidayJobComponent } from './manage-holiday-job/manage-holiday-job.component';
 import { JobApprovalComponent } from './job-approval/job-approval.component';
-
-import { MessagesModule } from 'primeng/messages';
 import { AccountService } from '../account-flow/account.service';
 import { DiscCalcPipe } from '../pipes/discCalcPipe';
 import { CustomerLedgerComponent } from '../services/customer-ledger/customer-ledger.component';
 import { InternalJobComponent } from './internal-job/internal-job.component';
 import { EditJobComponent } from './internal-job/edit-job/edit-job.component';
-// import { MapComponent } from '../map/map.component';
-// import { AgmCoreModule } from '@agm/core';
 import { SharedPModule } from '../sharedP.module';
 import { MapCommonModule } from '../map-common/map-common.module';
 import { JobViewComponent } from './job-view/job-view.component';
@@ -52,7 +37,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import { CalendarModule } from 'primeng/calendar';
 import { AssignMapComponent } from './job-assignment/assign-map/assign-map.component';
 import { AgmCoreModule } from '@agm/core';
 import { JobRunningSheetComponent } from './job-running-sheet/job-running-sheet.component';
@@ -63,8 +47,6 @@ import { AddCustomerComponent } from './add-customer/add-customer.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { JobViewCustomerLedgerComponent } from './job-view-customer-ledger/job-view-customer-ledger.component';
-// import { CalendarModule, DateAdapter } from 'angular-calendar';
-// import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
@@ -75,8 +57,7 @@ FullCalendarModule.registerPlugins([
 ]);
 
 @NgModule({
-  declarations: [
-    ManageJobComponent,
+  declarations: [    
     JobComponent,
     AmbulanceComponent,
     JobAssignmentComponent,
@@ -102,23 +83,14 @@ FullCalendarModule.registerPlugins([
   ],
   imports: [
     ServicesRoutingModule,
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
     ToastModule,
-    TabViewModule,
-    ButtonModule,
-    DialogModule,
-    DropdownModule,
+    TabViewModule, 
     AutoCompleteModule,
-    FileUploadModule,
-    TableModule,
-    CalendarModule,
+    FileUploadModule,        
     InputNumberModule,
     RadioButtonModule,
     MultiSelectModule,
-    CheckboxModule,
-    ConfirmDialogModule,
+    CheckboxModule,    
     SharedPModule,
     MapCommonModule,
     CardModule,

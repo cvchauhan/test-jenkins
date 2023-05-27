@@ -34,6 +34,7 @@ import { ManageShiftComponent } from './manage-shift/manage-shift.component';
 import { ManageEmployeeShiftComponent } from './manage-employee-shift/manage-employee-shift.component';
 import { SalaryStructureDetailsComponent } from './salary-structure-details/salary-structure-details.component';
 import { EmployeeAttendanceComponent } from './employee-attendance/employee-attendance.component';
+import { MapCommonModule } from '../map-common/map-common.module';
 
 @NgModule({
   declarations: [DesignationComponent, PayheadsComponent,
@@ -50,35 +51,14 @@ import { EmployeeAttendanceComponent } from './employee-attendance/employee-atte
     EmployeeAttendanceComponent
   ],
   imports: [
-    AutoCompleteModule,
-    CommonModule,
-    HrFlowRoutingModule,
-    DialogModule,
-    TableModule,
-    ButtonModule,
-    SelectButtonModule,
-    DropdownModule,
-    TabViewModule,
-    CheckboxModule,
-    FormsModule,
-    RadioButtonModule,
-    ToastModule,
-    ConfirmDialogModule,
-    ReactiveFormsModule,
-
-    CommonModule,
-    ReactiveFormsModule,
-    ConfirmDialogModule,
-    FormsModule,
-    TabViewModule,
-    DropdownModule,
-    TableModule,
-    ButtonModule,
-    FileUploadModule,
-    TableModule,
-    DialogModule,
-    CheckboxModule,
-    CalendarModule,
+    MapCommonModule,
+    AutoCompleteModule,    
+    HrFlowRoutingModule,    
+    SelectButtonModule,            
+    RadioButtonModule,         
+    TabViewModule,      
+    FileUploadModule,        
+    CheckboxModule,    
     ToastModule,
     MultiSelectModule,
     AccordionModule,

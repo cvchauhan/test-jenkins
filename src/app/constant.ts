@@ -3,11 +3,13 @@ import {
   CITIES_MODEL,
   FIELD_STAFF,
   GENDER_DATA,
+  INNER_STATUS_DATA,
   JOBASSIGNSTATUS,
   MANAGE_JOB,
   MANRECRUITMENT,
   MONTHS_NAME_MODEL,
   START_TIME_DDL,
+  STATUS_DATA,
   TRANSPORTATION_DATA,
   WEEKLY_REPEATE,
 } from './interface';
@@ -110,4 +112,16 @@ export const ADDJOBTABLE: ADD_JOB_TABLE[] = [
     total: '',
     discs: '',
   },
+];
+
+export const STATUSDATA: STATUS_DATA[] = [
+  { sname: "Approve", code: "A" },
+  { sname: "Pending", code: "P" },
+  { sname: "Assigned", code: "N" },
+  { sname: "Collected", code: "C" }
+];
+
+export const INNERSTATUSDATA: INNER_STATUS_DATA[] = [
+  { sname: "Approve", code: "A" },
+  { sname: "Rejected", code: "R" },
 ];
